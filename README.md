@@ -26,6 +26,16 @@ Skills for creating content and presentations.
 |-------|-------------|
 | [`slides-generator`](create/slides-generator/) | Turn a Markdown file into a self-contained HTML slide deck — dark minimal style, animated SVG art, 50 geometric motifs, keyboard nav, speaker notes, autoplay |
 
+### story/
+
+Skills for writing authentic personal stories — from deep transformation narratives to social media posts.
+
+| Skill | What it does |
+|-------|-------------|
+| [`story-heros-journey`](story/story-heros-journey/) | Write a personal transformation story using the Hero's Journey arc (6 stages from ordinary world to return with the gift). For case studies, longreads, deep reflections. |
+| [`story-preodolenie`](story/story-preodolenie/) | Write a story of overcoming challenges — 5 flexible elements (Point A → Obstacles → Motivation → Resources → Point B) with 4 composition patterns. For blogs, portfolios, pitches. |
+| [`story-authentic-social`](story/story-authentic-social/) | Write an authentic story for social media and marketing — 6-step hook structure (Hook → Why → Trust → Story → Result → Hook back). For posts, reels, stories, videos. |
+
 ---
 
 ## Install any skill
@@ -33,16 +43,25 @@ Skills for creating content and presentations.
 ```bash
 # Install a single skill
 cp -r create/slides-generator ~/.claude/skills/
+cp -r story/story-heros-journey ~/.claude/skills/
+cp -r story/story-preodolenie ~/.claude/skills/
+cp -r story/story-authentic-social ~/.claude/skills/
 
-# Or clone the whole repo and symlink
+# Or clone the whole repo and symlink skills
 git clone https://github.com/alexivanovvv/turboskills ~/.claude/turboskills
 ln -s ~/.claude/turboskills/create/slides-generator ~/.claude/skills/slides-generator
+ln -s ~/.claude/turboskills/story/story-heros-journey ~/.claude/skills/story-heros-journey
+ln -s ~/.claude/turboskills/story/story-preodolenie ~/.claude/skills/story-preodolenie
+ln -s ~/.claude/turboskills/story/story-authentic-social ~/.claude/skills/story-authentic-social
 ```
 
 Then in Claude Code:
 
 ```
 /slides-generator path/to/content.md
+/story-heros-journey
+/story-preodolenie
+/story-authentic-social
 ```
 
 ---
