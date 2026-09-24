@@ -43,6 +43,7 @@ Skills for selling courses and services: audience diagnosis, launch planning, ma
 | Skill | What it does |
 |-------|-------------|
 | [`marketing-ladder`](marketing/marketing-ladder/) | Analyze a course or service with Ben Hunt's Ladder of Awareness (rungs 0-5 + after-purchase). Diagnoses where your audience is, audits existing marketing, builds the ladder with messages, offers and CTAs per rung, writes the texts, plans a launch with real dates and transition metrics. Russian by default. |
+| [`marketing-cialdini`](marketing/marketing-cialdini/) | Audit, create or enhance a landing page, post, email, webinar or sales DM with Robert Cialdini's 7 principles of influence (reciprocity, commitment, social proof, authority, liking, scarcity, unity). 0-3 profile per principle, red flags for fake or broken levers, prioritized before/after rewrites. Honest levers only, works with or without context. Russian by default. |
 
 ---
 
@@ -55,6 +56,7 @@ cp -r story/story-heros-journey ~/.claude/skills/
 cp -r story/story-preodolenie ~/.claude/skills/
 cp -r story/story-authentic-social ~/.claude/skills/
 cp -r marketing/marketing-ladder ~/.claude/skills/
+cp -r marketing/marketing-cialdini ~/.claude/skills/
 
 # Or clone the whole repo and symlink skills
 git clone https://github.com/alexivanovvv/turboskills ~/.claude/turboskills
@@ -63,6 +65,7 @@ ln -s ~/.claude/turboskills/story/story-heros-journey ~/.claude/skills/story-her
 ln -s ~/.claude/turboskills/story/story-preodolenie ~/.claude/skills/story-preodolenie
 ln -s ~/.claude/turboskills/story/story-authentic-social ~/.claude/skills/story-authentic-social
 ln -s ~/.claude/turboskills/marketing/marketing-ladder ~/.claude/skills/marketing-ladder
+ln -s ~/.claude/turboskills/marketing/marketing-cialdini ~/.claude/skills/marketing-cialdini
 ```
 
 Then in Claude Code:
@@ -73,6 +76,7 @@ Then in Claude Code:
 /story-preodolenie
 /story-authentic-social
 /marketing-ladder my 6-week course for managers, launching March 1
+/marketing-cialdini audit ./landing/index.html
 ```
 
 ---
