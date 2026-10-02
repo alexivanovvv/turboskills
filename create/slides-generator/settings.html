@@ -12,6 +12,32 @@
   header{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.4rem 2rem;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(8,10,12,.94);backdrop-filter:blur(8px);z-index:5}
   h1{font:700 1.15rem 'Unbounded',sans-serif;letter-spacing:-.01em}
   h1 span{color:var(--green)}
+  .brandbar{display:flex;align-items:center;gap:1.6rem}
+  .tabs{display:flex;gap:.3rem;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.25rem}
+  .tabs button{border:none;background:none;color:var(--muted);padding:.45rem .9rem;border-radius:7px}
+  .tabs button.on{background:var(--line);color:var(--green)}
+  [hidden]{display:none!important}
+  #tab-layouts{display:block;padding:2rem}
+  .lt-intro{color:var(--muted);max-width:80ch;margin-bottom:1.6rem;font-size:.95rem}
+  .lt-intro b{color:var(--fg)}
+  .lt-filter{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.6rem}
+  .lt-filter button{font-size:.85rem;padding:.4rem .8rem}
+  .lt-filter button.on{border-color:var(--green);color:var(--green)}
+  .lt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:1.6rem}
+  .lt{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+  .lt-frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#080a0c;cursor:zoom-in;border-bottom:1px solid var(--line)}
+  .lt-frame.v{aspect-ratio:16/9}
+  .lt-frame iframe{position:absolute;top:0;left:0;width:1280px;height:720px;border:0;transform-origin:0 0;pointer-events:none}
+  .lt-body{padding:1rem 1.2rem 1.2rem}
+  .lt-body h3{font:700 1rem 'Manrope',sans-serif;margin-bottom:.3rem;display:flex;justify-content:space-between;gap:.6rem;align-items:baseline}
+  .lt-body h3 small{font:600 .68rem 'Manrope',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);white-space:nowrap}
+  .lt-body p{color:var(--muted);font-size:.88rem;line-height:1.45}
+  .lt-body code{display:inline-block;margin-top:.6rem;font:500 .78rem ui-monospace,Menlo,monospace;color:var(--green);background:var(--card);border-radius:6px;padding:.2rem .45rem}
+  .zoom{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem}
+  .zoom .zf{position:relative;width:min(92vw,calc(82vh*16/9));aspect-ratio:16/9;overflow:hidden;border-radius:12px;border:1px solid var(--line)}
+  .zoom iframe{position:absolute;top:0;left:0;width:1280px;height:720px;border:0;transform-origin:0 0}
+  .zoom .zt{color:var(--muted);font-size:.9rem}
+  .zoom .zt b{color:var(--fg)}
   .actions{display:flex;gap:.6rem;align-items:center}
   button{font:600 .9rem 'Manrope',sans-serif;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:.6rem 1rem;cursor:pointer}
   button:hover{border-color:var(--dim)}
@@ -79,7 +105,13 @@
 </head>
 <body>
 <header>
-  <h1>slides-generator <span>· настройки</span></h1>
+  <div class="brandbar">
+    <h1>slides-generator</h1>
+    <nav class="tabs">
+      <button type="button" data-tab="settings" class="on">Настройки</button>
+      <button type="button" data-tab="layouts">Раскладки</button>
+    </nav>
+  </div>
   <div class="actions">
     <span id="status"></span>
     <button id="reset" title="Вернуть заводские значения (без сохранения)">Сбросить</button>
@@ -88,7 +120,7 @@
   </div>
 </header>
 
-<main>
+<main id="tab-settings">
   <form id="f" autocomplete="off">
     <section class="group">
       <h2>Формат</h2>
@@ -185,6 +217,14 @@
     </div>
   </div>
 </main>
+
+<main id="tab-layouts" hidden>
+  <p class="lt-intro">Все раскладки, которые знает скилл. Превью рендерятся настоящим <b>template.html</b> с цветами и шрифтами со вкладки «Настройки», даже несохранёнными. Клик по превью — крупно. Скилл подбирает раскладку по форме контента: перечень равнозначных пунктов → сетка во всю ширину, один тезис → 50/50.</p>
+  <div class="lt-filter" id="ltFilter"></div>
+  <div class="lt-grid" id="ltGrid"></div>
+</main>
+
+<div class="zoom" id="zoom" hidden><div class="zf"><iframe id="zoomFrame" title="Раскладка крупно"></iframe></div><div class="zt" id="zoomText"></div></div>
 
 <script>
 const DEFAULTS = {
@@ -312,9 +352,136 @@ document.getElementById('download').onclick = download;
 document.getElementById('reset').onclick = ()=>{ cfg = structuredClone(DEFAULTS); fill(); setStatus('заводские значения — не сохранено',''); };
 document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='s'){e.preventDefault();save();} });
 
+// ---------- Вкладка «Раскладки» ----------
+const art = id => `<div class="art"><svg viewBox="0 0 420 560"><use href="#${id}"/></svg></div>`;
+const PH_IMG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560"><rect width="800" height="560" rx="18" fill="#181c25"/><rect x="60" y="60" width="300" height="180" rx="12" fill="#4ade80" opacity=".25"/><rect x="420" y="60" width="320" height="180" rx="12" fill="#38bdf8" opacity=".25"/><rect x="60" y="300" width="680" height="200" rx="12" fill="#c084fc" opacity=".2"/><text x="400" y="410" font-family="sans-serif" font-size="30" fill="#a7adbe" text-anchor="middle">схема / скриншот</text></svg>');
+const PH_PHOTO = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#0f172a"/></linearGradient></defs><rect width="600" height="800" fill="url(#g)"/><circle cx="300" cy="300" r="120" fill="#334155"/><rect x="130" y="450" width="340" height="350" rx="170" fill="#334155"/><text x="300" y="760" font-family="sans-serif" font-size="28" fill="#64748b" text-anchor="middle">фото спикера</text></svg>');
+const td = 'padding:.7rem .9rem;border-bottom:1px solid rgba(255,255,255,.06)';
+const th = 'text-align:left;padding:.5rem .9rem;font-family:var(--font-head);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600';
+const hexPos = [['1%','38%'],['21%','70%'],['60%','73%'],['78%','38%'],['60%','4%'],['21%','5%']];
+const hexCol = ['var(--green)','var(--amber)','var(--blue)','var(--violet)','var(--orange)','var(--pink)'];
+
+const LAYOUTS = [
+  {g:'Каркас сессии', n:'Титул', c:'.slide · h1 + .lead + .meta', w:'Первый слайд: тема, подзаголовок, бренд и дата.',
+   h:`<section class="slide"><p class="kicker">Курс · Сессия 2</p><h1>Как работать с <span class="g">ИИ</span> каждый <span class="g2">день</span></h1><p class="lead">Инструменты, привычки и база знаний</p><div class="meta"><b>Бренд</b><span class="sep">·</span>8 октября 2026</div>${art('sunburst')}</section>`},
+  {g:'Каркас сессии', n:'Разделитель блока', c:'.slide.sec-divider-N · .sec-title', w:'Открывает каждую из 3–5 секций. Только крупное название; цвет идёт по кругу: зелёный → янтарь → синий → фиолетовый.',
+   h:`<section class="slide sec-divider-1"><p class="sec-title">Владейте своими <span class="g">данными</span></p>${art('shield')}</section>`},
+  {g:'Каркас сессии', n:'Разделитель · блок 3', c:'.sec-divider-3', w:'Тот же разделитель для третьей секции — синий.',
+   h:`<section class="slide sec-divider-3"><p class="sec-title">Автоматизация рутины</p>${art('network')}</section>`},
+  {g:'Каркас сессии', n:'Домашка', c:'.hw-box · .hw-task', w:'Финальная связка: что забрать с собой и задание.',
+   h:`<section class="slide"><p class="kicker">Забираем с собой</p><h2>Данные ваши, <span class="g">инструкции</span> соединяют</h2><div class="hw-box"><div class="hw-label">Домашка</div><div class="hw-task"><span class="hk">01</span><span class="hv">Собрать 2–3 инструкции для типовых задач <span>— письма, отчёты, встречи</span></span></div><div class="hw-task"><span class="hk">02</span><span class="hv">Поделиться результатом в чате потока</span></div></div>${art('checks')}</section>`},
+  {g:'Каркас сессии', n:'Q&A', c:'.qa-big', w:'Почти всегда последний слайд.',
+   h:`<section class="slide"><p class="qa-big">Q&amp;A</p><p class="lead">Время для вопросов и ответов</p>${art('spiral')}</section>`},
+
+  {g:'50/50: текст + арт', n:'Тезисы', c:'.slide · ul > li', w:'Дефолт: 3–5 тезисов слева, SVG-арт справа. li.dim — второстепенный пункт, li.warn — янтарный маркер.',
+   h:`<section class="slide"><p class="kicker">Принцип</p><h2>База знаний — <span class="g">второй мозг</span></h2><ul><li>Весь контекст в одном месте — <b>текстом</b>, а не в PDF</li><li>Агент сам находит нужное и связывает идеи</li><li class="warn">Обновляется агентами, а не руками</li><li class="dim">Не привязана ни к одной модели</li></ul>${art('network')}</section>`},
+  {g:'50/50: текст + арт', n:'Фокус-бокс', c:'.focus-box', w:'Один главный вопрос или призыв, выделенный рамкой.',
+   h:`<section class="slide"><p class="kicker">Ваши кейсы</p><div class="focus-box"><div class="fb-kicker">Можно поделиться</div><div class="fb-body">Что вы уже собрали и попробовали?</div><div class="fb-sub">Что сработало · где застряли · какой вопрос забираем в Q&amp;A</div></div>${art('pulse')}</section>`},
+  {g:'50/50: текст + арт', n:'Цитата / Bad → Good', c:'.bq', w:'Цитата или пара «плохо → хорошо» с цветной линией слева.',
+   h:`<section class="slide"><p class="kicker">Промпт</p><h2>Было и <span class="g">стало</span></h2><p class="bq" style="color:#f87171">«Напиши пост про лидерство»</p><p class="bq" style="color:var(--green)">«Пост на 5 абзацев для руководителей: одна история, один вывод, без клише»</p>${art('storyarc')}</section>`},
+  {g:'50/50: текст + арт', n:'Маршрут / цепочка', c:'.route · .route-step', w:'Последовательность шагов в строку, текущий шаг подсвечен.',
+   h:`<section class="slide"><p class="kicker">Процесс</p><h2>От заметки до <span class="g">поста</span></h2><div class="route"><span class="route-step">Заметка</span><span class="route-arr">→</span><span class="route-step">Черновик</span><span class="route-arr">→</span><span class="route-step hi">Редактура</span><span class="route-arr">→</span><span class="route-step">Пост</span></div><ul><li>Каждый шаг — отдельная инструкция агенту</li><li>Вы проверяете только редактуру</li></ul>${art('ladder')}</section>`},
+  {g:'50/50: текст + арт', n:'Схема / скриншот', c:'.art.pic', w:'Когда нужна схема или скрин без обрезки вместо SVG-арта (в деке — base64).',
+   h:`<section class="slide"><p class="kicker">Как это выглядит</p><h2>Папка <span class="g">vault</span></h2><p class="lead">Все заметки — обычные Markdown-файлы на вашем диске.</p><div class="art pic"><img src="${PH_IMG}" alt=""></div></section>`},
+  {g:'50/50: текст + арт', n:'Автор', c:'.slide + .art (z-index:1) + фото', w:'Самопрезентация спикера: имя, роль, bio, контакты, фото на всю правую половину.',
+   h:`<section class="slide"><p class="kicker">Автор</p><h2 style="font-size:clamp(2rem,3.8cqw,3.4rem);margin-bottom:.7rem">Имя Фамилия</h2><p style="font-family:var(--font-head);font-size:clamp(.7rem,.98cqw,.86rem);letter-spacing:.2em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:1.4rem">Роль · Специализация · Город</p><p style="font-size:clamp(1.05rem,1.55cqw,1.28rem);color:var(--fg);line-height:1.6;max-width:36ch;margin-bottom:1.6rem">Биография 1–2 предложения: опыт и чем занимается сейчас.</p><p style="font-size:clamp(1rem,1.45cqw,1.18rem);margin-bottom:1.7rem"><b style="color:#fff">Telegram:</b> <span style="color:var(--muted)">@handle</span></p><p style="border-left:2px solid var(--amber);padding-left:.9rem;color:var(--muted);font-style:italic;line-height:1.45">Призыв к действию или цитата.</p><div class="art" style="z-index:1;overflow:hidden;padding:0;align-items:stretch"><img src="${PH_PHOTO}" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block"></div></section>`},
+
+  {g:'Во всю ширину', n:'Сетка 3 × 2', c:'.slide.wide · .cards.g3w.bare', w:'6 равнозначных пунктов. Цвета заголовков идут по 6-цветному циклу.',
+   h:`<section class="slide wide"><p class="kicker">Что было раньше</p><h2>Что у нас <span class="g">уже есть</span></h2><div class="cards g3w bare">${[['green','Принципы','Подход, который не зависит от инструментов'],['orange','База знаний','Весь контекст — в одном месте'],['blue','Промпты','Библиотека примеров на каждый день'],['pink','Память','ИИ знает, кто вы и как работаете'],['amber','Свой стек','Инструменты под основные задачи'],['violet','0 → 80 → 100','Отдаём ИИ первые 80% задачи']].map(([c,t,d])=>`<div class="card"><div class="ct" style="color:var(--${c})">${t}</div><div class="cd">${d}</div></div>`).join('')}</div></section>`},
+  {g:'Во всю ширину', n:'Ряд из 4', c:'.cards.g4.bare', w:'4 пункта в один ряд — вместо сетки 2×2, которую скилл избегает.',
+   h:`<section class="slide wide"><h2>Какой должна быть <span class="g2">база</span></h2><div class="cards g4 bare">${[['green','Вокруг вас','Контекст, проекты, процессы, отношения'],['orange','Лёгкой','Текст, а не тяжёлые PDF'],['blue','Актуальной','Обновляется агентами'],['pink','Независимой','Не привязана к сервису']].map(([c,t,d])=>`<div class="card"><div class="ct" style="color:var(--${c})">${t}</div><div class="cd">${d}</div></div>`).join('')}</div></section>`},
+  {g:'Во всю ширину', n:'Ряд из 5 · цифры', c:'.cards.g5.bare', w:'5 показателей: крупное число + подпись.',
+   h:`<section class="slide wide"><p class="kicker">Что уже работает</p><h2>База знаний <span class="g">сегодня</span></h2><div class="cards g5 bare">${[['green','1 355','транскриптов встреч'],['orange','1 350','карточек людей'],['blue','70','скиллов для агентов'],['pink','27','автоматик по ночам'],['amber','179','историй для контента']].map(([c,t,d])=>`<div class="card"><div class="ct" style="color:var(--${c});font-size:clamp(2.2rem,4cqw,3.6rem)">${t}</div><div class="cd">${d}</div></div>`).join('')}</div></section>`},
+  {g:'Во всю ширину', n:'Нумерованные карточки', c:'.numgrid · .numcard', w:'Пронумерованные шаги 2 × 2. Номер и заголовок одного цвета (задаётся CSS, без inline-цвета).',
+   h:`<section class="slide wide"><h2>Первый скилл <span class="g2">за вечер</span></h2><div class="numgrid" style="grid-template-columns:repeat(2,1fr)">${[['Найдите задачу','Делаете регулярно или ИИ уже справился'],['Спланируйте','Ответьте агенту на 5–8 вопросов'],['Соберите из чата','Отдайте агенту чат с решением'],['Сохраните копию','Продублируйте в свою папку']].map(([t,d],i)=>`<div class="numcard"><div class="nn">0${i+1}</div><div class="nh">${t}</div><div class="nb">${d}</div></div>`).join('')}</div></section>`},
+  {g:'Во всю ширину', n:'Шаги в ряд', c:'.pgrid.row4 · .numcard', w:'4 пронумерованных шага в одну линию.',
+   h:`<section class="slide wide"><h2>Цикл <span class="g">одной задачи</span></h2><div class="pgrid row4">${[['Контекст','Что агенту нужно знать'],['Инструкция','Что и в каком формате'],['Проверка','Вы смотрите 20%'],['Шаблон','Сохраняем как скилл']].map(([t,d],i)=>`<div class="numcard"><div class="nn">0${i+1}</div><div class="nh">${t}</div><div class="nb">${d}</div></div>`).join('')}</div></section>`},
+  {g:'Во всю ширину', n:'Список-демо в 2 колонки', c:'.demo-list.two · .demo-item', w:'Пункты демо или упражнения: номер, заголовок, описание.',
+   h:`<section class="slide wide"><p class="kicker">Демо</p><h2>Что покажу <span class="g">вживую</span></h2><div class="demo-list two">${[['Поиск по базе','Найти все встречи про проект за месяц'],['Пост из транскрипта','Черновик за 2 минуты'],['Задачи из встречи','Сразу в таск-трекер'],['Слайды из заметок','Этот деск собран так же']].map(([t,d],i)=>`<div class="demo-item"><span class="di-num">0${i+1}</span><div class="di-body"><div class="di-title">${t}</div><div class="di-desc">${d}</div></div></div>`).join('')}</div></section>`},
+  {g:'Во всю ширину', n:'Две группы', c:'.cols2 · .grp-label', w:'Сравнение двух групп пунктов бок о бок.',
+   h:`<section class="slide wide"><h2>Что отдаём <span class="g">ИИ</span>, что <span class="g2">оставляем</span></h2><div class="cols2"><div><p class="grp-label" style="color:var(--green)">Агенту</p><ul><li>Черновики и первые 80%</li><li>Поиск и сводки</li><li>Рутина по шаблону</li></ul></div><div><p class="grp-label" style="color:var(--amber)">Себе</p><ul><li>Решения и приоритеты</li><li>Финальная редактура</li><li>Живые разговоры</li></ul></div></div></section>`},
+  {g:'Во всю ширину', n:'Таблица сравнения', c:'.slide.wide + table', w:'Сравнение по параметрам; «наша» колонка выделена зелёным.',
+   h:`<section class="slide wide"><h2>Obsidian vs <span class="g3">Notion</span></h2><table style="width:100%;border-collapse:collapse;margin-top:1.3rem;font-size:clamp(.85rem,1.25cqw,1.05rem)"><thead><tr><th style="${th};border-bottom:1px solid var(--line);width:22%"></th><th style="${th};color:var(--green);border-bottom:2px solid var(--green)">Obsidian</th><th style="${th};color:var(--dim);border-bottom:1px solid var(--line)">Notion</th></tr></thead><tbody>${[['Где данные','Папка на вашем диске','В облаке сервиса'],['Формат','Markdown','Свой формат'],['Доступ агента','Прямой, к файлам','Через API'],['Офлайн','Да','Ограниченно']].map(([a,b,c])=>`<tr><td style="${td};font-family:var(--font-head);font-weight:600;font-size:.88em">${a}</td><td style="${td};color:var(--fg)">${b}</td><td style="${td};color:var(--muted)">${c}</td></tr>`).join('')}</tbody></table></section>`},
+  {g:'Во всю ширину', n:'Кольцо из 6', c:'.hexring · .hr-item', w:'6 элементов по кругу — цикл или система из шести частей.',
+   h:`<section class="slide wide"><h2>Шесть <span class="g">привычек</span></h2><div class="hexring"><div class="hr-ring"></div>${['Записывать','Связывать','Спрашивать','Проверять','Сохранять','Делиться'].map((t,i)=>`<div class="hr-item" style="top:${hexPos[i][0]};left:${hexPos[i][1]}"><div class="hr-n" style="color:${hexCol[i]}">0${i+1}</div><div class="hr-t">${t}</div><div class="hr-d">Короткое пояснение</div></div>`).join('')}</div></section>`},
+];
+
+let tplCache = null, ltGroup = 'Все', ltTimer = null;
+async function getTemplate(){
+  if (tplCache) return tplCache;
+  const r = await fetch('/template');
+  if (!r.ok) throw new Error('template');
+  return tplCache = await r.text();
+}
+
+function slideDoc(tpl, html){
+  const c = cfg.colors, fonts = Object.values(cfg.fonts);
+  const imp = `@import url('https://fonts.googleapis.com/css2?${[...new Set(fonts)].map(n=>'family='+encodeURIComponent(n).replace(/%20/g,'+')+':wght@400;500;600;700;800').join('&')}&display=swap');`;
+  const hex = c.green.replace('#',''), rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)).join(',');
+  const vars = Object.keys(c).map(k=>`--${k}:${c[k]}`).join(';');
+  const css = `<style>${imp}
+    :root{${vars};--green-lo:rgba(${rgb},.1);
+      --font-display:'${cfg.fonts.display}',-apple-system,sans-serif;--font-head:'${cfg.fonts.head}',-apple-system,sans-serif;--font-body:'${cfg.fonts.body}',-apple-system,sans-serif;
+      --body-size:calc(clamp(1.1rem,1.6cqw,1.42rem) * ${cfg.textScale})}
+    .progress,.counter,.navbottom,#auto-bar,.menu-btn,.menu-panel,.dots,.notes,.hint,.nav,.fs-btn{display:none!important}
+    ${cfg.art ? '' : '.art:not(.pic):not([style*="z-index:1"]){display:none!important}'}
+  </style>`;
+  const slide = html.replace('class="slide', 'class="slide active');
+  return tpl.replace('<!-- TITLE_PLACEHOLDER -->','Раскладка')
+    .replace('<!-- BRAND_PLACEHOLDER -->', cfg.brand || 'Бренд')
+    .replace('<!-- DECKTAG_PLACEHOLDER -->', cfg.decktag || 'Курс · Сессия 2')
+    .replace('<!-- SLIDES_PLACEHOLDER -->', slide)
+    .replace('class="deck"', cfg.ratio==='9:16' ? 'class="deck ratio-9-16"' : 'class="deck"')
+    .replace('</head>', css + '</head>');
+}
+
+function fit(frame){
+  const box = frame.parentElement;
+  frame.style.transform = `scale(${box.clientWidth/1280})`;
+}
+
+async function renderLayouts(){
+  const grid = document.getElementById('ltGrid');
+  let tpl;
+  try { tpl = await getTemplate(); }
+  catch { grid.innerHTML = '<p class="lt-intro">Превью работают только через сервер: <b>/slides-generator config</b>.</p>'; return; }
+  const groups = ['Все', ...new Set(LAYOUTS.map(l=>l.g))];
+  document.getElementById('ltFilter').innerHTML = groups.map(g=>`<button type="button" class="${g===ltGroup?'on':''}" data-g="${g}">${g}</button>`).join('');
+  const list = LAYOUTS.filter(l=>ltGroup==='Все'||l.g===ltGroup);
+  grid.innerHTML = list.map((l,i)=>`<article class="lt"><div class="lt-frame" data-i="${LAYOUTS.indexOf(l)}"><iframe loading="lazy" title="${l.n}"></iframe></div><div class="lt-body"><h3>${l.n}<small>${l.g}</small></h3><p>${l.w}</p><code>${l.c}</code></div></article>`).join('');
+  grid.querySelectorAll('.lt-frame').forEach(fr=>{
+    const ifr = fr.querySelector('iframe');
+    ifr.srcdoc = slideDoc(tpl, LAYOUTS[fr.dataset.i].h);
+    fit(ifr);
+    fr.onclick = ()=>openZoom(+fr.dataset.i, tpl);
+  });
+}
+
+function openZoom(i, tpl){
+  const z = document.getElementById('zoom'), f = document.getElementById('zoomFrame');
+  z.hidden = false;
+  f.srcdoc = slideDoc(tpl, LAYOUTS[i].h);
+  fit(f);
+  document.getElementById('zoomText').innerHTML = `<b>${LAYOUTS[i].n}</b> · ${LAYOUTS[i].c} · Esc или клик — закрыть`;
+}
+document.getElementById('zoom').onclick = ()=>{ document.getElementById('zoom').hidden = true; };
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.getElementById('zoom').hidden = true; });
+document.getElementById('ltFilter').onclick = e=>{ const g=e.target.dataset?.g; if(g){ ltGroup=g; renderLayouts(); } };
+window.addEventListener('resize', ()=>document.querySelectorAll('.lt-frame iframe').forEach(fit));
+
+function showTab(t){
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===t));
+  document.getElementById('tab-settings').hidden = t!=='settings';
+  document.getElementById('tab-layouts').hidden = t!=='layouts';
+  if (t==='layouts') renderLayouts();
+  history.replaceState(null,'', t==='layouts' ? '#layouts' : location.pathname);
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
 buildControls();
 fetch('/config').then(r=>r.ok?r.json():Promise.reject()).then(j=>{cfg=merge(DEFAULTS,j);fill();setStatus('загружено из config.json','ok');})
   .catch(()=>{ fill(); if(location.protocol==='file:') setStatus('открыто без сервера — показаны заводские значения',''); });
+if (location.hash==='#layouts') showTab('layouts');
 </script>
 </body>
 </html>

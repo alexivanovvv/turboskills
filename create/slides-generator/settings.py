@@ -28,6 +28,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/", "/settings.html"):
             self._send(200, PAGE.read_bytes(), "text/html; charset=utf-8")
+        elif self.path == "/template":
+            self._send(200, (DIR / "template.html").read_bytes(), "text/html; charset=utf-8")
         elif self.path == "/config":
             if CONFIG.exists():
                 self._send(200, CONFIG.read_bytes(), "application/json")
