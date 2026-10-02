@@ -109,7 +109,7 @@
   .lt-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
   .lt-count { font-family: var(--font-num); font-size: 12px; color: var(--text3); }
   .lt-count b { color: var(--accent2); font-weight: 700; }
-  .lt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+  .lt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(max(190px, calc((100% - 48px) / 5)), 1fr)); gap: 12px; }
   .lt { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; display: flex; flex-direction: column; transition: opacity 0.15s, border-color 0.15s; }
   .lt:hover { border-color: var(--line-strong); }
   .lt.prefer { border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.06); }
@@ -117,13 +117,13 @@
   .lt.off .lt-frame { filter: grayscale(1); }
   .lt-frame { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #080a0c; cursor: zoom-in; border-bottom: 1px solid var(--line); }
   .lt-frame iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 720px; border: 0; transform-origin: 0 0; pointer-events: none; }
-  .lt-body { padding: 13px 15px 15px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-  .lt-body h3 { margin: 0; font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .lt-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .lt-body h3 { margin: 0; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
   .lt-body h3 small { font-family: var(--font-num); font-size: 10.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text4); white-space: nowrap; }
   .lt-body p { margin: 0; color: var(--text3); font-size: 12.5px; line-height: 1.5; flex: 1; }
   .lt-body code { align-self: flex-start; font-size: 11px; }
-  .lt-foot { display: flex; justify-content: flex-end; margin-top: 6px; }
-  .lt .pill { padding: 5px 11px; font-size: 12px; }
+  .lt-foot { display: flex; margin-top: auto; }
+  .lt .pill { padding: 4px 9px; font-size: 11.5px; }
   .lt .pill.p:has(input:checked) { background: var(--amber); color: #1a1000; }
   .lt .pill.x:has(input:checked) { background: rgba(248, 113, 113, 0.16); color: var(--bad); }
 
@@ -157,13 +157,6 @@
   .colors4 code { margin-left: auto; }
 
   /* ---- виды раскладок ---- */
-  .lt-grid.view-list { grid-template-columns: 1fr; gap: 10px; }
-  .lt-grid.view-list .lt { flex-direction: row; }
-  .lt-grid.view-list .lt-frame { flex: 0 0 300px; border-bottom: none; border-right: 1px solid var(--line); }
-  .lt-grid.view-list .lt-body { justify-content: center; }
-  .lt-grid.view-big { grid-template-columns: repeat(auto-fill, minmax(560px, 1fr)); gap: 20px; }
-  .lt-grid.view-big .lt-body h3 { font-size: 16px; }
-  .lt-grid.view-big .lt-body p { font-size: 13.5px; }
 
   /* ---- иллюстрации ---- */
   .mo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
@@ -383,17 +376,12 @@
     <section class="pane" id="sec-layouts" hidden>
       <div class="pane-head">
         <h2>Раскладки</h2>
-        <p class="pane-desc">Все раскладки, которые знает скилл, с живым превью. <b>Чаще</b> — брать при любом подходящем контенте, <b>Можно</b> — по ситуации, <b>Выкл</b> — не использовать никогда. Клик по превью — крупно.</p>
+        <p class="pane-desc"><b>Чаще</b> — предпочитать, <b>Выкл</b> — не использовать. Клик по превью — крупно, наведение — описание.</p>
       </div>
       <div class="lt-bar">
         <div class="pillgroup" id="ltFilter"></div>
         <div style="display:flex;gap:14px;align-items:center">
           <span class="lt-count" id="ltCount"></span>
-          <div class="pillgroup" id="ltView">
-            <button type="button" class="pill" data-view="grid" title="Сетка">Сетка</button>
-            <button type="button" class="pill" data-view="list" title="Список">Список</button>
-            <button type="button" class="pill" data-view="big" title="Крупно">Крупно</button>
-          </div>
         </div>
       </div>
       <div class="lt-grid" id="ltGrid"></div>
@@ -843,16 +831,6 @@ function countLayouts(){
   document.getElementById('navCount').textContent = `${on}/${v.length}`;
 }
 
-let ltView = localStorage.getItem('slides-lt-view') || 'grid';
-function applyView(){
-  document.getElementById('ltGrid').className = 'lt-grid' + (ltView!=='grid' ? ' view-'+ltView : '');
-  document.querySelectorAll('#ltView .pill').forEach(b=>b.classList.toggle('selected', b.dataset.view===ltView));
-  requestAnimationFrame(()=>document.querySelectorAll('#ltGrid iframe').forEach(fit));
-}
-document.getElementById('ltView').onclick = e=>{
-  const v = e.target.closest('[data-view]')?.dataset.view; if (!v) return;
-  ltView = v; localStorage.setItem('slides-lt-view', v); applyView();
-};
 
 function renderLayouts(){
   const grid = document.getElementById('ltGrid');
@@ -861,11 +839,10 @@ function renderLayouts(){
   const list = LAYOUTS.filter(l=>ltGroup==='Все'||l.g===ltGroup);
   grid.innerHTML = list.map(l=>{
     const s = cfg.layouts[l.id];
-    return `<article class="lt ${s}" data-id="${l.id}"><div class="lt-frame"><iframe loading="lazy" title="${l.n}"></iframe></div>
-      <div class="lt-body"><h3>${l.n}<small>${l.g}</small></h3><p>${l.w}</p><code>${l.c}</code>
+    return `<article class="lt ${s}" data-id="${l.id}" title="${(l.w+' · '+l.c).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')}"><div class="lt-frame"><iframe loading="lazy" title="${l.n}"></iframe></div>
+      <div class="lt-body"><h3>${l.n}</h3>
       <div class="lt-foot"><div class="pillgroup">${LT_STATES.map(([v,t,cls])=>`<label class="pill ${cls}"><input type="radio" name="lt-${l.id}" value="${v}" ${s===v?'checked':''}>${t}</label>`).join('')}</div></div></div></article>`;
   }).join('');
-  applyView();
   countLayouts();
   grid.querySelectorAll('.lt-frame').forEach(fr=>fr.onclick = ()=>openZoom(fr.closest('.lt').dataset.id));
   stale.add('lt'); refreshCurrent();
