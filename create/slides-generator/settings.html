@@ -3,131 +3,244 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>slides-generator — настройки</title>
+<title>Slides — настройки</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Manrope:wght@500;600;700&family=Golos+Text:wght@400;500;600&display=swap');
-  :root{--bg:#080a0c;--panel:#0e1117;--card:#111318;--line:#1e232f;--fg:#e8eaf0;--muted:#a7adbe;--dim:#5b6276;--green:#4ade80;--amber:#fbbf24}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--fg);font:16px/1.5 'Golos Text',-apple-system,sans-serif;min-height:100vh}
-  header{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.4rem 2rem;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(8,10,12,.94);backdrop-filter:blur(8px);z-index:5}
-  h1{font:700 1.15rem 'Unbounded',sans-serif;letter-spacing:-.01em}
-  [hidden]{display:none!important}
-  .actions{display:flex;gap:.6rem;align-items:center}
-  button{font:600 .9rem 'Manrope',sans-serif;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:.6rem 1rem;cursor:pointer}
-  button:hover{border-color:var(--dim)}
-  button.primary{background:var(--green);color:#06120a;border-color:var(--green)}
-  #status{font-size:.88rem;color:var(--muted);min-width:12ch;text-align:right}
-  #status.ok{color:var(--green)} #status.err{color:#f87171}
-  main{padding:2rem;max-width:1680px;margin:0 auto}
-  h2.sec{font:700 .72rem 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem}
-  .basics{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.4rem 1.6rem;margin-bottom:2.4rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem 2.4rem}
-  .basics h2.sec{grid-column:1/-1;margin-bottom:0}
-  .fld{display:flex;flex-direction:column;gap:.45rem}
-  .fld>label,.fld>span{color:var(--muted);font-size:.88rem}
-  .fld small{color:var(--dim);font-size:.78rem}
-  input[type=text],select{width:100%;background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:.55rem .7rem;font:inherit;font-size:.95rem}
-  input[type=text]:focus,select:focus{outline:none;border-color:var(--green)}
-  .seg{display:flex;gap:.4rem;flex-wrap:wrap}
-  .seg label{border:1px solid var(--line);border-radius:8px;padding:.45rem .8rem;cursor:pointer;color:var(--fg);font-size:.9rem;background:var(--card)}
-  .seg input{display:none}
-  .seg label:has(input:checked){border-color:var(--green);color:var(--green)}
-  .colors{display:flex;gap:.6rem;flex-wrap:wrap}
-  .color code{display:none}
-  .color{display:flex;align-items:center;gap:.6rem;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:.35rem .7rem .35rem .4rem;flex:1;cursor:pointer}
-  .color input{width:30px;height:30px;border:none;background:none;padding:0;cursor:pointer}
-  .color span{font-size:.88rem}
-  .color code{font-size:.75rem;color:var(--dim);margin-left:auto}
-  .switch{display:flex;align-items:center;gap:.7rem;cursor:pointer;color:var(--fg);font-size:.95rem}
-  .switch input{appearance:none;width:38px;height:22px;border-radius:11px;background:var(--line);position:relative;cursor:pointer;flex:none;transition:background .2s}
-  .switch input::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--muted);transition:transform .2s}
-  .switch input:checked{background:var(--green)}
-  .switch input:checked::after{transform:translateX(16px);background:#06120a}
-  .lt-head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:.6rem}
-  .lt-count{color:var(--muted);font-size:.9rem}
-  .lt-count b{color:var(--green)}
-  .lt-intro{color:var(--muted);max-width:90ch;margin-bottom:1.3rem;font-size:.93rem}
-  .lt-intro b{color:var(--fg)}
-  .lt-filter{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.6rem}
-  .lt-filter button{font-size:.85rem;padding:.4rem .8rem}
-  .lt-filter button.on{border-color:var(--green);color:var(--green)}
-  .lt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1.6rem}
-  .lt{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:opacity .2s,border-color .2s}
-  .lt.prefer{border-color:var(--amber)}
-  .lt.off{opacity:.42}
-  .lt.off .lt-frame{filter:grayscale(1)}
-  .lt-frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#080a0c;cursor:zoom-in;border-bottom:1px solid var(--line)}
-  .lt-frame iframe{position:absolute;top:0;left:0;width:1280px;height:720px;border:0;transform-origin:0 0;pointer-events:none}
-  .lt-body{padding:1rem 1.2rem 1.2rem;display:flex;flex-direction:column;gap:.55rem;flex:1}
-  .lt-body h3{font:700 1rem 'Manrope',sans-serif;display:flex;justify-content:space-between;gap:.6rem;align-items:baseline}
-  .lt-body h3 small{font:600 .66rem 'Manrope',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
-  .lt-body p{color:var(--muted);font-size:.88rem;line-height:1.45;flex:1}
-  .lt-body code{align-self:flex-start;font:500 .76rem ui-monospace,Menlo,monospace;color:var(--green);background:var(--card);border-radius:6px;padding:.2rem .45rem}
-  .lt .seg{margin-top:.2rem}
-  .lt .seg label{font-size:.82rem;padding:.35rem .7rem}
-  .lt .seg label.p:has(input:checked){border-color:var(--amber);color:var(--amber)}
-  .lt .seg label.x:has(input:checked){border-color:#f87171;color:#f87171}
-  .zoom{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem}
-  .zoom .zf{position:relative;width:min(92vw,calc(82vh*16/9));aspect-ratio:16/9;overflow:hidden;border-radius:12px;border:1px solid var(--line)}
-  .zoom iframe{position:absolute;top:0;left:0;width:1280px;height:720px;border:0;transform-origin:0 0}
-  .zoom .zt{color:var(--muted);font-size:.9rem}
-  .zoom .zt b{color:var(--fg)}
+  @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600&family=JetBrains+Mono:wght@500;700&display=swap');
+  :root {
+    --bg: #080a0c;
+    --surface1: #111318;
+    --surface2: #181c25;
+    --text: #e8eaf0;
+    --text2: #a7adbe;
+    --text3: rgba(167, 173, 190, 0.72);
+    --text4: #5b6276;
+    --line: #1e232f;
+    --line-strong: rgba(255, 255, 255, 0.14);
+    --card: rgba(255, 255, 255, 0.025);
+    --card-hover: rgba(255, 255, 255, 0.05);
+    --accent: #4ade80;
+    --accent2: #4ade80;
+    --amber: #fbbf24;
+    --accent-weak: rgba(74, 222, 128, 0.09);
+    --accent-soft: rgba(74, 222, 128, 0.28);
+    --good: #4ade80;
+    --bad: #f87171;
+    --r-card: 14px;
+    --r-inner: 10px;
+    --r-sm: 8px;
+    --r-pill: 999px;
+    --font-ui: "Onest", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-display: "Unbounded", "Onest", -apple-system, sans-serif;
+    --font-num: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14.5px/1.55 var(--font-ui); -webkit-font-smoothing: antialiased; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: var(--r-pill); }
+
+  /* ---- shell: sidebar of sections, one pane at a time (как в Fix It) ---- */
+  .wrap { display: flex; align-items: flex-start; max-width: 1480px; margin: 0 auto; }
+  .sidebar { position: sticky; top: 0; flex: 0 0 216px; width: 216px; height: 100vh; display: flex; flex-direction: column; gap: 4px; padding: 20px 12px 14px; border-right: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 16px; }
+  .brand svg { width: 24px; height: 24px; flex: 0 0 auto; }
+  .brand h1 { font-family: var(--font-display); font-weight: 600; font-size: 16px; letter-spacing: -0.01em; margin: 0; }
+  .navchip { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: none; border-radius: var(--r-sm); background: none; color: var(--text2); font: inherit; font-size: 14px; text-align: left; cursor: pointer; transition: background 0.12s ease, color 0.12s ease; }
+  .navchip svg { width: 15px; height: 15px; flex: 0 0 auto; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: 0.8; }
+  .navchip:hover { background: var(--card-hover); color: var(--text); }
+  .navchip.active { background: var(--accent-weak); color: var(--accent2); font-weight: 600; }
+  .navchip .cnt { margin-left: auto; font-family: var(--font-num); font-size: 11px; color: var(--text4); font-weight: 500; }
+  .nav-gap { flex: 1 1 auto; min-height: 12px; }
+  .reset-link { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 12px; border-radius: 0; color: var(--text3); }
+  .reset-link:hover { color: var(--text); background: none; }
+  .reset-link.armed, .reset-link.armed:hover { color: var(--bad); }
+  .sidefoot { display: flex; flex-direction: column; gap: 8px; padding: 12px 4px 0; border-top: 1px solid var(--line); }
+  .save-status { display: flex; align-items: center; gap: 7px; padding: 2px 4px; font-family: var(--font-num); font-size: 11px; color: var(--text4); }
+  .save-status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--good); flex: 0 0 auto; }
+  .save-status.pending .save-status-dot { background: var(--amber); animation: dotPulse 0.9s ease-in-out infinite; }
+  .save-status.error .save-status-dot { background: var(--bad); animation: none; }
+  .save-status.error { color: var(--bad); }
+  @keyframes dotPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  /* ---- pane ---- */
+  main { flex: 1 1 auto; min-width: 0; padding: 28px 34px 70px; }
+  #sec-basics { max-width: 760px; }
+  .pane-head { margin-bottom: 20px; }
+  .pane-head h2 { font-family: var(--font-display); font-weight: 600; font-size: 19px; letter-spacing: -0.01em; margin: 0 0 5px; }
+  .pane-desc { font-size: 13px; color: var(--text3); margin: 0; line-height: 1.55; max-width: 760px; }
+  .pane-desc b { color: var(--text2); font-weight: 600; }
+
+  .setting { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 15px 0; }
+  .setting + .setting, .setting + .group-title { border-top: 1px solid var(--line); }
+  .setting-info { min-width: 0; }
+  .setting-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .setting-desc { font-size: 12.5px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+  .setting-control { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+  .group-title { font-family: var(--font-num); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin: 0; padding: 22px 0 4px; }
+  .pane-note { font-size: 12.5px; color: var(--text3); line-height: 1.7; margin: 26px 0 0; padding-top: 18px; border-top: 1px solid var(--line); }
+
+  input[type="text"], select { font: 14px/1.4 var(--font-ui); padding: 8px 11px; border-radius: var(--r-sm); border: 1px solid var(--line-strong); background: var(--surface1); color: var(--text); }
+  .setting-control input[type="text"], .setting-control select { width: 260px; }
+  input:focus, select:focus { outline: none; border-color: var(--accent-soft); box-shadow: 0 0 0 3px var(--accent-weak); }
+  code { font-family: var(--font-num); background: var(--surface2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--accent2); font-size: 0.9em; }
+
+  .switch { position: relative; width: 38px; height: 22px; flex: 0 0 auto; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider { position: absolute; inset: 0; background: var(--surface2); border: 1px solid var(--line-strong); border-radius: var(--r-pill); cursor: pointer; transition: background 0.15s; }
+  .switch .slider::before { content: ""; position: absolute; width: 16px; height: 16px; left: 2px; top: 2px; background: var(--text3); border-radius: 50%; transition: transform 0.15s, background 0.15s; }
+  .switch input:checked + .slider { background: var(--accent-weak); border-color: var(--accent-soft); }
+  .switch input:checked + .slider::before { transform: translateX(16px); background: var(--accent); }
+
+  .pillgroup { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: var(--r-pill); background: color-mix(in srgb, var(--surface1) 72%, transparent); }
+  .pill { display: flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: var(--r-pill); font-size: 13px; font-weight: 600; color: var(--text2); cursor: pointer; user-select: none; transition: background 0.14s ease, color 0.14s ease; border: none; background: none; font-family: inherit; }
+  .pill:hover { color: var(--text); background: var(--card-hover); }
+  .pill:has(input:checked), .pill.selected { color: #06120a; background: var(--accent); }
+  .pill input { display: none; }
+
+  .color-row { display: flex; align-items: center; gap: 8px; }
+  .color-row code { min-width: 74px; text-align: center; }
+  input[type="color"] { -webkit-appearance: none; width: 34px; height: 34px; border: 1px solid var(--line-strong); border-radius: var(--r-sm); padding: 0; background: none; cursor: pointer; flex: 0 0 auto; }
+  input[type="color"]::-webkit-color-swatch-wrapper { padding: 3px; }
+  input[type="color"]::-webkit-color-swatch { border-radius: 5px; border: none; }
+
+  /* ---- раскладки ---- */
+  .lt-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .lt-count { font-family: var(--font-num); font-size: 12px; color: var(--text3); }
+  .lt-count b { color: var(--accent2); font-weight: 700; }
+  .lt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+  .lt { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; display: flex; flex-direction: column; transition: opacity 0.15s, border-color 0.15s; }
+  .lt:hover { border-color: var(--line-strong); }
+  .lt.prefer { border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.06); }
+  .lt.off { opacity: 0.45; }
+  .lt.off .lt-frame { filter: grayscale(1); }
+  .lt-frame { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #080a0c; cursor: zoom-in; border-bottom: 1px solid var(--line); }
+  .lt-frame iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 720px; border: 0; transform-origin: 0 0; pointer-events: none; }
+  .lt-body { padding: 13px 15px 15px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .lt-body h3 { margin: 0; font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .lt-body h3 small { font-family: var(--font-num); font-size: 10.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text4); white-space: nowrap; }
+  .lt-body p { margin: 0; color: var(--text3); font-size: 12.5px; line-height: 1.5; flex: 1; }
+  .lt-body code { align-self: flex-start; font-size: 11px; }
+  .lt-foot { display: flex; justify-content: flex-end; margin-top: 6px; }
+  .lt .pill { padding: 5px 11px; font-size: 12px; }
+  .lt .pill.p:has(input:checked) { background: var(--amber); color: #1a1000; }
+  .lt .pill.x:has(input:checked) { background: rgba(248, 113, 113, 0.16); color: var(--bad); }
+
+  .zoom { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.86); z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 2rem; }
+  .zoom .zf { position: relative; width: min(92vw, calc(82vh*16/9)); aspect-ratio: 16/9; overflow: hidden; border-radius: var(--r-card); border: 1px solid var(--line-strong); }
+  .zoom iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 720px; border: 0; transform-origin: 0 0; }
+  .zoom .zt { color: var(--text3); font-size: 13px; }
+  .zoom .zt b { color: var(--text); }
 </style>
 </head>
 <body>
-<header>
-  <h1>slides-generator</h1>
-  <div class="actions">
-    <span id="status"></span>
-    <button id="reset" title="Вернуть заводские значения (без сохранения)">Сбросить</button>
-    <button class="primary" id="save" title="⌘S">Сохранить</button>
-  </div>
-</header>
+<div class="wrap">
+  <aside class="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="19" height="13" rx="2.5" stroke="#4ade80" stroke-width="1.8"/><path d="M8 21h8M12 18v3" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="11.5" r="2.4" fill="#fbbf24"/><path d="M6 9.5h5M6 13h3" stroke="rgba(255,255,255,.66)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <h1>Slides</h1>
+    </div>
 
-<main>
-  <form id="f" class="basics" autocomplete="off">
-    <h2 class="sec">Основное</h2>
-    <div class="fld"><span>Пропорции</span>
-      <div class="seg">
-        <label><input type="radio" name="ratio" value="16:9">16:9 · экран</label>
-        <label><input type="radio" name="ratio" value="9:16">9:16 · телефон</label>
-      </div>
-    </div>
-    <div class="fld"><label for="type">Тип презентации</label>
-      <select id="type" name="type">
-        <option value="webinar">Вебинар / онлайн-лекция</option>
-        <option value="pitch">Питч / продуктовая</option>
-        <option value="report">Отчёт / quarterly review</option>
-        <option value="workshop">Воркшоп / мастер-класс</option>
-        <option value="strategy">Стратегия / личный план</option>
-        <option value="course">Курс / серия занятий</option>
-      </select>
-    </div>
-    <div class="fld"><label for="brand">Бренд / автор</label><input type="text" id="brand" name="brand" placeholder="пусто — из MD-файла"></div>
-    <div class="fld"><label for="decktag">Тег в углу</label><input type="text" id="decktag" name="decktag" placeholder="пусто — по контексту, напр. AI Native · Сессия 2"></div>
-    <div class="fld"><span>Акценты</span>
-      <div class="colors">
-        <label class="color"><input type="color" data-color="green"><span>Главный</span><code></code></label>
-        <label class="color"><input type="color" data-color="amber"><span>Второй</span><code></code></label>
-      </div>
-    </div>
-    <div class="fld"><span>Экспорт после сборки</span>
-      <div class="seg">
-        <label><input type="radio" name="export" value="none">нет</label>
-        <label><input type="radio" name="export" value="pdf">PDF</label>
-        <label><input type="radio" name="export" value="png">PNG</label>
-        <label><input type="radio" name="export" value="both">PDF + PNG</label>
-      </div>
-    </div>
-    <div class="fld"><span>Иллюстрации</span>
-      <label class="switch"><input type="checkbox" name="art"><span>SVG-арт на слайдах</span></label>
-    </div>
-  </form>
+    <button type="button" class="navchip" data-target="sec-basics">
+      <svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+      Основное
+    </button>
+    <button type="button" class="navchip" data-target="sec-layouts">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="7" rx="1.5"/><rect x="13" y="4" width="8" height="7" rx="1.5"/><rect x="3" y="13" width="8" height="7" rx="1.5"/><rect x="13" y="13" width="8" height="7" rx="1.5"/></svg>
+      Раскладки <span class="cnt" id="navCount"></span>
+    </button>
 
-  <div class="lt-head"><h2 class="sec">Раскладки</h2><span class="lt-count" id="ltCount"></span></div>
-  <p class="lt-intro">Все раскладки, которые знает скилл, — превью рендерятся настоящим <b>template.html</b> с вашими акцентами. <b>Чаще</b> — скилл выбирает её при любом подходящем контенте; <b>Можно</b> — по ситуации; <b>Выкл</b> — никогда не использует. Клик по превью — крупно.</p>
-  <div class="lt-filter" id="ltFilter"></div>
-  <div class="lt-grid" id="ltGrid"></div>
-</main>
+    <div class="nav-gap"></div>
+
+    <button type="button" class="navchip reset-link" id="reset">
+      <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg>
+      <span>Заводские значения</span>
+    </button>
+
+    <div class="sidefoot">
+      <span class="save-status" id="save-status"><span class="save-status-dot"></span><span id="save-status-text">Загрузка…</span></span>
+    </div>
+  </aside>
+
+  <main>
+    <!-- ============ ОСНОВНОЕ ============ -->
+    <section class="pane" id="sec-basics">
+      <div class="pane-head">
+        <h2>Основное</h2>
+        <p class="pane-desc">Значения по умолчанию для <code>/slides-generator файл.md</code>. Флаги в команде перекрывают их на один запуск. Всё сохраняется сразу в <code>config.json</code>.</p>
+      </div>
+      <form id="f" autocomplete="off">
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Пропорции</div><div class="setting-desc">Экран для вебинаров или вертикаль для телефона и Telegram.</div></div>
+          <div class="setting-control"><div class="pillgroup">
+            <label class="pill"><input type="radio" name="ratio" value="16:9">16:9</label>
+            <label class="pill"><input type="radio" name="ratio" value="9:16">9:16</label>
+          </div></div>
+        </div>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Тип презентации</div><div class="setting-desc">Задаёт порядок слайдов. Контент из MD всё равно первичен.</div></div>
+          <div class="setting-control"><select id="type" name="type">
+            <option value="webinar">Вебинар / онлайн-лекция</option>
+            <option value="pitch">Питч / продуктовая</option>
+            <option value="report">Отчёт / quarterly review</option>
+            <option value="workshop">Воркшоп / мастер-класс</option>
+            <option value="strategy">Стратегия / личный план</option>
+            <option value="course">Курс / серия занятий</option>
+          </select></div>
+        </div>
+
+        <p class="group-title">Подписи</p>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Бренд / автор</div><div class="setting-desc">Внизу слайдов. Пусто — возьмётся из MD-файла.</div></div>
+          <div class="setting-control"><input type="text" id="brand" name="brand" placeholder="из MD-файла"></div>
+        </div>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Тег в углу</div><div class="setting-desc">Курс и номер сессии, виден на всех слайдах. Пусто — по контексту.</div></div>
+          <div class="setting-control"><input type="text" id="decktag" name="decktag" placeholder="AI Native · Сессия 2"></div>
+        </div>
+
+        <p class="group-title">Вид</p>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Главный акцент</div><div class="setting-desc">Подсветка слов в заголовках, буллеты, первый разделитель.</div></div>
+          <div class="setting-control color-row"><input type="color" data-color="green"><code></code></div>
+        </div>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Второй акцент</div><div class="setting-desc">Кикеры, предупреждения, второй разделитель.</div></div>
+          <div class="setting-control color-row"><input type="color" data-color="amber"><code></code></div>
+        </div>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">SVG-арт на слайдах</div><div class="setting-desc">Анимированная иллюстрация справа. Выключить — только текст во всю ширину.</div></div>
+          <div class="setting-control"><label class="switch"><input type="checkbox" name="art"><span class="slider"></span></label></div>
+        </div>
+
+        <p class="group-title">После сборки</p>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Экспорт</div><div class="setting-desc">Через <code>export.sh</code> после проверки скриншотами.</div></div>
+          <div class="setting-control"><div class="pillgroup">
+            <label class="pill"><input type="radio" name="export" value="none">Нет</label>
+            <label class="pill"><input type="radio" name="export" value="pdf">PDF</label>
+            <label class="pill"><input type="radio" name="export" value="png">PNG</label>
+            <label class="pill"><input type="radio" name="export" value="both">Оба</label>
+          </div></div>
+        </div>
+      </form>
+      <p class="pane-note">Заметки спикера, обновление <code>slides-index.html</code>, проверка скриншотами и открытие результата включены всегда.</p>
+    </section>
+
+    <!-- ============ РАСКЛАДКИ ============ -->
+    <section class="pane" id="sec-layouts" hidden>
+      <div class="pane-head">
+        <h2>Раскладки</h2>
+        <p class="pane-desc">Все раскладки, которые знает скилл, с живым превью из <code>template.html</code>. <b>Чаще</b> — брать при любом подходящем контенте, <b>Можно</b> — по ситуации, <b>Выкл</b> — не использовать никогда. Клик по превью — крупно.</p>
+      </div>
+      <div class="lt-bar">
+        <div class="pillgroup" id="ltFilter"></div>
+        <span class="lt-count" id="ltCount"></span>
+      </div>
+      <div class="lt-grid" id="ltGrid"></div>
+    </section>
+  </main>
+</div>
 
 <div class="zoom" id="zoom" hidden><div class="zf"><iframe id="zoomFrame" title="Раскладка крупно"></iframe></div><div class="zt" id="zoomText"></div></div>
 
@@ -194,7 +307,6 @@ const LT_STATES = [['prefer','Чаще','p'],['on','Можно',''],['off','Вы
 
 const f = document.getElementById('f');
 const F = f.elements;
-const status = document.getElementById('status');
 let cfg = structuredClone(DEFAULTS);
 
 function merge(base, over){
@@ -219,7 +331,7 @@ function fill(){
 }
 
 function showColors(){
-  f.querySelectorAll('.color').forEach(l=>l.querySelector('code').textContent = l.querySelector('input').value);
+  f.querySelectorAll('[data-color]').forEach(i=>i.nextElementSibling.textContent = i.value);
 }
 
 function read(e){
@@ -229,29 +341,54 @@ function read(e){
   cfg.art = F.art.checked;
   f.querySelectorAll('[data-color]').forEach(i=>cfg.colors[i.dataset.color] = i.value);
   showColors();
-  dirty();
-  // Превью зависят от акцентов, пропорций, арта и тега — перерисовать с задержкой
+  queueSave();
+  // Превью зависят от акцентов, пропорций, арта и подписей — перерисовать с задержкой
   if (e && e.target.name!=='type' && e.target.name!=='export') { clearTimeout(ltTimer); ltTimer = setTimeout(refreshFrames, 350); }
 }
 
-function dirty(){ setStatus('есть несохранённые изменения',''); }
-function setStatus(t, cls){ status.textContent=t; status.className=cls; }
-
+// ---------- автосохранение, как в Fix It ----------
+const saveEl = document.getElementById('save-status'), saveText = document.getElementById('save-status-text');
+function setStatus(t, cls){ saveText.textContent = t; saveEl.className = 'save-status' + (cls ? ' '+cls : ''); }
+let saveTimer = null;
+function queueSave(){ setStatus('Сохраняю…','pending'); clearTimeout(saveTimer); saveTimer = setTimeout(save, 400); }
 async function save(){
+  clearTimeout(saveTimer);
   try {
     const r = await fetch('/config', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(cfg, null, 2)+'\n'});
     if (!r.ok) throw new Error(await r.text());
-    setStatus('сохранено в config.json ✓','ok');
-  } catch(e) { setStatus('ошибка: '+e.message,'err'); }
+    setStatus('Все изменения сохранены','');
+  } catch(e) { setStatus('Не сохранено: сервер не отвечает','error'); }
 }
 
 f.addEventListener('input', read);
 f.addEventListener('change', read);
-document.getElementById('save').onclick = save;
-document.getElementById('reset').onclick = ()=>{ cfg = structuredClone(DEFAULTS); fill(); setStatus('заводские значения — не сохранено',''); };
+// Сброс — только после подтверждения: первый клик взводит, второй (в течение 4 с) сбрасывает
+const resetBtn = document.getElementById('reset'), resetLabel = resetBtn.querySelector('span');
+let resetArmed = null;
+resetBtn.onclick = ()=>{
+  if (!resetArmed) {
+    resetBtn.classList.add('armed'); resetLabel.textContent = 'Точно сбросить? Ещё раз';
+    resetArmed = setTimeout(disarmReset, 4000);
+    return;
+  }
+  disarmReset();
+  cfg = structuredClone(DEFAULTS); fill(); queueSave();
+};
+function disarmReset(){ clearTimeout(resetArmed); resetArmed = null; resetBtn.classList.remove('armed'); resetLabel.textContent = 'Заводские значения'; }
 document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='s'){e.preventDefault();save();} });
 
-// ---------- Раскладки ----------
+// ---------- навигация по разделам ----------
+const navs = document.querySelectorAll('.sidebar .navchip[data-target]');
+function showPane(id){
+  navs.forEach(n=>n.classList.toggle('active', n.dataset.target===id));
+  document.querySelectorAll('.pane').forEach(p=>p.hidden = p.id!==id);
+  history.replaceState(null,'', id==='sec-layouts' ? '#layouts' : location.pathname);
+  if (id==='sec-layouts') document.querySelectorAll('.lt-frame iframe').forEach(fit);
+  window.scrollTo(0,0);
+}
+navs.forEach(n=>n.onclick = ()=>showPane(n.dataset.target));
+
+// ---------- раскладки ----------
 let tplCache = null, ltGroup = 'Все', ltTimer = null;
 async function getTemplate(){
   if (tplCache) return tplCache;
@@ -277,24 +414,25 @@ function slideDoc(tpl, html){
     .replace('</head>', css + '</head>');
 }
 
-function fit(frame){ frame.style.transform = `scale(${frame.parentElement.clientWidth/1280})`; }
+function fit(frame){ const w = frame.parentElement.clientWidth; if (w) frame.style.transform = `scale(${w/1280})`; }
 
 function countLayouts(){
   const v = Object.values(cfg.layouts);
   const on = v.filter(s=>s!=='off').length, pref = v.filter(s=>s==='prefer').length;
-  document.getElementById('ltCount').innerHTML = `используются <b>${on}</b> из ${v.length}` + (pref ? ` · чаще: ${pref}` : '');
+  document.getElementById('ltCount').innerHTML = `используются <b>${on}</b> из ${v.length}` + (pref ? ` · чаще <b>${pref}</b>` : '');
+  document.getElementById('navCount').textContent = `${on}/${v.length}`;
 }
 
-async function renderLayouts(){
+function renderLayouts(){
   const grid = document.getElementById('ltGrid');
   const groups = ['Все', ...new Set(LAYOUTS.map(l=>l.g))];
-  document.getElementById('ltFilter').innerHTML = groups.map(g=>`<button type="button" class="${g===ltGroup?'on':''}" data-g="${g}">${g}</button>`).join('');
+  document.getElementById('ltFilter').innerHTML = groups.map(g=>`<button type="button" class="pill ${g===ltGroup?'selected':''}" data-g="${g}">${g}</button>`).join('');
   const list = LAYOUTS.filter(l=>ltGroup==='Все'||l.g===ltGroup);
   grid.innerHTML = list.map(l=>{
     const s = cfg.layouts[l.id];
     return `<article class="lt ${s}" data-id="${l.id}"><div class="lt-frame"><iframe loading="lazy" title="${l.n}"></iframe></div>
       <div class="lt-body"><h3>${l.n}<small>${l.g}</small></h3><p>${l.w}</p><code>${l.c}</code>
-      <div class="seg">${LT_STATES.map(([v,t,cls])=>`<label class="${cls}"><input type="radio" name="lt-${l.id}" value="${v}" ${s===v?'checked':''}>${t}</label>`).join('')}</div></div></article>`;
+      <div class="lt-foot"><div class="pillgroup">${LT_STATES.map(([v,t,cls])=>`<label class="pill ${cls}"><input type="radio" name="lt-${l.id}" value="${v}" ${s===v?'checked':''}>${t}</label>`).join('')}</div></div></div></article>`;
   }).join('');
   countLayouts();
   grid.querySelectorAll('.lt-frame').forEach(fr=>fr.onclick = ()=>openZoom(fr.closest('.lt').dataset.id));
@@ -304,7 +442,7 @@ async function renderLayouts(){
 async function refreshFrames(){
   let tpl;
   try { tpl = await getTemplate(); }
-  catch { document.getElementById('ltGrid').innerHTML = '<p class="lt-intro">Превью работают только через сервер: <b>/slides-generator setup</b>.</p>'; return; }
+  catch { document.getElementById('ltGrid').innerHTML = '<p class="pane-desc">Превью работают только через сервер: <code>/slides-generator setup</code>.</p>'; return; }
   document.querySelectorAll('#ltGrid .lt').forEach(card=>{
     const ifr = card.querySelector('iframe');
     ifr.srcdoc = slideDoc(tpl, LAYOUTS.find(l=>l.id===card.dataset.id).h);
@@ -316,7 +454,7 @@ document.getElementById('ltGrid').addEventListener('change', e=>{
   const card = e.target.closest('.lt'); if (!card) return;
   cfg.layouts[card.dataset.id] = e.target.value;
   card.className = 'lt ' + e.target.value;
-  countLayouts(); dirty();
+  countLayouts(); queueSave();
 });
 
 async function openZoom(id){
@@ -331,8 +469,9 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.getEleme
 document.getElementById('ltFilter').onclick = e=>{ const g=e.target.dataset?.g; if(g){ ltGroup=g; renderLayouts(); } };
 window.addEventListener('resize', ()=>document.querySelectorAll('.lt-frame iframe').forEach(fit));
 
-fetch('/config').then(r=>r.ok?r.json():Promise.reject()).then(j=>{cfg=merge(DEFAULTS,j);fill();setStatus('загружено из config.json','ok');})
-  .catch(()=>fill());
+showPane(location.hash==='#layouts' ? 'sec-layouts' : 'sec-basics');
+fetch('/config').then(r=>r.ok?r.json():Promise.reject()).then(j=>{cfg=merge(DEFAULTS,j);fill();setStatus('Все изменения сохранены','');})
+  .catch(()=>{ fill(); setStatus('Сервер не отвечает','error'); });
 </script>
 </body>
 </html>
