@@ -86,6 +86,19 @@
   input:focus, select:focus { outline: none; border-color: var(--accent-soft); box-shadow: 0 0 0 3px var(--accent-weak); }
   code { font-family: var(--font-num); background: var(--surface2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--accent2); font-size: 0.9em; }
 
+  .dk-grid { grid-template-columns: repeat(auto-fill, minmax(max(220px, calc((100% - 36px) / 4)), 1fr)); }
+  .lt.dk-arch { opacity: .55; }
+  .dk-meta { font-size: 11.5px; color: var(--text3); white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .dk-old-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--amber); vertical-align: middle; }
+  .dk-acts { display: flex; gap: 2px; padding: 0 8px 8px; }
+  .dk-acts button { background: none; border: 1px solid var(--line); border-radius: var(--r-pill); color: var(--text2); font: inherit; font-size: 11.5px; font-weight: 600; padding: 4px 10px; cursor: pointer; }
+  .dk-acts button:hover { color: var(--text); border-color: var(--line-strong); }
+  .dk-acts button:disabled { opacity: .5; cursor: wait; }
+  .dk-out { margin: 0 8px 8px; padding: 8px 10px; background: var(--surface1); border-radius: 8px; font-family: var(--font-num); font-size: 11px; line-height: 1.5; color: var(--text2); white-space: pre-wrap; max-height: 220px; overflow: auto; }
+  .dk-out.bad { color: var(--bad); }
+  .mini-sw { display: flex; gap: 22px; }
+  .mini-sw label { display: inline-flex; align-items: center; gap: 9px; font-size: 13px; color: var(--text2); cursor: pointer; }
+  .mini-sw .switch { display: inline-block; }
   .switch { position: relative; width: 38px; height: 22px; flex: 0 0 auto; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .switch .slider { position: absolute; inset: 0; background: var(--surface2); border: 1px solid var(--line-strong); border-radius: var(--r-pill); cursor: pointer; transition: background 0.15s; }
@@ -168,14 +181,15 @@
   /* ---- виды раскладок ---- */
 
   /* ---- иллюстрации ---- */
-  .mo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; }
+  .mo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
   .mo { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; display: flex; flex-direction: column; transition: opacity .15s, border-color .15s; }
   .mo.prefer { border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.06); }
   .mo.off { opacity: .4; }
   .mo.off .mo-art { filter: grayscale(1); }
-  .mo-art { background: var(--mo-bg, #080a0c); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--line); padding: 10px; }
+  .mo-art { background: var(--mo-bg, #080a0c); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--line); padding: 4px; }
   .mo-art { overflow: hidden; min-height: 0; }
-  .mo-art svg { width: 100%; height: 100%; }
+  .mo-art svg { width: 100%; height: 100%; transform: scale(1.2); }
+  .mo-art.icon svg { transform: none; }
   .mo-art.icon svg { height: 56%; }
   .mo-body { padding: 6px; display: flex; justify-content: center; }
   .mo-body h3 { margin: 0; font-size: 12px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -223,6 +237,10 @@
     <button type="button" class="navchip" data-target="sec-images">
       <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg>
       Картинки
+    </button>
+    <button type="button" class="navchip" data-target="sec-decks">
+      <svg viewBox="0 0 24 24"><rect x="3" y="6" width="14" height="10" rx="1.5"/><path d="M7 3.5h12.5A1.5 1.5 0 0 1 21 5v8.5M5 19.5h11"/></svg>
+      Дески <span class="cnt" id="navDeckCount"></span>
     </button>
 
     <div class="nav-gap"></div>
@@ -398,17 +416,11 @@
         <h2>Иллюстрации</h2>
         <p class="pane-desc">Скилл подбирает мотив по смыслу слайда. ★ — чаще, ✓ — можно, ⊘ — никогда. Наведение — название.</p>
       </div>
-      <div style="max-width:760px">
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">SVG-арт на слайдах</div><div class="setting-desc">Иллюстрация в правой половине. Выключить — только текст во всю ширину.</div></div>
-          <div class="setting-control"><label class="switch"><input type="checkbox" name="art"><span class="slider"></span></label></div>
-        </div>
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">Анимация</div><div class="setting-desc">Иллюстрации двигаются, слайды плавно сменяются. Выключить — всё статично (удобно для PDF и слабых проекторов).</div></div>
-          <div class="setting-control"><label class="switch"><input type="checkbox" name="animate"><span class="slider"></span></label></div>
-        </div>
+      <div class="mini-sw">
+        <label title="Выкл — слайды без иллюстраций, текст во всю ширину"><span class="switch"><input type="checkbox" name="art"><span class="slider"></span></span>SVG-арт</label>
+        <label title="Выкл — всё статично (PDF, слабые проекторы)"><span class="switch"><input type="checkbox" name="animate"><span class="slider"></span></span>Анимация</label>
       </div>
-      <div class="lt-bar" style="margin-top:22px">
+      <div class="lt-bar" style="margin-top:16px">
         <div class="pillgroup" id="moFilter"></div>
         <span class="lt-count" id="moCount"></span>
       </div>
@@ -472,6 +484,15 @@
         <div class="setting-info"><div class="setting-name">Скругление углов</div></div>
         <div class="setting-control"><label class="switch"><input type="checkbox" name="img_round"><span class="slider"></span></label></div>
       </div>
+    </section>
+
+    <section class="pane" id="sec-decks" hidden>
+      <div class="pane-head">
+        <h2>Дески</h2>
+        <p class="pane-desc">Все презентации в <code>PROJECTS/</code>. <span class="dk-old-dot"></span> — собран на старом шаблоне. Клик по превью — открыть.</p>
+      </div>
+      <div class="lt-bar"><button type="button" class="pill" id="dkAll" hidden></button><span class="lt-count" id="dkCount"></span></div>
+      <div class="lt-grid dk-grid" id="dkGrid"></div>
     </section>
   </form>
   </main>
@@ -738,7 +759,7 @@ document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='s'
 
 // ---------- навигация по разделам ----------
 const navs = document.querySelectorAll('.sidebar .navchip[data-target]');
-const HASH = {'sec-look':'look','sec-ui':'ui','sec-layouts':'layouts','sec-art':'art','sec-images':'images'};
+const HASH = {'sec-look':'look','sec-ui':'ui','sec-layouts':'layouts','sec-art':'art','sec-images':'images','sec-decks':'decks'};
 let curPane = 'sec-basics';
 function showPane(id){
   curPane = id;
@@ -746,6 +767,7 @@ function showPane(id){
   document.querySelectorAll('.pane').forEach(p=>p.hidden = p.id!==id);
   history.replaceState(null,'', HASH[id] ? '#'+HASH[id] : location.pathname);
   refreshCurrent();
+  if (id==='sec-decks' && !decks) renderDecks();
   window.scrollTo(0,0);
 }
 navs.forEach(n=>n.onclick = ()=>showPane(n.dataset.target));
@@ -950,6 +972,50 @@ document.getElementById('moWrap').addEventListener('change', e=>{
   card.className = 'mo ' + e.target.value;
   countMotifs(); queueSave();
 });
+
+// ---------- дески ----------
+let decks = null, dkConfirm = false;
+const post = (url, path) => fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path})});
+async function renderDecks(){
+  const grid = document.getElementById('dkGrid');
+  try { decks = await (await fetch('/decks')).json(); } catch { grid.innerHTML = '<p class="pane-desc">Сервер не отвечает.</p>'; return; }
+  const old = decks.filter(d=>d.outdated && !d.archived);
+  document.getElementById('navDeckCount').textContent = decks.filter(d=>!d.archived).length;
+  document.getElementById('dkCount').innerHTML = `всего <b>${decks.length}</b>` + (old.length ? ` · устарели <b>${old.length}</b>` : '');
+  const all = document.getElementById('dkAll'); all.hidden = !old.length; dkConfirm = false;
+  all.textContent = `Обновить устаревшие (${old.length})`; all.classList.remove('selected');
+  const date = t => new Date(t*1000).toLocaleDateString('ru', {day:'2-digit', month:'2-digit'});
+  grid.innerHTML = decks.map((d,k)=>`<article class="lt${d.archived?' dk-arch':''}" data-k="${k}" title="${d.folder.replace(/"/g,'&quot;')}">
+    <div class="lt-frame"><iframe loading="lazy" src="/deck?view=embed&path=${encodeURIComponent(d.path)}" title="${d.title.replace(/"/g,'&quot;')}"></iframe></div>
+    <div class="lt-body"><h3>${d.title}</h3><span class="dk-meta">${d.outdated?'<span class="dk-old-dot" title="Старый шаблон"></span>':''}${d.comments?`💬 ${d.comments} · `:''}${d.slides} сл. · ${date(d.mtime)}</span></div>
+    <div class="dk-acts">${d.outdated?'<button type="button" data-a="rebuild">Обновить</button>':''}<button type="button" data-a="lint">Проверить</button><button type="button" data-a="export">PDF</button></div></article>`).join('');
+  grid.querySelectorAll('iframe').forEach(f=>{ fit(f); f.onload = ()=>fit(f); });
+}
+document.getElementById('dkGrid').addEventListener('click', async e=>{
+  const card = e.target.closest('.lt'); if (!card) return;
+  const d = decks[card.dataset.k];
+  if (e.target.closest('.lt-frame')) return post('/open', d.path);
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  const label = b.textContent; b.disabled = true; b.textContent = '…';
+  card.querySelector('.dk-out')?.remove();
+  let out = '', bad = false;
+  try {
+    const r = await post('/'+b.dataset.a, d.path), t = await r.text();
+    if (!r.ok) throw new Error(t);
+    if (b.dataset.a==='rebuild') { b.remove(); card.querySelector('.dk-old-dot')?.remove(); card.querySelector('iframe').src += ''; return; }
+    const j = JSON.parse(t); out = j.out || 'Готово'; bad = !j.ok;
+  } catch (err) { out = err.message; bad = true; }
+  finally { b.disabled = false; b.textContent = label; }
+  card.insertAdjacentHTML('beforeend', `<pre class="dk-out${bad?' bad':''}"></pre>`);
+  card.querySelector('.dk-out').textContent = out;
+});
+document.getElementById('dkAll').onclick = async e=>{
+  const b = e.currentTarget, old = decks.filter(d=>d.outdated && !d.archived);
+  if (!dkConfirm) { dkConfirm = true; b.classList.add('selected'); b.textContent = `Точно пересобрать ${old.length}? Бэкапы — в backups/`; return; }
+  b.textContent = 'Обновляю…';
+  for (const d of old) await post('/rebuild', d.path);
+  renderDecks();
+};
 
 renderTiles();
 const startPane = Object.keys(HASH).find(k=>'#'+HASH[k]===location.hash) || 'sec-basics';

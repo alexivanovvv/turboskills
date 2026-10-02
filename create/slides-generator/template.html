@@ -151,6 +151,36 @@
   .notes h4{color:var(--green);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:.6rem}
   .notes p{color:#c8cdd8;font-size:.95rem;line-height:1.55;max-width:80ch}
 
+  /* === Режимы окна: ?view=embed (превью в iframe) · ?view=presenter (экран ведущего) === */
+  html.sg-embed .menu-btn,html.sg-embed .menu-panel,html.sg-embed .notes,html.sg-embed #auto-bar{display:none!important}
+  html.sg-presenter body>:not(#pv):not(script){display:none!important}
+  #pv{position:fixed;inset:0;display:grid;grid-template-columns:1.55fr 1fr;grid-template-rows:auto 1fr;gap:16px 20px;padding:16px 20px 20px;background:#05060a;font-family:var(--font-body);color:var(--fg)}
+  #pv .pv-top{grid-column:1/-1;display:flex;align-items:center;gap:22px;font-variant-numeric:tabular-nums}
+  #pv .pv-timer{font-family:var(--font-display);font-size:2.4rem;color:var(--green);cursor:pointer;line-height:1}
+  #pv .pv-timer.paused{color:var(--amber)}
+  #pv .pv-clock,#pv .pv-num{color:var(--muted);font-size:1.1rem}
+  #pv .pv-num{margin-left:auto;color:var(--fg)}
+  #pv button{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:.35rem .7rem;font:inherit;font-size:.8rem;cursor:pointer}
+  #pv button:hover{color:var(--fg)}
+  #pv .pv-col{display:flex;flex-direction:column;gap:12px;min-height:0}
+  #pv .pv-lbl{color:var(--dim);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase}
+  #pv .pv-frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px;border:1px solid var(--line);background:var(--bg);flex:none}
+  #pv .pv-frame iframe{position:absolute;top:0;left:0;width:1280px;height:720px;border:0;transform-origin:0 0;pointer-events:none}
+  #pv .pv-end{position:absolute;inset:0;display:none;place-items:center;color:var(--muted);background:var(--bg)}
+  #pv .pv-frame.end .pv-end{display:grid}
+  #pv .pv-notes{flex:1;overflow:auto;font-size:1.35rem;line-height:1.55;color:#d6dae4;white-space:pre-wrap}
+  #pv .pv-notes.empty{color:var(--dim);font-size:1rem}
+  /* === Комментарии к слайдам (⋯ → Комментарий, Ctrl+K) === */
+  html.sg-cm .deck{cursor:crosshair}
+  .cm-bar{position:fixed;top:1.5vh;left:50%;transform:translateX(-50%);z-index:45;background:var(--amber);color:#1a1000;font-size:.78rem;font-weight:600;padding:.4rem .9rem;border-radius:99px;display:none}
+  html.sg-cm .cm-bar{display:block}
+  .cm-pin{position:fixed;z-index:44;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:var(--amber);color:#1a1000;font-size:.72rem;font-weight:700;display:none;place-items:center;cursor:pointer;box-shadow:0 0 0 3px rgba(0,0,0,.35)}
+  html.sg-cm .cm-pin{display:grid}
+  .cm-pin:hover{background:#f87171}
+  .cm-box{position:fixed;z-index:46;width:300px;background:rgba(16,18,23,.97);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:.5rem;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+  .cm-box textarea{width:100%;height:84px;resize:vertical;background:transparent;border:0;outline:0;color:var(--fg);font:inherit;font-size:.85rem;line-height:1.45}
+  .cm-box div{color:var(--dim);font-size:.66rem;padding:.2rem .1rem 0}
+
   /* === Полноширинные раскладки (без бокового арта) === */
   .slide.wide{padding:7vh 7cqw 6vh 7cqw;justify-content:safe center}
   .slide.wide>*{max-width:none}
@@ -1218,6 +1248,8 @@
   <button id="auto-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>Автовоспроизведение</button>
   <button id="fast-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5v11l7.5-5.5zM12.5 6.5v11l7.5-5.5z"/></svg>Быстрый показ</button>
   <button id="fs-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Полный экран<kbd>Ctrl F</kbd></button>
+  <button id="presenter-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16.5V20"/></svg>Режим ведущего<kbd>Ctrl P</kbd></button>
+  <button id="comment-btn" class="menu-item" title="Клик по месту на слайде — оставить правку; потом /slides-generator fix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h14v10H10l-4 4v-4H5z"/></svg>Комментарий<kbd>Ctrl K</kbd></button>
   <div class="menu-sep"></div>
   <button id="rebuild-btn" class="menu-item" title="Пересобрать деск на актуальном шаблоне и настройках скилла"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4.5V8h3.5M4 13a8 8 0 0 0 14.6 4.5M20 19.5V16h-3.5"/></svg>Обновить интерфейс</button>
   <button id="settings-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Настройки</button>
@@ -1235,7 +1267,10 @@
 
 </div>
 <div class="notes" id="notes"><h4>Спикерские заметки</h4><p id="notes-body"></p></div>
+<div class="cm-bar">Комментарий: кликни по месту на слайде · клик по метке — удалить · Esc — выйти</div>
 <script>
+  const VIEW=(location.search.match(/[?&]view=(embed|presenter)/)||[])[1]||'';
+  if(VIEW)document.documentElement.classList.add('sg-'+VIEW);
   const slides=Array.from(document.querySelectorAll('.slide'));
   const total=slides.length;
   let i=0;
@@ -1250,7 +1285,8 @@
     counterFill.style.width=((i+1)/total*100)+'%';
     counter.textContent=pad(i+1)+' / '+pad(total);
     notesBody.textContent=slides[i].dataset.notes||'';
-    try{sessionStorage.setItem(SKEY,i)}catch(e){}  // не #slide-N в URL: Chromium хранит зум file:// по полному адресу → у каждого слайда был бы свой зум
+    if(!VIEW){try{sessionStorage.setItem(SKEY,i)}catch(e){}}
+    if(typeof syncViews==='function')syncViews();  // не #slide-N в URL: Chromium хранит зум file:// по полному адресу → у каждого слайда был бы свой зум
   }
   // Auto-present
   let autoPlay=false,autoFast=false,autoTimer=null;
@@ -1271,12 +1307,15 @@
     if(e.ctrlKey&&!e.metaKey&&!e.altKey){
       const c=e.code;
       if(c==='KeyN'){e.preventDefault();notes.classList.toggle('show');}
+      else if(c==='KeyP'){e.preventDefault();openPresenter();}
+      else if(c==='KeyK'){e.preventDefault();toggleComments();}
       else if(c==='KeyF'){e.preventDefault();document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
       else if(c==='KeyB'||c==='Home'){e.preventDefault();go(0);}
       else if(c==='KeyE'||c==='End'){e.preventDefault();go(total-1);}
       return;
     }
-    if(e.metaKey||e.altKey)return;
+    if(e.metaKey||e.altKey||VIEW==='embed'||e.target.closest?.('textarea'))return;
+    if(e.key==='Escape'&&document.documentElement.classList.contains('sg-cm')){toggleComments(false);return;}
     switch(e.key){
       case 'ArrowRight':e.preventDefault();next();break;
       case 'ArrowLeft':e.preventDefault();prev();break;
@@ -1306,14 +1345,96 @@
   let tx=null;
   document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX});
   document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50){dx<0?next():prev()}tx=null});
-  document.getElementById('deck').addEventListener('click',e=>{if(e.target.closest('button,a'))return;if(e.clientX>window.innerWidth*.5)next();});
+  document.getElementById('deck').addEventListener('click',e=>{if(VIEW||e.target.closest('button,a'))return;if(document.documentElement.classList.contains('sg-cm')){addComment(e);return;}if(e.clientX>window.innerWidth*.5)next();});
   // #slide-N при открытии (скриншоты, ссылки) → прыжок и сразу убрать хеш, чтобы адрес и зум были одни на весь деск; после reload — слайд из sessionStorage
   const dropHash=()=>history.replaceState(null,'',location.pathname+location.search);
   const _h=location.hash.match(/^#slide-(\d+)$/);
-  let _s=null;try{_s=sessionStorage.getItem(SKEY)}catch(e){}
+  let _s=null;try{_s=VIEW?(location.search.match(/[?&]s=(\d+)/)||[])[1]??null:sessionStorage.getItem(SKEY)}catch(e){}
   if(_h){i=Math.max(0,Math.min(total-1,parseInt(_h[1])-1));dropHash();}
   else if(_s!==null&&!isNaN(+_s))i=Math.max(0,Math.min(total-1,+_s));
   window.addEventListener('hashchange',()=>{const _m=location.hash.match(/^#slide-(\d+)$/);if(_m){i=Math.max(0,Math.min(total-1,parseInt(_m[1])-1));dropHash();render();}});
+
+  // === Экран ведущего: второе окно (?view=presenter) — текущий и следующий слайд (iframe ?view=embed), заметки, таймер.
+  // Окна общаются через postMessage (file:// — разные origin, прямой доступ к opener закрыт).
+  let pw=null;const pvEl={};
+  function openPresenter(){menuPanel.classList.remove('open');pw=window.open(location.pathname+'?view=presenter&s='+i,'sg-presenter','width=1280,height=800');}
+  function syncViews(){
+    if(document.documentElement.classList.contains('sg-cm'))cmPins();
+    if(VIEW==='presenter'){if(pvEl.cur)pvSync();if(window.opener)window.opener.postMessage({sg:'go',i},'*');}
+    else if(!VIEW&&pw&&!pw.closed)pw.postMessage({sg:'at',i},'*');
+  }
+  window.addEventListener('message',e=>{const d=e.data;if(!d||!d.sg)return;
+    if(!VIEW&&d.sg!=='at')pw=e.source;          // после перезагрузки деска связь восстанавливается от экрана ведущего
+    if((d.sg==='go'||d.sg==='at')&&+d.i!==i)go(+d.i);
+    else if(d.sg==='hello'&&e.source)e.source.postMessage({sg:'at',i},'*');});
+  if(VIEW==='presenter'){
+    document.title='Ведущий · '+document.title;
+    const src=n=>location.pathname+'?view=embed&s='+n;
+    document.body.insertAdjacentHTML('beforeend',`<div id="pv"><div class="pv-top"><span class="pv-timer" title="Клик — пауза">00:00</span><button id="pv-reset">Сброс</button><span class="pv-clock"></span><span class="pv-num"></span></div>
+      <div class="pv-col"><span class="pv-lbl">Сейчас</span><div class="pv-frame"><iframe id="pv-cur" src="${src(i)}"></iframe></div></div>
+      <div class="pv-col"><span class="pv-lbl">Дальше</span><div class="pv-frame" id="pv-nf"><iframe id="pv-next" src="${src(Math.min(i+1,total-1))}"></iframe><div class="pv-end">Конец</div></div>
+      <span class="pv-lbl">Заметки</span><div class="pv-notes"></div></div></div>`);
+    Object.assign(pvEl,{cur:document.getElementById('pv-cur'),next:document.getElementById('pv-next'),nf:document.getElementById('pv-nf'),notes:document.querySelector('#pv .pv-notes'),num:document.querySelector('#pv .pv-num'),timer:document.querySelector('#pv .pv-timer'),clock:document.querySelector('#pv .pv-clock')});
+    const fitPv=()=>document.querySelectorAll('#pv iframe').forEach(f=>f.style.transform=`scale(${f.parentElement.clientWidth/1280})`);
+    addEventListener('resize',fitPv);fitPv();
+    let t0=Date.now(),paused=0;
+    pvEl.timer.onclick=()=>{paused?(t0+=Date.now()-paused,paused=0):(paused=Date.now());pvEl.timer.classList.toggle('paused',!!paused);};
+    document.getElementById('pv-reset').onclick=()=>{t0=Date.now();if(paused)paused=t0;};
+    const tick=()=>{const s=Math.floor(((paused||Date.now())-t0)/1000);pvEl.timer.textContent=pad(Math.floor(s/60))+':'+pad(s%60);pvEl.clock.textContent=new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});};
+    setInterval(tick,500);tick();
+    setInterval(()=>window.opener&&window.opener.postMessage({sg:'hello'},'*'),3000);
+    window.pvSync=function(){
+      pvEl.cur.contentWindow?.postMessage({sg:'go',i},'*');
+      pvEl.next.contentWindow?.postMessage({sg:'go',i:Math.min(i+1,total-1)},'*');
+      pvEl.nf.classList.toggle('end',i>=total-1);
+      const n=slides[i].dataset.notes||'';pvEl.notes.textContent=n||'Заметок к этому слайду нет';pvEl.notes.classList.toggle('empty',!n);
+      pvEl.num.textContent=pad(i+1)+' / '+pad(total);
+    };
+  }
+  document.getElementById('presenter-btn').addEventListener('click',openPresenter);
+
+  // === Комментарии к слайдам: правки «прямо на слайде» → <деск>.comments.json рядом с файлом (через сервер настроек);
+  // потом /slides-generator fix <деск> применяет их все разом.
+  let cmList=[];
+  const cmPath=()=>decodeURIComponent(location.pathname);
+  async function cmApi(body){
+    const r=await fetch(SG+'/comments'+(body?'':'?path='+encodeURIComponent(cmPath())),body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:cmPath(),...body})}:{});
+    if(!r.ok)throw new Error(await r.text());cmList=await r.json();cmPins();
+  }
+  function cmPins(){
+    document.querySelectorAll('.cm-pin').forEach(p=>p.remove());
+    const rc=slides[i].getBoundingClientRect();
+    cmList.forEach((c,k)=>{if(c.slide!==i+1)return;
+      const p=document.createElement('div');p.className='cm-pin';p.textContent=k+1;p.title=c.text+'\n(клик — удалить)';
+      p.style.left=(rc.left+c.x/100*rc.width)+'px';p.style.top=(rc.top+c.y/100*rc.height)+'px';
+      p.onclick=e=>{e.stopPropagation();cmApi({remove:c.id}).catch(err=>console.error(err));};
+      document.body.appendChild(p);});
+  }
+  function toggleComments(on){
+    menuPanel.classList.remove('open');
+    on=document.documentElement.classList.toggle('sg-cm',on);
+    document.querySelector('.cm-box')?.remove();
+    if(on){if(location.protocol!=='file:'){toggleComments(false);return;}cmApi().catch(()=>{toggleComments(false);menuPanel.classList.add('open');say('Сервер настроек не отвечает. Запусти: python3 ~/.claude/skills/slides-generator/settings.py',1);});}
+    else document.querySelectorAll('.cm-pin').forEach(p=>p.remove());
+  }
+  function addComment(e){
+    document.querySelector('.cm-box')?.remove();
+    const rc=slides[i].getBoundingClientRect(),x=+((e.clientX-rc.left)/rc.width*100).toFixed(1),y=+((e.clientY-rc.top)/rc.height*100).toFixed(1);
+    const el=e.target.closest('h1,h2,h3,li,p,td,.card,.colcard,.pcard,.numcard,.demo-item,img,.art,.sec-title,.qa-big')||e.target;
+    const target=el.closest('.art')?'иллюстрация '+((el.closest('.art').querySelector('use')||{}).getAttribute?.('href')||''):(el.textContent||'').replace(/\s+/g,' ').trim().slice(0,90);
+    const heading=(slides[i].querySelector('h1,h2,.sec-title,.qa-big')?.textContent||'').replace(/\s+/g,' ').trim().slice(0,80);
+    const box=document.createElement('div');box.className='cm-box';
+    box.style.left=Math.min(e.clientX,innerWidth-320)+'px';box.style.top=Math.min(e.clientY+14,innerHeight-150)+'px';
+    box.innerHTML='<textarea placeholder="Что поправить?"></textarea><div>Enter — сохранить · Shift+Enter — перенос · Esc — отмена</div>';
+    box.onclick=ev=>ev.stopPropagation();document.body.appendChild(box);
+    const ta=box.querySelector('textarea');ta.focus();
+    ta.onkeydown=ev=>{ev.stopPropagation();
+      if(ev.key==='Escape')box.remove();
+      else if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();const text=ta.value.trim();if(!text){box.remove();return;}
+        cmApi({add:{slide:i+1,x,y,text,target,heading}}).then(()=>box.remove()).catch(err=>{box.querySelector('div').textContent='Не сохранено: '+err.message;});}};
+  }
+  document.getElementById('comment-btn').addEventListener('click',e=>{e.stopPropagation();toggleComments();});
+  addEventListener('resize',()=>{if(document.documentElement.classList.contains('sg-cm'))cmPins();});
   render();
 
   // Раскрытие из превью индекса: деск стартует в прямоугольнике карточки и вырастает на весь экран (FLIP)
