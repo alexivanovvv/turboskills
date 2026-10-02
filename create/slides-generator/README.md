@@ -84,10 +84,11 @@ The skill infers layout from content: text-heavy → left/right 50/50; grids/ste
 
 | Key | Action |
 |-----|--------|
-| `→` / `Space` | Next slide |
+| `→` | Next slide |
 | `←` | Previous slide |
-| `N` | Toggle speaker notes |
-| `F` | Fullscreen |
+| `Ctrl+N` | Toggle speaker notes |
+| `Ctrl+F` | Fullscreen |
+| `Ctrl+B` / `Ctrl+E` | First / last slide |
 | `AUTOPLAY ›` button | Auto-advance every 20 s |
 | `FAST PLAY ››` button | Auto-advance every 7 s |
 
