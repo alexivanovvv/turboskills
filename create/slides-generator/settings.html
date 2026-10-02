@@ -117,18 +117,27 @@
   .lt.off .lt-frame { filter: grayscale(1); }
   .lt-frame { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #080a0c; cursor: zoom-in; border-bottom: 1px solid var(--line); }
   .lt-frame iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 720px; border: 0; transform-origin: 0 0; pointer-events: none; }
-  .lt-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-  .lt-body h3 { margin: 0; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .lt-body { padding: 8px 8px 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .lt-body h3 { margin: 0; font-size: 13px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .lt-body h3 small { font-family: var(--font-num); font-size: 10.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text4); white-space: nowrap; }
   .lt-body p { margin: 0; color: var(--text3); font-size: 12.5px; line-height: 1.5; flex: 1; }
   .lt-body code { align-self: flex-start; font-size: 11px; }
-  .lt-foot { display: flex; margin-top: auto; }
-  .lt .pill { padding: 4px 9px; font-size: 11.5px; }
-  .lt .pill.p:has(input:checked) { background: var(--amber); color: #1a1000; }
-  .lt .pill.x:has(input:checked) { background: rgba(248, 113, 113, 0.16); color: var(--bad); }
+  /* компактный переключатель состояния: ★ чаще · ✓ можно · ⊘ выкл */
+  .st { display: inline-flex; flex: none; gap: 1px; padding: 2px; border: 1px solid var(--line); border-radius: var(--r-pill); }
+  .st label { width: 24px; height: 22px; display: grid; place-items: center; border-radius: var(--r-pill); color: var(--text4); cursor: pointer; transition: color .12s, background .12s; }
+  .st label:hover { color: var(--text); }
+  .st input { position: absolute; opacity: 0; pointer-events: none; }
+  .st svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .st label:has(input:checked) { background: var(--surface2, rgba(255,255,255,.08)); color: var(--text); }
+  .st label.p:has(input:checked) { background: var(--amber); color: #1a1000; }
+  .st label.p:has(input:checked) svg { fill: currentColor; }
+  .st label.x:has(input:checked) { background: rgba(248, 113, 113, 0.16); color: var(--bad); }
 
   .zoom { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.86); z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 2rem; }
-  .zoom .zf { position: relative; width: min(92vw, calc(82vh*16/9)); aspect-ratio: 16/9; overflow: hidden; border-radius: var(--r-card); border: 1px solid var(--line-strong); }
+  .zoom .zrow { display: flex; align-items: center; gap: 16px; }
+  .zarr { flex: none; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface1); color: var(--text); font-size: 28px; line-height: 1; cursor: pointer; display: grid; place-items: center; padding-bottom: 3px; }
+  .zarr:hover { border-color: var(--accent); color: var(--accent); }
+  .zoom .zf { background: #080a0c; position: relative; width: min(calc(92vw - 128px), calc(82vh*16/9)); aspect-ratio: 16/9; overflow: hidden; border-radius: var(--r-card); border: 1px solid var(--line-strong); }
   .zoom iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 720px; border: 0; transform-origin: 0 0; }
   .zoom .zt { color: var(--text3); font-size: 13px; }
   .zoom .zt b { color: var(--text); }
@@ -159,22 +168,18 @@
   /* ---- виды раскладок ---- */
 
   /* ---- иллюстрации ---- */
-  .mo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .mo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; }
   .mo { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; display: flex; flex-direction: column; transition: opacity .15s, border-color .15s; }
   .mo.prefer { border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.06); }
   .mo.off { opacity: .4; }
   .mo.off .mo-art { filter: grayscale(1); }
-  .mo-art { background: var(--mo-bg, #080a0c); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--line); padding: 10px; }
-  .mo-art svg { height: 100%; width: auto; max-width: 100%; }
+  .mo-art { background: var(--mo-bg, #080a0c); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--line); padding: 10px; }
+  .mo-art { overflow: hidden; min-height: 0; }
+  .mo-art svg { width: 100%; height: 100%; }
   .mo-art.icon svg { height: 56%; }
-  .mo-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
-  .mo-body h3 { margin: 0; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 6px; }
-  .mo-body h3 code { font-size: 10.5px; }
-  .mo-body p { margin: 0; font-size: 11.5px; color: var(--text3); line-height: 1.45; flex: 1; }
-  .mo .pillgroup { align-self: flex-start; margin-top: 6px; }
-  .mo .pill { padding: 4px 9px; font-size: 11.5px; }
-  .mo .pill.p:has(input:checked) { background: var(--amber); color: #1a1000; }
-  .mo .pill.x:has(input:checked) { background: rgba(248, 113, 113, 0.16); color: var(--bad); }
+  .mo-body { padding: 6px; display: flex; justify-content: center; }
+  .mo-body h3 { margin: 0; font-size: 12px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mo .st label { width: 20px; }
   .mo-sub { font-family: var(--font-num); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); margin: 26px 0 10px; }
   .static-art svg * { animation: none !important; }
 
@@ -376,7 +381,7 @@
     <section class="pane" id="sec-layouts" hidden>
       <div class="pane-head">
         <h2>Раскладки</h2>
-        <p class="pane-desc"><b>Чаще</b> — предпочитать, <b>Выкл</b> — не использовать. Клик по превью — крупно, наведение — описание.</p>
+        <p class="pane-desc">★ — чаще, ✓ — можно, ⊘ — никогда. Клик по превью — крупно.</p>
       </div>
       <div class="lt-bar">
         <div class="pillgroup" id="ltFilter"></div>
@@ -391,7 +396,7 @@
     <section class="pane" id="sec-art" hidden>
       <div class="pane-head">
         <h2>Иллюстрации</h2>
-        <p class="pane-desc">SVG-мотивы из <code>template.html</code>: скилл подбирает их по смыслу слайда. <b>Чаще</b> — предпочитать, <b>Выкл</b> — не использовать никогда.</p>
+        <p class="pane-desc">Скилл подбирает мотив по смыслу слайда. ★ — чаще, ✓ — можно, ⊘ — никогда. Наведение — название.</p>
       </div>
       <div style="max-width:760px">
         <div class="setting">
@@ -472,7 +477,7 @@
   </main>
 </div>
 
-<div class="zoom" id="zoom" hidden><div class="zf"><iframe id="zoomFrame" title="Раскладка крупно"></iframe></div><div class="zt" id="zoomText"></div></div>
+<div class="zoom" id="zoom" hidden><div class="zrow"><button type="button" class="zarr" id="zPrev" aria-label="Предыдущая">‹</button><div class="zf"><iframe id="zoomFrame" title="Раскладка крупно"></iframe></div><button type="button" class="zarr" id="zNext" aria-label="Следующая">›</button></div><div class="zt" id="zoomText"></div></div>
 <div id="defsHost" style="position:absolute;width:0;height:0;overflow:hidden"></div>
 
 <script>
@@ -619,7 +624,9 @@ const DEFAULTS = {
   layouts:Object.fromEntries(LAYOUTS.map(l=>[l.id,'on'])),
   motifs:Object.fromEntries(ALL_ART.map(id=>[id,'on']))
 };
-const LT_STATES = [['prefer','Чаще','p'],['on','Можно',''],['off','Выкл','x']];
+const LT_STATES = [['prefer','Чаще','p','<path d="M12 3l2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.1-6.1L3.2 9.4l6.1-.8z"/>'],
+  ['on','Можно','','<path d="M5 12.5l4.5 4.5L19 7.5"/>'],['off','Выкл','x','<circle cx="12" cy="12" r="8"/><path d="M6.5 17.5l11-11"/>']];
+const stateCtl = (name, s) => `<span class="st">${LT_STATES.map(([v,t,cls,ic])=>`<label class="${cls}" title="${t}"><input type="radio" name="${name}" value="${v}" ${s===v?'checked':''}><svg viewBox="0 0 24 24">${ic}</svg></label>`).join('')}</span>`;
 
 const f = document.getElementById('f');
 const F = f.elements;
@@ -840,8 +847,7 @@ function renderLayouts(){
   grid.innerHTML = list.map(l=>{
     const s = cfg.layouts[l.id];
     return `<article class="lt ${s}" data-id="${l.id}" title="${(l.w+' · '+l.c).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')}"><div class="lt-frame"><iframe loading="lazy" title="${l.n}"></iframe></div>
-      <div class="lt-body"><h3>${l.n}</h3>
-      <div class="lt-foot"><div class="pillgroup">${LT_STATES.map(([v,t,cls])=>`<label class="pill ${cls}"><input type="radio" name="lt-${l.id}" value="${v}" ${s===v?'checked':''}>${t}</label>`).join('')}</div></div></div></article>`;
+      <div class="lt-body"><h3>${l.n}</h3>${stateCtl('lt-'+l.id, s)}</div></article>`;
   }).join('');
   countLayouts();
   grid.querySelectorAll('.lt-frame').forEach(fr=>fr.onclick = ()=>openZoom(fr.closest('.lt').dataset.id));
@@ -866,15 +872,31 @@ document.getElementById('ltGrid').addEventListener('change', e=>{
   countLayouts(); queueSave();
 });
 
+// Крупный просмотр: листать ← → (кнопки или клавиши) в пределах текущего фильтра
+let zoomList = [], zoomIdx = 0;
 async function openZoom(id){
-  const l = LAYOUTS.find(x=>x.id===id), z = document.getElementById('zoom'), fr = document.getElementById('zoomFrame');
-  z.hidden = false;
+  zoomList = LAYOUTS.filter(l=>ltGroup==='Все'||l.g===ltGroup);
+  zoomIdx = Math.max(0, zoomList.findIndex(l=>l.id===id));
+  document.getElementById('zoom').hidden = false;
+  showZoom();
+}
+async function showZoom(){
+  const l = zoomList[zoomIdx], fr = document.getElementById('zoomFrame');
   fr.srcdoc = slideDoc(await getTemplate(), l.h);
   fit(fr);
-  document.getElementById('zoomText').innerHTML = `<b>${l.n}</b> · ${l.c} · Esc или клик — закрыть`;
+  document.getElementById('zoomText').innerHTML = `<b>${l.n}</b> · ${zoomIdx+1} / ${zoomList.length} · ← → листать · Esc — закрыть`;
 }
-document.getElementById('zoom').onclick = ()=>{ document.getElementById('zoom').hidden = true; };
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.getElementById('zoom').hidden = true; });
+function stepZoom(d){ zoomIdx = (zoomIdx + d + zoomList.length) % zoomList.length; showZoom(); }
+const closeZoom = ()=>{ document.getElementById('zoom').hidden = true; };
+document.getElementById('zoom').onclick = closeZoom;
+document.getElementById('zPrev').onclick = e=>{ e.stopPropagation(); stepZoom(-1); };
+document.getElementById('zNext').onclick = e=>{ e.stopPropagation(); stepZoom(1); };
+document.addEventListener('keydown', e=>{
+  if (document.getElementById('zoom').hidden) return;
+  if (e.key==='Escape') closeZoom();
+  else if (e.key==='ArrowLeft') { e.preventDefault(); stepZoom(-1); }
+  else if (e.key==='ArrowRight') { e.preventDefault(); stepZoom(1); }
+});
 document.getElementById('ltFilter').onclick = e=>{ const g=e.target.dataset?.g; if(g){ ltGroup=g; renderLayouts(); } };
 window.addEventListener('resize', ()=>document.querySelectorAll('.lt-frame iframe').forEach(fit));
 
@@ -891,9 +913,9 @@ async function buildDefs(){
 function moCard(id, name, where, icon){
   const s = cfg.motifs[id], sym = document.getElementById(id);
   const vb = sym?.getAttribute('viewBox') || (icon ? '0 0 48 48' : '0 0 420 560');
-  return `<article class="mo ${s}" data-id="${id}"><div class="mo-art${icon?' icon':''}"><svg viewBox="${vb}"><use href="#${id}"/></svg></div>
-    <div class="mo-body"><h3>${cap(name)}<code>${id}</code></h3>${where?`<p>${where}</p>`:''}
-    <div class="pillgroup">${LT_STATES.map(([v,t,cls])=>`<label class="pill ${cls}"><input type="radio" name="mo-${id}" value="${v}" ${s===v?'checked':''}>${t}</label>`).join('')}</div></div></article>`;
+  const tip = (cap(name) + (where ? ' — ' + where : '') + ' · ' + id).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;');
+  return `<article class="mo ${s}" data-id="${id}" title="${tip}"><div class="mo-art${icon?' icon':''}"><svg viewBox="${vb}"><use href="#${id}"/></svg></div>
+    <div class="mo-body">${stateCtl('mo-'+id, s)}</div></article>`;
 }
 function countMotifs(){
   const v = Object.values(cfg.motifs), on = v.filter(s=>s!=='off').length, pref = v.filter(s=>s==='prefer').length;
@@ -909,16 +931,16 @@ async function renderMotifs(){
   wrap.style.setProperty('--mo-bg', cfg.colors.bg);
   const byId = Object.fromEntries(MOTIF_DATA.m.map(m=>[m.id,m]));
   const motifs = ids => `<div class="mo-grid">${ids.filter(id=>byId[id]).map(id=>moCard(id, byId[id].n, byId[id].w)).join('')}</div>`;
-  const icons = `<div class="mo-grid">${ICONS.map(([id,n])=>moCard(id, n, 'иконка над заголовком карточки', true)).join('')}</div>`;
+  const icons = `<div class="mo-grid">${ICONS.map(([id,n])=>moCard(id, n, '', true)).join('')}</div>`;
   // мотивы из template.html, которых ещё нет в описаниях, — группа «Новые»
   const known = new Set(ALL_ART), extra = [...document.querySelectorAll('#defsHost symbol')].map(s=>s.id).filter(id=>id && !known.has(id));
   extra.forEach(id=>{ if (!cfg.motifs[id]) cfg.motifs[id] = 'on'; });
-  const extras = extra.length ? `<p class="mo-sub">Новые · ${extra.length}</p><div class="mo-grid">${extra.map(id=>moCard(id, id, '', /^i-/.test(id))).join('')}</div>` : '';
+  const extras = extra.length ? `<p class="mo-sub">Новые</p><div class="mo-grid">${extra.map(id=>moCard(id, id, '', /^i-/.test(id))).join('')}</div>` : '';
   if (extra.length) countMotifs();
   if (!extra.length) document.querySelector('#moFilter [data-g="Новые"]')?.remove();
-  wrap.innerHTML = moGroup==='Все' ? `<p class="mo-sub">Мотивы · ${MOTIF_DATA.m.length}</p>${motifs(MOTIF_DATA.m.map(m=>m.id))}${extras}<p class="mo-sub">Иконки для карточек · ${ICONS.length}</p>${icons}`
+  wrap.innerHTML = moGroup==='Все' ? `${motifs(MOTIF_DATA.m.map(m=>m.id))}${extras}<p class="mo-sub">Иконки</p>${icons}`
     : moGroup==='Новые' ? extras
-    : moGroup==='Иконки' ? icons : `<p class="mo-sub">${moGroup}</p>${motifs(MOTIF_DATA.c[moGroup])}`;
+    : moGroup==='Иконки' ? icons : motifs(MOTIF_DATA.c[moGroup]);
   wrap.classList.toggle('static-art', !cfg.animate);
 }
 document.getElementById('moFilter').onclick = e=>{ const g=e.target.dataset?.g; if(g){ moGroup=g; renderMotifs(); } };
