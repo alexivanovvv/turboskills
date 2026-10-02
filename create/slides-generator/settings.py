@@ -54,8 +54,14 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     url = f"http://127.0.0.1:{PORT}/"
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
+    except OSError:
+        # Already running — just open the tab
+        print(f"slides-generator settings: уже запущено, открываю {url}")
+        webbrowser.open(url)
+        sys.exit(0)
     print(f"slides-generator settings: {url}  (Ctrl+C — остановить)")
     webbrowser.open(url)
     try:

@@ -1,6 +1,6 @@
 ---
 name: slides-generator
-description: "Презентация-деск из MD-файла — однофайловый HTML в тёмном минимал-стиле с упором на визуал: на каждом слайде свой анимированный SVG-арт под смысл (библиотека из 50 мотивов), 4-цветная палитра (зелёный+янтарь UI / синий+фиолетовый арт), баланс 50/50 текст+визуал, 6 пресетов структуры (webinar, pitch, report, workshop, strategy, course), каркас сессии с цветными разделителями блоков. Триггеры: \"сделай презентацию\", \"собери слайды\", \"создай деск\", \"сгенерируй HTML-слайды\", \"презентация из этого файла\", /slides-generator <путь к MD>."
+description: "Презентация-деск из MD-файла — однофайловый HTML в тёмном минимал-стиле с упором на визуал: на каждом слайде свой анимированный SVG-арт под смысл (библиотека из 50 мотивов), 4-цветная палитра (зелёный+янтарь UI / синий+фиолетовый арт), баланс 50/50 текст+визуал, 6 пресетов структуры (webinar, pitch, report, workshop, strategy, course), каркас сессии с цветными разделителями блоков. Триггеры: \"сделай презентацию\", \"собери слайды\", \"создай деск\", \"сгенерируй HTML-слайды\", \"презентация из этого файла\", /slides-generator <путь к MD>; страница настроек — /slides-generator config | setup."
 allowed-tools: Read, Bash, Write, Edit
 user-invocable: true
 ---
@@ -34,11 +34,13 @@ user-invocable: true
 | `export` | `pdf` / `png` / `both` — после проверки запусти `export.sh "<deck.html>" <mode>`; `none` — не экспортируй |
 | `openAfter: false` | не открывай результат |
 
-Нет файла или ключа — работай по дефолтам ниже. Алексей просит «настройки слайдов» / `/slides-generator settings` → запусти в фоне `python3 ~/.claude/skills/slides-generator/settings.py` (откроет `http://127.0.0.1:7361/`; кнопка «Сохранить» пишет прямо в `config.json`).
+Нет файла или ключа — работай по дефолтам ниже.
+
+**Страница настроек.** Если аргумент — `config`, `setup` или `settings` (`/slides-generator config`, `/slides-generator setup`), либо Алексей просит «настройки слайдов», — **не генерируй деск**, а открой страницу: запусти в фоне `python3 ~/.claude/skills/slides-generator/settings.py` (если сервер уже запущен — скрипт просто откроет вкладку). Адрес `http://127.0.0.1:7361/`, кнопка «Сохранить» пишет прямо в `config.json`. Ответь одной строкой со ссылкой.
 
 ## Вход / Выход
 
-Вход: `/slides-generator path/to/content.md [--ratio 16:9|9:16] [--type webinar|pitch|report|workshop|strategy|course]`. Нет пути — спроси. Без флагов — значения из `config.json` (заводские: `16:9`, `webinar`).
+Вход: `/slides-generator path/to/content.md` или `/slides-generator config|setup` (страница настроек, см. выше). Генерация: `/slides-generator path/to/content.md [--ratio 16:9|9:16] [--type webinar|pitch|report|workshop|strategy|course]`. Нет пути — спроси. Без флагов — значения из `config.json` (заводские: `16:9`, `webinar`).
 
 Выход — папка `YYYY-MM-DD - Slides {Title}/` рядом с MD, **два синхронных файла** с одним базовым именем:
 1. `{Title} — Slides Content.html` — презентация
