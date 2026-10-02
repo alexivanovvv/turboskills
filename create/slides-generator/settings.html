@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Slides — настройки</title>
 <style>
+
   @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600&family=JetBrains+Mono:wght@500;700&display=swap');
   :root {
     --bg: #080a0c;
@@ -65,7 +66,7 @@
 
   /* ---- pane ---- */
   main { flex: 1 1 auto; min-width: 0; padding: 28px 34px 70px; }
-  #sec-basics { max-width: 760px; }
+  #sec-basics, #sec-images { max-width: 760px; }
   .pane-head { margin-bottom: 20px; }
   .pane-head h2 { font-family: var(--font-display); font-weight: 600; font-size: 19px; letter-spacing: -0.01em; margin: 0 0 5px; }
   .pane-desc { font-size: 13px; color: var(--text3); margin: 0; line-height: 1.55; max-width: 760px; }
@@ -131,6 +132,66 @@
   .zoom iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 720px; border: 0; transform-origin: 0 0; }
   .zoom .zt { color: var(--text3); font-size: 13px; }
   .zoom .zt b { color: var(--text); }
+
+  /* ---- оформление: темы, шрифты, превью ---- */
+  .look { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 34px; align-items: start; }
+  .look-preview { position: sticky; top: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .look-preview .lt-frame { border: 1px solid var(--line); border-radius: var(--r-inner); cursor: default; }
+  .pv-cap { font-family: var(--font-num); font-size: 11px; color: var(--text4); letter-spacing: .06em; text-transform: uppercase; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin-top: 10px; }
+  .tile { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: var(--r-inner); background: var(--card); cursor: pointer; transition: border-color .12s, background .12s; }
+  .tile:hover { border-color: var(--line-strong); background: var(--card-hover); }
+  .tile:has(input:checked) { border-color: var(--accent-soft); background: var(--accent-weak); }
+  .tile input { display: none; }
+  .tile-name { font-size: 13.5px; font-weight: 600; }
+  .tile-desc { font-size: 12px; color: var(--text3); line-height: 1.45; }
+  .theme-sw { height: 46px; border-radius: 7px; display: flex; align-items: flex-end; gap: 4px; padding: 7px; border: 1px solid rgba(255,255,255,.06); }
+  .theme-sw i { width: 14px; height: 14px; border-radius: 50%; }
+  .theme-sw b { margin-left: auto; font: 600 12px var(--font-ui); }
+  .font-sample { line-height: 1.15; }
+  .font-sample .d { font-size: 19px; display: block; margin-bottom: 4px; }
+  .font-sample .t { font-size: 12.5px; color: var(--text2); }
+  .custom-note { font-size: 12px; color: var(--amber); margin-top: 8px; }
+  .colors4 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 22px; margin-top: 10px; }
+  .colors4 label { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text2); }
+  .colors4 code { margin-left: auto; }
+
+  /* ---- виды раскладок ---- */
+  .lt-grid.view-list { grid-template-columns: 1fr; gap: 10px; }
+  .lt-grid.view-list .lt { flex-direction: row; }
+  .lt-grid.view-list .lt-frame { flex: 0 0 300px; border-bottom: none; border-right: 1px solid var(--line); }
+  .lt-grid.view-list .lt-body { justify-content: center; }
+  .lt-grid.view-big { grid-template-columns: repeat(auto-fill, minmax(560px, 1fr)); gap: 20px; }
+  .lt-grid.view-big .lt-body h3 { font-size: 16px; }
+  .lt-grid.view-big .lt-body p { font-size: 13.5px; }
+
+  /* ---- иллюстрации ---- */
+  .mo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .mo { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; display: flex; flex-direction: column; transition: opacity .15s, border-color .15s; }
+  .mo.prefer { border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.06); }
+  .mo.off { opacity: .4; }
+  .mo.off .mo-art { filter: grayscale(1); }
+  .mo-art { background: var(--mo-bg, #080a0c); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--line); padding: 10px; }
+  .mo-art svg { height: 100%; width: auto; max-width: 100%; }
+  .mo-art.icon svg { height: 56%; }
+  .mo-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .mo-body h3 { margin: 0; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 6px; }
+  .mo-body h3 code { font-size: 10.5px; }
+  .mo-body p { margin: 0; font-size: 11.5px; color: var(--text3); line-height: 1.45; flex: 1; }
+  .mo .pillgroup { align-self: flex-start; margin-top: 6px; }
+  .mo .pill { padding: 4px 9px; font-size: 11.5px; }
+  .mo .pill.p:has(input:checked) { background: var(--amber); color: #1a1000; }
+  .mo .pill.x:has(input:checked) { background: rgba(248, 113, 113, 0.16); color: var(--bad); }
+  .mo-sub { font-family: var(--font-num); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); margin: 26px 0 10px; }
+  .static-art svg * { animation: none !important; }
+
+  .ui-preview { position: relative; max-width: 960px; margin: 6px 0 8px; }
+  .ui-preview .lt-frame { border: 1px solid var(--line); border-radius: var(--r-inner); cursor: default; }
+  .ui-mark, .ui-num { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--amber); color: #1a1000; font: 700 11px var(--font-num); }
+  .ui-mark { position: absolute; pointer-events: none; box-shadow: 0 0 0 3px rgba(8,10,12,.85); }
+  .ui-mark.tl { left: -9px; top: -9px; } .ui-mark.tr { right: -9px; top: -9px; } .ui-mark.bl { left: -9px; bottom: -9px; } .ui-mark.br { right: -9px; bottom: -9px; }
+  .ui-num { margin-right: 8px; vertical-align: 1px; }
+
 </style>
 </head>
 <body>
@@ -145,9 +206,25 @@
       <svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="17" r="2"/></svg>
       Основное
     </button>
+    <button type="button" class="navchip" data-target="sec-look">
+      <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-1 2-2 0-1.6-1.6-2-1.6-3.4 0-1 .8-1.6 1.8-1.6H17a4 4 0 0 0 4-4c0-4-4-7-9-7z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>
+      Оформление
+    </button>
+    <button type="button" class="navchip" data-target="sec-ui">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M6 7.5h4M17 7.5h1M6 16.5h4M15 16.5h3"/></svg>
+      Интерфейс
+    </button>
     <button type="button" class="navchip" data-target="sec-layouts">
       <svg viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="7" rx="1.5"/><rect x="13" y="4" width="8" height="7" rx="1.5"/><rect x="3" y="13" width="8" height="7" rx="1.5"/><rect x="13" y="13" width="8" height="7" rx="1.5"/></svg>
       Раскладки <span class="cnt" id="navCount"></span>
+    </button>
+    <button type="button" class="navchip" data-target="sec-art">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>
+      Иллюстрации <span class="cnt" id="navMoCount"></span>
+    </button>
+    <button type="button" class="navchip" data-target="sec-images">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg>
+      Картинки
     </button>
 
     <div class="nav-gap"></div>
@@ -163,88 +240,255 @@
   </aside>
 
   <main>
+  <form id="f" autocomplete="off" onsubmit="return false">
     <!-- ============ ОСНОВНОЕ ============ -->
     <section class="pane" id="sec-basics">
       <div class="pane-head">
         <h2>Основное</h2>
         <p class="pane-desc">Значения по умолчанию для <code>/slides-generator файл.md</code>. Флаги в команде перекрывают их на один запуск. Всё сохраняется сразу в <code>config.json</code>.</p>
       </div>
-      <form id="f" autocomplete="off">
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">Пропорции</div><div class="setting-desc">Экран для вебинаров или вертикаль для телефона и Telegram.</div></div>
-          <div class="setting-control"><div class="pillgroup">
-            <label class="pill"><input type="radio" name="ratio" value="16:9">16:9</label>
-            <label class="pill"><input type="radio" name="ratio" value="9:16">9:16</label>
-          </div></div>
-        </div>
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">Тип презентации</div><div class="setting-desc">Задаёт порядок слайдов. Контент из MD всё равно первичен.</div></div>
-          <div class="setting-control"><select id="type" name="type">
-            <option value="webinar">Вебинар / онлайн-лекция</option>
-            <option value="pitch">Питч / продуктовая</option>
-            <option value="report">Отчёт / quarterly review</option>
-            <option value="workshop">Воркшоп / мастер-класс</option>
-            <option value="strategy">Стратегия / личный план</option>
-            <option value="course">Курс / серия занятий</option>
-          </select></div>
-        </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Пропорции</div><div class="setting-desc">Экран для вебинаров или вертикаль для телефона и Telegram.</div></div>
+        <div class="setting-control"><div class="pillgroup">
+          <label class="pill"><input type="radio" name="ratio" value="16:9">16:9</label>
+          <label class="pill"><input type="radio" name="ratio" value="9:16">9:16</label>
+        </div></div>
+      </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Тип презентации</div><div class="setting-desc">Задаёт порядок слайдов. Контент из MD всё равно первичен.</div></div>
+        <div class="setting-control"><select id="type" name="type">
+          <option value="webinar">Вебинар / онлайн-лекция</option>
+          <option value="pitch">Питч / продуктовая</option>
+          <option value="report">Отчёт / quarterly review</option>
+          <option value="workshop">Воркшоп / мастер-класс</option>
+          <option value="strategy">Стратегия / личный план</option>
+          <option value="course">Курс / серия занятий</option>
+        </select></div>
+      </div>
 
-        <p class="group-title">Подписи</p>
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">Бренд / автор</div><div class="setting-desc">Внизу слайдов. Пусто — возьмётся из MD-файла.</div></div>
-          <div class="setting-control"><input type="text" id="brand" name="brand" placeholder="из MD-файла"></div>
-        </div>
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">Тег в углу</div><div class="setting-desc">Курс и номер сессии, виден на всех слайдах. Пусто — по контексту.</div></div>
-          <div class="setting-control"><input type="text" id="decktag" name="decktag" placeholder="AI Native · Сессия 2"></div>
-        </div>
+      <p class="group-title">Подписи</p>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Бренд / автор</div><div class="setting-desc">Внизу слайдов. Пусто — возьмётся из MD-файла.</div></div>
+        <div class="setting-control"><input type="text" id="brand" name="brand" placeholder="из MD-файла"></div>
+      </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Тег в углу</div><div class="setting-desc">Курс и номер сессии, виден на всех слайдах. Пусто — по контексту.</div></div>
+        <div class="setting-control"><input type="text" id="decktag" name="decktag" placeholder="AI Native · Сессия 2"></div>
+      </div>
 
-        <p class="group-title">Вид</p>
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">Главный акцент</div><div class="setting-desc">Подсветка слов в заголовках, буллеты, первый разделитель.</div></div>
-          <div class="setting-control color-row"><input type="color" data-color="green"><code></code></div>
-        </div>
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">Второй акцент</div><div class="setting-desc">Кикеры, предупреждения, второй разделитель.</div></div>
-          <div class="setting-control color-row"><input type="color" data-color="amber"><code></code></div>
-        </div>
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">SVG-арт на слайдах</div><div class="setting-desc">Анимированная иллюстрация справа. Выключить — только текст во всю ширину.</div></div>
-          <div class="setting-control"><label class="switch"><input type="checkbox" name="art"><span class="slider"></span></label></div>
-        </div>
-
-        <p class="group-title">После сборки</p>
-        <div class="setting">
-          <div class="setting-info"><div class="setting-name">Экспорт</div><div class="setting-desc">Через <code>export.sh</code> после проверки скриншотами.</div></div>
-          <div class="setting-control"><div class="pillgroup">
-            <label class="pill"><input type="radio" name="export" value="none">Нет</label>
-            <label class="pill"><input type="radio" name="export" value="pdf">PDF</label>
-            <label class="pill"><input type="radio" name="export" value="png">PNG</label>
-            <label class="pill"><input type="radio" name="export" value="both">Оба</label>
-          </div></div>
-        </div>
-      </form>
+      <p class="group-title">После сборки</p>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Экспорт</div><div class="setting-desc">Через <code>export.sh</code> после проверки скриншотами.</div></div>
+        <div class="setting-control"><div class="pillgroup">
+          <label class="pill"><input type="radio" name="export" value="none">Нет</label>
+          <label class="pill"><input type="radio" name="export" value="pdf">PDF</label>
+          <label class="pill"><input type="radio" name="export" value="png">PNG</label>
+          <label class="pill"><input type="radio" name="export" value="both">Оба</label>
+        </div></div>
+      </div>
       <p class="pane-note">Заметки спикера, обновление <code>slides-index.html</code>, проверка скриншотами и открытие результата включены всегда.</p>
+    </section>
+
+    <!-- ============ ОФОРМЛЕНИЕ ============ -->
+    <section class="pane" id="sec-look" hidden>
+      <div class="pane-head">
+        <h2>Оформление</h2>
+        <p class="pane-desc">Готовые цветовые темы и шрифтовые пары — применяются в один клик. Превью справа показывает настоящий слайд из <code>template.html</code>.</p>
+      </div>
+      <div class="look">
+        <div>
+          <p class="group-title" style="padding-top:0">Цветовая тема</p>
+          <div class="tiles" id="themeTiles"></div>
+          <p class="custom-note" id="customNote" hidden>Своя тема: цвета изменены вручную.</p>
+
+          <p class="group-title">Акценты темы</p>
+          <div class="pane-desc">Подкрутить цвета выбранной темы. Первые два — интерфейс слайда, вторые два — SVG-иллюстрации.</div>
+          <div class="colors4">
+            <label><input type="color" data-color="green">Главный<code></code></label>
+            <label><input type="color" data-color="amber">Второй<code></code></label>
+            <label><input type="color" data-color="blue">Арт 1<code></code></label>
+            <label><input type="color" data-color="violet">Арт 2<code></code></label>
+          </div>
+
+          <p class="group-title">Шрифты</p>
+          <div class="tiles" id="fontTiles"></div>
+        </div>
+        <div class="look-preview">
+          <span class="pv-cap">Превью</span>
+          <div class="lt-frame"><iframe id="pv1" title="Превью"></iframe></div>
+          <div class="lt-frame"><iframe id="pv2" title="Превью"></iframe></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ИНТЕРФЕЙС ============ -->
+    <section class="pane" id="sec-ui" hidden>
+      <div class="pane-head">
+        <h2>Интерфейс</h2>
+        <p class="pane-desc">Служебные элементы по углам слайда: тег курса, меню ⋯, бренд и прогресс. Горячие клавиши работают при любых настройках.</p>
+      </div>
+      <div class="ui-preview">
+        <div class="lt-frame"><iframe id="pvU" title="Превью интерфейса"></iframe></div>
+        <span class="ui-mark tl">1</span><span class="ui-mark tr">2</span><span class="ui-mark bl">3</span><span class="ui-mark br">4</span>
+      </div>
+      <div style="max-width:760px">
+        <p class="group-title">Углы слайда</p>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name"><span class="ui-num">1</span>Тег курса слева сверху</div><div class="setting-desc">Курс и номер сессии на всех слайдах — чтобы не терять контекст при пролистывании.</div></div>
+          <div class="setting-control"><label class="switch"><input type="checkbox" name="ui_cornerTag"><span class="slider"></span></label></div>
+        </div>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name"><span class="ui-num">2</span>Меню ⋯ справа сверху</div><div class="setting-desc">Автопоказ, быстрый показ, полный экран. <b>Тихое</b> — едва видно, <b>При наведении</b> — появляется под курсором, <b>Скрыть</b> — только хоткеи.</div></div>
+          <div class="setting-control"><div class="pillgroup">
+            <label class="pill"><input type="radio" name="ui_menu" value="quiet">Тихое</label>
+            <label class="pill"><input type="radio" name="ui_menu" value="hover">При наведении</label>
+            <label class="pill"><input type="radio" name="ui_menu" value="off">Скрыть</label>
+          </div></div>
+        </div>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name"><span class="ui-num">3</span>Бренд слева снизу</div><div class="setting-desc">Автор или сайт. Текст — в «Основном».</div></div>
+          <div class="setting-control"><label class="switch"><input type="checkbox" name="ui_brand"><span class="slider"></span></label></div>
+        </div>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name"><span class="ui-num">4</span>Прогресс справа снизу</div><div class="setting-desc">Полоса прогресса и номер слайда «18 / 18».</div></div>
+          <div class="setting-control"><div class="pillgroup">
+            <label class="pill"><input type="radio" name="ui_progress" value="both">Полоса + номер</label>
+            <label class="pill"><input type="radio" name="ui_progress" value="counter">Номер</label>
+            <label class="pill"><input type="radio" name="ui_progress" value="bar">Полоса</label>
+            <label class="pill"><input type="radio" name="ui_progress" value="off">Нет</label>
+          </div></div>
+        </div>
+
+        <p class="group-title">Подписи в углах</p>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Размер</div><div class="setting-desc">Крупнее — читается на демонстрации экрана в Zoom.</div></div>
+          <div class="setting-control"><div class="pillgroup">
+            <label class="pill"><input type="radio" name="ui_size" value="s">S</label>
+            <label class="pill"><input type="radio" name="ui_size" value="m">M</label>
+            <label class="pill"><input type="radio" name="ui_size" value="l">L</label>
+          </div></div>
+        </div>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Заметность</div><div class="setting-desc">Насколько подписи и счётчик спорят с контентом.</div></div>
+          <div class="setting-control"><div class="pillgroup">
+            <label class="pill"><input type="radio" name="ui_tone" value="dim">Тихие</label>
+            <label class="pill"><input type="radio" name="ui_tone" value="muted">Обычные</label>
+            <label class="pill"><input type="radio" name="ui_tone" value="bright">Яркие</label>
+          </div></div>
+        </div>
+      </div>
     </section>
 
     <!-- ============ РАСКЛАДКИ ============ -->
     <section class="pane" id="sec-layouts" hidden>
       <div class="pane-head">
         <h2>Раскладки</h2>
-        <p class="pane-desc">Все раскладки, которые знает скилл, с живым превью из <code>template.html</code>. <b>Чаще</b> — брать при любом подходящем контенте, <b>Можно</b> — по ситуации, <b>Выкл</b> — не использовать никогда. Клик по превью — крупно.</p>
+        <p class="pane-desc">Все раскладки, которые знает скилл, с живым превью. <b>Чаще</b> — брать при любом подходящем контенте, <b>Можно</b> — по ситуации, <b>Выкл</b> — не использовать никогда. Клик по превью — крупно.</p>
       </div>
       <div class="lt-bar">
         <div class="pillgroup" id="ltFilter"></div>
-        <span class="lt-count" id="ltCount"></span>
+        <div style="display:flex;gap:14px;align-items:center">
+          <span class="lt-count" id="ltCount"></span>
+          <div class="pillgroup" id="ltView">
+            <button type="button" class="pill" data-view="grid" title="Сетка">Сетка</button>
+            <button type="button" class="pill" data-view="list" title="Список">Список</button>
+            <button type="button" class="pill" data-view="big" title="Крупно">Крупно</button>
+          </div>
+        </div>
       </div>
       <div class="lt-grid" id="ltGrid"></div>
     </section>
+
+    <!-- ============ ИЛЛЮСТРАЦИИ ============ -->
+    <section class="pane" id="sec-art" hidden>
+      <div class="pane-head">
+        <h2>Иллюстрации</h2>
+        <p class="pane-desc">SVG-мотивы из <code>template.html</code>: скилл подбирает их по смыслу слайда. <b>Чаще</b> — предпочитать, <b>Выкл</b> — не использовать никогда.</p>
+      </div>
+      <div style="max-width:760px">
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">SVG-арт на слайдах</div><div class="setting-desc">Иллюстрация в правой половине. Выключить — только текст во всю ширину.</div></div>
+          <div class="setting-control"><label class="switch"><input type="checkbox" name="art"><span class="slider"></span></label></div>
+        </div>
+        <div class="setting">
+          <div class="setting-info"><div class="setting-name">Анимация</div><div class="setting-desc">Иллюстрации двигаются, слайды плавно сменяются. Выключить — всё статично (удобно для PDF и слабых проекторов).</div></div>
+          <div class="setting-control"><label class="switch"><input type="checkbox" name="animate"><span class="slider"></span></label></div>
+        </div>
+      </div>
+      <div class="lt-bar" style="margin-top:22px">
+        <div class="pillgroup" id="moFilter"></div>
+        <span class="lt-count" id="moCount"></span>
+      </div>
+      <div id="moWrap"></div>
+    </section>
+
+    <!-- ============ КАРТИНКИ ============ -->
+    <section class="pane" id="sec-images" hidden>
+      <div class="pane-head">
+        <h2>Картинки</h2>
+        <p class="pane-desc">Как вставлять в слайды готовые изображения — скриншоты, схемы, фото, кадры из старой презентации или из интернета.</p>
+      </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Куда класть файл</div><div class="setting-desc"><b>Внутрь HTML</b> — base64, деск остаётся одним файлом. <b>Рядом</b> — папка <code>img/</code> возле деска, HTML легче. <b>Ссылкой</b> — URL из интернета как есть.</div></div>
+        <div class="setting-control"><div class="pillgroup">
+          <label class="pill"><input type="radio" name="img_embed" value="inline">Внутрь HTML</label>
+          <label class="pill"><input type="radio" name="img_embed" value="folder">Рядом</label>
+          <label class="pill"><input type="radio" name="img_embed" value="link">Ссылкой</label>
+        </div></div>
+      </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Формат</div><div class="setting-desc">WebP q≈88 — в разы легче без видимой потери. Оригинал — как пришло.</div></div>
+        <div class="setting-control"><div class="pillgroup">
+          <label class="pill"><input type="radio" name="img_format" value="webp">WebP</label>
+          <label class="pill"><input type="radio" name="img_format" value="original">Оригинал</label>
+        </div></div>
+      </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Максимальная ширина</div><div class="setting-desc">Больше — резче на большом экране, но тяжелее файл.</div></div>
+        <div class="setting-control"><div class="pillgroup">
+          <label class="pill"><input type="radio" name="img_width" value="1200">1200</label>
+          <label class="pill"><input type="radio" name="img_width" value="1800">1800</label>
+          <label class="pill"><input type="radio" name="img_width" value="2400">2400</label>
+        </div></div>
+      </div>
+
+      <p class="group-title">На слайде</p>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Где по умолчанию</div><div class="setting-desc"><b>Справа</b> — вместо SVG-арта, 50/50 с текстом (<code>.art.pic</code>). <b>Во всю ширину</b> — под заголовком (<code>.wide-pic</code>). Широкие схемы скилл всё равно ставит во всю ширину.</div></div>
+        <div class="setting-control"><div class="pillgroup">
+          <label class="pill"><input type="radio" name="img_place" value="half">Справа</label>
+          <label class="pill"><input type="radio" name="img_place" value="wide">Во всю ширину</label>
+        </div></div>
+      </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Вписывание</div><div class="setting-desc"><b>Целиком</b> — ничего не обрезается, подходит для схем и скринов. <b>Заполнить</b> — картинка закрывает всю область с обрезкой краёв, подходит для фото.</div></div>
+        <div class="setting-control"><div class="pillgroup">
+          <label class="pill"><input type="radio" name="img_fit" value="contain">Целиком</label>
+          <label class="pill"><input type="radio" name="img_fit" value="cover">Заполнить</label>
+        </div></div>
+      </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Подгонять фон картинки</div><div class="setting-desc">Чёрный фон скриншота поднимается до фона слайда — не видно прямоугольника.</div></div>
+        <div class="setting-control"><label class="switch"><input type="checkbox" name="img_matchBg"><span class="slider"></span></label></div>
+      </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Автообрезка полей</div><div class="setting-desc">Срезать пустые поля и обрывки чужого текста по краям, оставить отступ ~3,5%.</div></div>
+        <div class="setting-control"><label class="switch"><input type="checkbox" name="img_trim"><span class="slider"></span></label></div>
+      </div>
+      <div class="setting">
+        <div class="setting-info"><div class="setting-name">Скругление углов</div></div>
+        <div class="setting-control"><label class="switch"><input type="checkbox" name="img_round"><span class="slider"></span></label></div>
+      </div>
+    </section>
+  </form>
   </main>
 </div>
 
 <div class="zoom" id="zoom" hidden><div class="zf"><iframe id="zoomFrame" title="Раскладка крупно"></iframe></div><div class="zt" id="zoomText"></div></div>
+<div id="defsHost" style="position:absolute;width:0;height:0;overflow:hidden"></div>
 
 <script>
+
 const art = id => `<div class="art"><svg viewBox="0 0 420 560"><use href="#${id}"/></svg></div>`;
 const PH_IMG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560"><rect width="800" height="560" rx="18" fill="#181c25"/><rect x="60" y="60" width="300" height="180" rx="12" fill="#4ade80" opacity=".25"/><rect x="420" y="60" width="320" height="180" rx="12" fill="#38bdf8" opacity=".25"/><rect x="60" y="300" width="680" height="200" rx="12" fill="#c084fc" opacity=".2"/><text x="400" y="410" font-family="sans-serif" font-size="30" fill="#a7adbe" text-anchor="middle">схема / скриншот</text></svg>');
 const PH_PHOTO = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#0f172a"/></linearGradient></defs><rect width="600" height="800" fill="url(#g)"/><circle cx="300" cy="300" r="120" fill="#334155"/><rect x="130" y="450" width="340" height="350" rx="170" fill="#334155"/><text x="300" y="760" font-family="sans-serif" font-size="28" fill="#64748b" text-anchor="middle">фото спикера</text></svg>');
@@ -295,13 +539,97 @@ const LAYOUTS = [
    h:`<section class="slide wide"><h2>Obsidian vs <span class="g3">Notion</span></h2><table style="width:100%;border-collapse:collapse;margin-top:1.3rem;font-size:clamp(.85rem,1.25cqw,1.05rem)"><thead><tr><th style="${th};border-bottom:1px solid var(--line);width:22%"></th><th style="${th};color:var(--green);border-bottom:2px solid var(--green)">Obsidian</th><th style="${th};color:var(--dim);border-bottom:1px solid var(--line)">Notion</th></tr></thead><tbody>${[['Где данные','Папка на вашем диске','В облаке сервиса'],['Формат','Markdown','Свой формат'],['Доступ агента','Прямой, к файлам','Через API'],['Офлайн','Да','Ограниченно']].map(([a,b,c])=>`<tr><td style="${td};font-family:var(--font-head);font-weight:600;font-size:.88em">${a}</td><td style="${td};color:var(--fg)">${b}</td><td style="${td};color:var(--muted)">${c}</td></tr>`).join('')}</tbody></table></section>`},
   {id:'hexring', g:'Во всю ширину', n:'Кольцо из 6', c:'.hexring · .hr-item', w:'6 элементов по кругу — цикл или система из шести частей.',
    h:`<section class="slide wide"><h2>Шесть <span class="g">привычек</span></h2><div class="hexring"><div class="hr-ring"></div>${['Записывать','Связывать','Спрашивать','Проверять','Сохранять','Делиться'].map((t,i)=>`<div class="hr-item" style="top:${hexPos[i][0]};left:${hexPos[i][1]}"><div class="hr-n" style="color:${hexCol[i]}">0${i+1}</div><div class="hr-t">${t}</div><div class="hr-d">Короткое пояснение</div></div>`).join('')}</div></section>`},
+  {id:'bignum', g:'Акценты', n:'Большая цифра', c:'.bigstat · .bs-n + .bs-l', w:'Один показатель крупно: цифра, подпись, источник. Цифра — цвет по смыслу через inline color.',
+   h:`<section class="slide"><p class="kicker">Факт</p><div class="bigstat"><div class="bs-n">80<small>%</small></div><div class="bs-l">рутинных задач можно отдать агенту уже сегодня</div><div class="bs-src">По опросу участников потока, n = 64</div></div>${art('donut')}</section>`},
+  {id:'statement', g:'Акценты', n:'Манифест', c:'.slide.wide.statement · .st-text', w:'Одна сильная мысль крупно по центру, без арта. Для пауз, выводов, поворотных моментов.',
+   h:`<section class="slide wide statement"><p class="st-text">ИИ не заменит вас. Вас заменит тот, кто <span class="g">работает с ИИ</span></p><p class="st-by">Главная мысль сессии</p></section>`},
+  {id:'bleed', g:'Акценты', n:'Фото во весь слайд', c:'.slide.bleed · img.bleed-img', w:'Атмосферное фото на весь экран, крупный заголовок внизу поверх затемнения. Для открытия блока или истории.',
+   h:`<section class="slide bleed"><img class="bleed-img" src="${PH_IMG}" alt=""><p class="kicker">История</p><h1>Как одна встреча <span class="g">поменяла</span> всё</h1></section>`},
+  {id:'testimonial', g:'Акценты', n:'Отзыв', c:'.testi · .ts-text + .ts-who', w:'Цитата участника/клиента: большая кавычка, курсив, автор с аватаром (инициалы или фото).',
+   h:`<section class="slide"><div class="testi"><p class="ts-text">После курса я впервые закрыл неделю, не открывая почту по вечерам — рутину делает агент.</p><div class="ts-who"><div class="ts-av">АК</div><div><div class="ts-name">Андрей К.</div><div class="ts-role">Руководитель отдела продаж</div></div></div></div>${art('bubbles')}</section>`},
+  {id:'agenda', g:'50/50: текст + арт', n:'План с таймингом', c:'.agenda · .ag-row (.now / .done)', w:'Повестка: номер, пункт, минуты. Текущий пункт — .now (зелёный), пройденные — .done.',
+   h:`<section class="slide"><p class="kicker">Что сегодня</p><h2>План <span class="g">сессии</span></h2><div class="agenda"><div class="ag-row done"><span class="ag-n">01</span><span class="ag-t">Что было раньше</span><span class="ag-m">5 мин</span></div><div class="ag-row now"><span class="ag-n">02</span><span class="ag-t">Память и контекст</span><span class="ag-m">20 мин</span></div><div class="ag-row"><span class="ag-n">03</span><span class="ag-t">Скиллы под задачи</span><span class="ag-m">25 мин</span></div><div class="ag-row"><span class="ag-n">04</span><span class="ag-t">Демо вживую</span><span class="ag-m">15 мин</span></div><div class="ag-row"><span class="ag-n">05</span><span class="ag-t">Домашка и Q&amp;A</span><span class="ag-m">10 мин</span></div></div>${art('clock')}</section>`},
+  {id:'prompt', g:'50/50: текст + арт', n:'Окно промпта', c:'.prompt · .pr-bar + .pr-body (.pv, .pc)', w:'Промпт или инструкция моноширинным шрифтом; переменные — .pv (янтарь), комментарии — .pc. Мигающий курсор в конце.',
+   h:`<section class="slide"><p class="kicker">Шаблон</p><h2>Промпт <span class="g">с контекстом</span></h2><div class="prompt"><div class="pr-bar"><i></i><i></i><i></i><span>Промпт</span></div><div class="pr-body">Ты — редактор моего Telegram-канала.
+Напиши пост про <span class="pv">[тема]</span> для <span class="pv">[аудитория]</span>.
+<span class="pc"># 5 абзацев, одна история, без клише</span>
+В конце — вопрос к читателям.</div></div>${art('neural')}</section>`},
+  {id:'chat', g:'50/50: текст + арт', n:'Диалог', c:'.chat · .msg.me / .msg.ai', w:'Переписка человек ↔ ИИ пузырями, появляются по очереди. 2–4 реплики, не больше.',
+   h:`<section class="slide"><p class="kicker">Как это звучит</p><h2>Агент <span class="g">задаёт вопросы</span></h2><div class="chat"><div class="msg me"><span class="who">Вы</span>Сделай план поста про делегирование</div><div class="msg ai"><span class="who">Агент</span>Для кого пост — для руководителей или для команды? И есть ли у вас личная история на эту тему?</div><div class="msg me"><span class="who">Вы</span>Для руководителей, история есть — про первый провал</div></div>${art('atom')}</section>`},
+  {id:'funnel', g:'50/50: текст + арт', n:'Воронка', c:'.funnel · .fn-l (--w, --c)', w:'Этапы с убывающими числами: охват → заявки → оплаты. Ширина полосы — --w, цвет — --c.',
+   h:`<section class="slide"><p class="kicker">Запуск</p><h2>Воронка <span class="g">потока</span></h2><div class="funnel"><div class="fn-l" style="--w:100%;--c:var(--blue)"><span class="fn-t">Охват</span><span class="fn-v">12 400</span></div><div class="fn-l" style="--w:82%;--c:var(--violet)"><span class="fn-t">Вебинар</span><span class="fn-v">860</span></div><div class="fn-l" style="--w:64%;--c:var(--amber)"><span class="fn-t">Заявки</span><span class="fn-v">140</span></div><div class="fn-l" style="--w:46%;--c:var(--green)"><span class="fn-t">Оплаты</span><span class="fn-v">48</span></div></div>${art('sieve')}</section>`},
+  {id:'hbars', g:'Во всю ширину', n:'Горизонтальные бары', c:'.hbars · .hb-row (--w, --c)', w:'Сравнение величин: бары вырастают при показе слайда. 3–6 строк; подходит и в 50/50.',
+   h:`<section class="slide wide"><p class="kicker">Время на задачу</p><h2>Сколько экономит <span class="g">агент</span></h2><div class="hbars"><div class="hb-row" style="--w:85%;--c:var(--green)"><span class="hb-l">Пост</span><div class="hb-track"><div class="hb-fill"></div></div><span class="hb-v">−85%</span></div><div class="hb-row" style="--w:70%;--c:var(--blue)"><span class="hb-l">Отчёт</span><div class="hb-track"><div class="hb-fill"></div></div><span class="hb-v">−70%</span></div><div class="hb-row" style="--w:60%;--c:var(--violet)"><span class="hb-l">Письма</span><div class="hb-track"><div class="hb-fill"></div></div><span class="hb-v">−60%</span></div><div class="hb-row" style="--w:35%;--c:var(--amber)"><span class="hb-l">Встречи</span><div class="hb-track"><div class="hb-fill"></div></div><span class="hb-v">−35%</span></div></div></section>`},
+  {id:'timeline', g:'Во всю ширину', n:'Таймлайн', c:'.tline · .tl-item (--c, .now)', w:'Хронология / этапы по горизонтали: веха, заголовок, пояснение. 3–5 вех; текущая — .now.',
+   h:`<section class="slide wide"><p class="kicker">Программа</p><h2>Путь за <span class="g">4 недели</span></h2><div class="tline"><div class="tl-item" style="--c:var(--green)"><div class="tl-when">Нед 1</div><div class="tl-t">Принципы</div><div class="tl-d">Как думать про ИИ</div></div><div class="tl-item now" style="--c:var(--blue)"><div class="tl-when">Нед 2</div><div class="tl-t">База знаний</div><div class="tl-d">Весь контекст в одном месте</div></div><div class="tl-item" style="--c:var(--violet)"><div class="tl-when">Нед 3</div><div class="tl-t">Скиллы</div><div class="tl-d">Свои инструкции агенту</div></div><div class="tl-item" style="--c:var(--amber)"><div class="tl-when">Нед 4</div><div class="tl-t">Автоматики</div><div class="tl-d">Работает без вас</div></div></div></section>`},
+  {id:'vs', g:'Во всю ширину', n:'Было → Стало', c:'.vs · .vs-col.before / .after + .vs-arr', w:'Трансформация: слева приглушённое «было» (красные маркеры), справа «стало» (зелёные), стрелка между.',
+   h:`<section class="slide wide"><h2>Что меняется <span class="g">после курса</span></h2><div class="vs"><div class="vs-col before"><p class="vs-h">Было</p><ul><li>Каждый раз объясняю ИИ, кто я</li><li>Копирую ответы вручную</li><li>Всё держу в голове</li></ul></div><div class="vs-arr">→</div><div class="vs-col after"><p class="vs-h">Стало</p><ul><li>Агент знает мой контекст</li><li>Результат сразу в нужном месте</li><li>База знаний помнит за меня</li></ul></div></div></section>`},
+  {id:'venn', g:'Во всю ширину', n:'Диаграмма Венна', c:'.venn · .vn.a/.b/.c (--c) + .vn-c', w:'Три пересекающиеся области и их общее ядро в центре. Подписи коротко — 1–3 слова.',
+   h:`<section class="slide wide"><h2 style="text-align:center">Где рождается <span class="g">ценность</span></h2><div class="venn"><div class="vn a" style="--c:var(--blue)">Экспертиза</div><div class="vn b" style="--c:var(--violet)">Инструменты</div><div class="vn c" style="--c:var(--amber)">Привычки</div><div class="vn-c">AI Native</div></div></section>`},
+  {id:'flip', g:'50/50: текст + арт', n:'Визуал слева', c:'.slide.flip', w:'Зеркальная 50/50: арт или картинка слева, текст справа. Разбавляет серию обычных 50/50.',
+   h:`<section class="slide flip"><p class="side-tag">Наш подход</p><p class="kicker">Принцип</p><h2>Сначала <span class="g">контекст</span>, потом промпт</h2><ul><li>Кто вы и для кого работаете</li><li>Что уже пробовали</li><li>Какой результат нужен</li></ul>${art('key')}</section>`},
+  {id:'contact', g:'Каркас сессии', n:'Контакты', c:'.contacts · .ct-k/.ct-v + .art.qr', w:'Финальный слайд: спасибо, контакты, QR на канал/сайт (QR — base64 через python qrcode).',
+   h:`<section class="slide"><p class="kicker">Спасибо</p><h2>Остаёмся <span class="g">на связи</span></h2><div class="contacts"><span class="ct-k">Telegram</span><span class="ct-v">@handle</span><span class="ct-k">Канал</span><span class="ct-v">t.me/channel</span><span class="ct-k">Сайт</span><span class="ct-v">example.com</span></div><div class="art qr"><img src="${PH_IMG}" alt=""><span>Канал с материалами</span></div></section>`},
+  {id:'logos', g:'Во всю ширину', n:'Стена логотипов', c:'.logos (.l12) · .lg', w:'Инструменты, клиенты, партнёры: 6 (3×2) или 12 (.l12, 6×2). Логотип — img (обесцвечивается) или текст с цветной меткой.',
+   h:`<section class="slide wide"><p class="kicker">Стек курса</p><h2>Инструменты, с которыми <span class="g">работаем</span></h2><div class="logos"><div class="lg" style="--c:var(--orange)"><i></i>Claude</div><div class="lg" style="--c:var(--violet)"><i></i>Obsidian</div><div class="lg" style="--c:var(--blue)"><i></i>Telegram</div><div class="lg" style="--c:var(--fg)"><i></i>Notion</div><div class="lg" style="--c:var(--red)"><i></i>Todoist</div><div class="lg" style="--c:var(--green)"><i></i>Fathom</div></div></section>`},
+  {id:'pricing', g:'Во всю ширину', n:'Тарифы', c:'.plans · .plan (.hi) + .pl-badge', w:'3 тарифа/формата: название, цена, что входит. Рекомендуемый — .plan.hi с плашкой.',
+   h:`<section class="slide wide"><p class="kicker">Форматы участия</p><h2>Выберите <span class="g">свой</span> формат</h2><div class="plans"><div class="plan"><div class="pl-n">Самостоятельно</div><div class="pl-p">290 €<small></small></div><ul><li>Записи всех сессий</li><li>Шаблоны и промпты</li></ul></div><div class="plan hi"><span class="pl-badge">Чаще выбирают</span><div class="pl-n">С группой</div><div class="pl-p">590 €<small></small></div><ul><li>Живые сессии</li><li>Разбор домашек</li><li>Чат потока</li></ul></div><div class="plan"><div class="pl-n">Персонально</div><div class="pl-p">1 400 €<small></small></div><ul><li>Всё из «С группой»</li><li>3 встречи 1:1</li><li>Настройка под вас</li></ul></div></div></section>`},
+  {id:'case', g:'Во всю ширину', n:'Кейс', c:'.case · .cs-k (--c) + .cs-t / .cs-n', w:'История клиента в 3 шага: задача → решение → результат крупной цифрой. Внизу — кто клиент.',
+   h:`<section class="slide wide"><p class="kicker">Кейс</p><h2>Отдел продаж <span class="g">без рутины</span></h2><div class="case"><div style="--c:var(--red)"><p class="cs-k">Задача</p><p class="cs-t">Менеджеры тратят 2 часа в день на отчёты и письма после встреч</p></div><div style="--c:var(--blue)"><p class="cs-k">Решение</p><p class="cs-t">Агент пишет follow-up и обновляет CRM по транскрипту звонка</p></div><div style="--c:var(--green)"><p class="cs-k">Результат</p><p class="cs-n">−1,5 ч</p><p class="cs-t">в день на каждого менеджера</p></div></div><p class="cs-who"><b>B2B SaaS, 40 человек</b> · внедрение за 3 недели</p></section>`},
+  {id:'gallery', g:'Во всю ширину', n:'Галерея фото', c:'.gallery (.g2 / .mosaic) · figure > img + figcaption', w:'2–3 фото рядом или мозаика «одно большое + два». Подписи поверх затемнения.',
+   h:`<section class="slide wide"><p class="kicker">Как это было</p><h2>Офлайн-<span class="g">интенсив</span></h2><div class="gallery mosaic"><figure><img src="${PH_IMG}" alt=""><figcaption>День 1 · разбор кейсов</figcaption></figure><figure><img src="${PH_IMG}" alt=""><figcaption>Работа в парах</figcaption></figure><figure><img src="${PH_IMG}" alt=""><figcaption>Демо участников</figcaption></figure></div></section>`},
+  {id:'faq', g:'Во всю ширину', n:'FAQ', c:'.faq · .fq-q + .fq-a', w:'Частые вопросы и короткие ответы, 4–6 пар в две колонки. Перед Q&amp;A или в продающей части.',
+   h:`<section class="slide wide"><p class="kicker">Частые вопросы</p><h2>Что обычно <span class="g2">спрашивают</span></h2><div class="faq"><div><p class="fq-q">Нужно ли уметь программировать?</p><p class="fq-a">Нет. Всё делаем словами и готовыми шаблонами.</p></div><div><p class="fq-q">Сколько времени в неделю?</p><p class="fq-a">3–4 часа: сессия плюс практика.</p></div><div><p class="fq-q">Какие инструменты платные?</p><p class="fq-a">Подписка Claude Pro; остальное бесплатно.</p></div><div><p class="fq-q">Что если пропущу сессию?</p><p class="fq-a">Запись и конспект появятся в тот же день.</p></div></div></section>`},
 ];
+
+// ---------- темы, шрифты, иллюстрации ----------
+const COLOR_KEYS = ['bg','bg2','fg','muted','dim','card','card2','line','green','amber','blue','violet','orange','pink'];
+const pal = a => Object.fromEntries(COLOR_KEYS.map((k,i)=>[k,a[i]]));
+const THEMES = {
+  night:    {n:'Ночь',     d:'по умолчанию: зелёный + янтарь, арт синий + фиолетовый',
+             c:pal(['#080a0c','#0e1117','#e8eaf0','#a7adbe','#5b6276','#111318','#181c25','#1e232f','#4ade80','#fbbf24','#38bdf8','#c084fc','#fb923c','#f472b6'])},
+  midnight: {n:'Полночь',  d:'холодная: бирюза + розовый, индиго в арте',
+             c:pal(['#0a0f1f','#0f1629','#e6eaf5','#a3acc6','#59627e','#121a2e','#18213a','#1f2a44','#22d3ee','#f472b6','#818cf8','#e879f9','#fb923c','#fda4af'])},
+  forest:   {n:'Лес',      d:'спокойная: лайм + мёд, изумруд в арте',
+             c:pal(['#0a0f0b','#0f1610','#e7ede6','#a5b3a6','#5c6b5e','#111812','#172119','#1e2a20','#a3e635','#fcd34d','#34d399','#2dd4bf','#fb923c','#f9a8d4'])},
+  ember:    {n:'Угли',     d:'тёплая: коралл + персик, огонь в арте',
+             c:pal(['#0f0a08','#16100c','#f2e9e4','#bcaaa0','#6f5f57','#19110d','#221812','#2c1f18','#fb7185','#fdba74','#f59e0b','#ef4444','#fb923c','#f472b6'])},
+  mono:     {n:'Моно',     d:'без цвета: белый + серый, строго',
+             c:pal(['#0a0a0a','#111111','#f2f2f2','#a1a1aa','#5f5f66','#141414','#1b1b1b','#262626','#ffffff','#a1a1aa','#e4e4e7','#71717a','#d4d4d8','#a1a1aa'])},
+  paper:    {n:'Бумага',   d:'светлая: для печати и ярких залов',
+             c:pal(['#f6f3ec','#efeadf','#1c1b19','#57534e','#8a857c','#ebe5d8','#e3dccc','#d6cfbf','#15803d','#b45309','#0369a1','#7c3aed','#c2410c','#be185d'])},
+};
+const FONT_PRESETS = {
+  avantgarde: {n:'Авангард',    d:'по умолчанию, геометрия и характер', f:['Unbounded','Manrope','Golos Text']},
+  editorial:  {n:'Журнал',      d:'засечки, мягко, для историй',          f:['Playfair Display','Manrope','Lora']},
+  strict:     {n:'Строгий',     d:'бизнес, отчёты, питчи',                f:['Inter Tight','Inter','Inter']},
+  tech:       {n:'Техно',       d:'продукт, разработка, AI',              f:['Russo One','JetBrains Mono','Golos Text']},
+  friendly:   {n:'Дружелюбный', d:'курсы, воркшопы, мягкие углы',         f:['Rubik','Rubik','Nunito']},
+  classic:    {n:'Классика',    d:'академично, спокойно',                 f:['PT Serif','PT Sans','PT Sans']},
+  poster:     {n:'Плакат',      d:'узкие крупные заголовки',              f:['Oswald','Montserrat','Montserrat']},
+  minimal:    {n:'Минимализм',  d:'один шрифт на всё',                    f:['Onest','Onest','Onest']},
+};
+const FONT_W = {'Unbounded':'400;600;700','Manrope':'400;600;700','Golos Text':'400;500;600','Playfair Display':'400;700','Lora':'400;600',
+  'Inter Tight':'400;600;700','Inter':'400;600;700','Russo One':'','JetBrains Mono':'400;600','Rubik':'400;600;700','Nunito':'400;600;700',
+  'PT Serif':'400;700','PT Sans':'400;700','Oswald':'400;600;700','Montserrat':'400;600;700','Onest':'400;600;700'};
+const SERIF = ['Playfair Display','Lora','PT Serif'];
+const fontStack = n => `'${n}', ` + (SERIF.includes(n) ? 'Georgia, serif' : n==='JetBrains Mono' ? 'Menlo, monospace' : '-apple-system, sans-serif');
+const fontsUrl = names => 'https://fonts.googleapis.com/css2?' + [...new Set(names)].map(n=>'family='+n.replace(/ /g,'+')+(FONT_W[n]?':wght@'+FONT_W[n]:'')).join('&') + '&display=swap';
+
+const MOTIF_DATA = {"m": [{"id": "orbital", "n": "вращающийся веер из секторов", "w": "титул, открытие, «вселенная темы»"}, {"id": "converge", "n": "два потока-треугольника в центр", "w": "двое людей, союз, 1+1=3"}, {"id": "path", "n": "извилистый путь с узлами и бегущей точкой", "w": "процесс, маршрут, «как мы идём»"}, {"id": "grid", "n": "сетка 3×3", "w": "набор терминов, словарь, таксономия"}, {"id": "arc", "n": "две дуги-полукольца + узлы", "w": "прогресс «от/к», дуга, мост"}, {"id": "diamond", "n": "вращающиеся ромбы", "w": "расписание, структура, система"}, {"id": "checks", "n": "2×2 квадрата с галочками", "w": "результат, чек-лист, «что унесёте»"}, {"id": "sunburst", "n": "лучи-веер из центра", "w": "фокус, энергия, главная идея"}, {"id": "pulse", "n": "расходящиеся кольца", "w": "ритм, частота, связь, коммуникация"}, {"id": "network", "n": "узлы + рёбра + бегущая точка", "w": "демо, агенты, граф, мультиагентность"}, {"id": "concentric", "n": "вложенные вращающиеся квадраты", "w": "правила/принципы, слои, фокус внутрь"}, {"id": "slabs", "n": "стопка горизонтальных плит", "w": "стек, инструменты, сетап, архитектура"}, {"id": "shield", "n": "щит-гексагон с замком", "w": "приватность, безопасность, данные"}, {"id": "funnel", "n": "разбросанные плитки → центр", "w": "сбор контекста, агрегация, воронка"}, {"id": "stairs", "n": "лестница блоков вверх", "w": "шаги, домашка, план действий"}, {"id": "spiral", "n": "спираль", "w": "рефлексия, итог, «закругляемся», Q&A"}, {"id": "rings", "n": "концентрические кольца (крупно)", "w": "разделитель: обзор блока"}, {"id": "interlock", "n": "два сцепленных квадрата", "w": "разделитель: система / метод"}, {"id": "playring", "n": "play-треугольник в кольце", "w": "разделитель: демо, «смотрим вживую»"}, {"id": "arrow", "n": "большая стрелка вверх", "w": "разделитель: действие, «ваш ход»"}, {"id": "sprout", "n": "росток тянется вверх с листьями", "w": "рост, начало, развитие"}, {"id": "bars", "n": "растущие столбики-бары", "w": "прогресс, метрики, динамика"}, {"id": "mountain", "n": "восхождение на пик с бегущей точкой", "w": "цель, вершина, путь наверх"}, {"id": "ladder", "n": "лестница со ступенями + подъём", "w": "уровни, шаги вверх, карьера"}, {"id": "cycle", "n": "две круговые стрелки", "w": "цикл, итерация, повтор, петля"}, {"id": "gears", "n": "две сцепленные крутящиеся шестерёнки", "w": "механизм, процесс, как это работает"}, {"id": "checklist", "n": "строки с галочками, ставятся по очереди", "w": "agenda, чек-лист, план, задачи"}, {"id": "target", "n": "мишень с расходящимся кольцом", "w": "фокус, цель, точность, прицел"}, {"id": "bulb", "n": "лампочка с лучами", "w": "идея, инсайт, озарение"}, {"id": "compass", "n": "компас с качающейся стрелкой", "w": "направление, навигация, выбор пути"}, {"id": "layers", "n": "три изо-слоя стопкой", "w": "слои, структура, уровни абстракции"}, {"id": "waves", "n": "три текучие волны", "w": "поток, спокойствие, ритм, непрерывность"}, {"id": "constellation", "n": "звёзды соединены линиями", "w": "связи, карта, узнавание паттерна"}, {"id": "thread", "n": "вьющаяся нить с бусиной", "w": "нарратив, история, сквозная линия"}, {"id": "storyarc", "n": "кривая истории: подъём→пик→развязка", "w": "арка трансформации, путь героя"}, {"id": "mirror", "n": "две зеркальные половины", "w": "отражение, обратная связь, «AI как зеркало»"}, {"id": "balance", "n": "качающиеся весы", "w": "сравнение, баланс, компромисс, выбор"}, {"id": "fork", "n": "развилка на два пути", "w": "выбор, ветвление, два варианта"}, {"id": "timeline", "n": "вертикальная ось с узлами + бегунок", "w": "последовательность, хронология, этапы"}, {"id": "phases", "n": "вращающийся круг из 6 секторов", "w": "фазы, этапы цикла, распределение"}, {"id": "hub", "n": "центральный узел + спицы к точкам", "w": "источник, центр, «всё сходится сюда»"}, {"id": "unfold", "n": "раскрывающиеся грани из центра", "w": "раскрытие, развёртывание, новое измерение"}, {"id": "ripple", "n": "расходящиеся круги от центра", "w": "влияние, распространение, эффект"}, {"id": "helix", "n": "две спирали ДНК с бегающей точкой", "w": "трансформация, рост, эволюция"}, {"id": "flag", "n": "флаг на древке + пульс у основания", "w": "веха, цель достигнута, milestone"}, {"id": "spark", "n": "вращающаяся четырёхлучевая искра", "w": "запуск, зажигание, энергия старта"}, {"id": "blocks", "n": "блоки складываются в башню", "w": "строительство, основа, из кусочков"}, {"id": "prism", "n": "луч входит → веер лучей выходит", "w": "одно→много: одна история → форматы"}, {"id": "magnet", "n": "магнит притягивает частицы", "w": "притяжение, лиды, вовлечение"}, {"id": "bridge", "n": "мост-дуга с бегущей точкой", "w": "переход, связь между, «как перейти»"}, {"id": "neural", "n": "Нейросеть", "w": "ИИ, модель, агент думает"}, {"id": "iceberg", "n": "Айсберг", "w": "скрытое, глубина, подсознание"}, {"id": "hourglass", "n": "Песочные часы", "w": "время, дедлайн"}, {"id": "puzzle", "n": "Пазл", "w": "интеграция, недостающий элемент"}, {"id": "key", "n": "Ключ", "w": "доступ, разгадка, ключевая идея"}, {"id": "eye", "n": "Глаз", "w": "внимание, наблюдение, осознанность"}, {"id": "infinity", "n": "Бесконечность", "w": "непрерывное улучшение"}, {"id": "bubbles", "n": "Пузыри диалога", "w": "разговор, обратная связь, чат"}, {"id": "atom", "n": "Атом", "w": "ядро и окружение, экосистема"}, {"id": "equalizer", "n": "Эквалайзер", "w": "голос, аудио, подкаст"}, {"id": "rocket", "n": "Ракета", "w": "запуск, масштаб"}, {"id": "heartbeat", "n": "Пульс", "w": "энергия, «живое»"}, {"id": "sieve", "n": "Сито", "w": "отбор, приоритизация"}, {"id": "scatter", "n": "Точечный график", "w": "данные, тренд"}, {"id": "donut", "n": "Кольцевая диаграмма", "w": "доля, распределение"}, {"id": "fan", "n": "Веер карточек", "w": "варианты, форматы"}, {"id": "door", "n": "Дверь", "w": "порог, новая возможность"}, {"id": "maze", "n": "Лабиринт", "w": "сложность, поиск решения"}, {"id": "pendulum", "n": "Маятник", "w": "колебания, баланс крайностей"}, {"id": "tree", "n": "Дерево", "w": "иерархия, оргструктура"}, {"id": "magnifier", "n": "Лупа", "w": "поиск, исследование"}, {"id": "clock", "n": "Часы", "w": "расписание, тайминг"}, {"id": "team", "n": "Команда", "w": "люди, сообщество, роли"}, {"id": "chain", "n": "Цепь", "w": "связка, зависимость, слабое звено"}], "c": {"Рост / прогресс / развитие": ["sprout", "bars", "mountain", "ladder", "stairs", "helix", "flag", "arrow"], "Цикл / повторение / итерация": ["cycle", "spiral", "phases", "gears", "diamond", "concentric"], "Связь / сеть / коммуникация": ["network", "hub", "constellation", "ripple", "pulse", "waves", "thread"], "Выбор / баланс / сравнение": ["fork", "balance", "compass", "mirror", "bridge"], "Цель / фокус / результат": ["target", "flag", "sunburst", "arrow", "checks", "checklist"], "Идея / инсайт / запуск": ["bulb", "spark", "prism", "unfold", "playring"], "Структура / система / слои": ["grid", "layers", "slabs", "blocks", "concentric", "diamond", "interlock"], "История / нарратив / путь": ["storyarc", "thread", "path", "timeline", "arc", "mountain", "spiral", "bridge"], "Защита / границы": ["shield", "rings", "interlock", "bridge"], "Открытие / вселенная темы": ["orbital", "sunburst", "hub", "phases"], "Разделители": ["rings", "interlock", "playring", "arrow", "hub"], "Ещё / ИИ, данные, люди, время": ["neural", "iceberg", "hourglass", "puzzle", "key", "eye", "infinity", "bubbles", "atom", "equalizer", "rocket", "heartbeat", "sieve", "scatter", "donut", "fan", "door", "maze", "pendulum", "tree", "magnifier", "clock", "team", "chain"]}};
+const ICONS = [['i-aim','цель'],['i-heart','сердце, ценности'],['i-talk','разговор'],['i-frame','рамка, фокус'],['i-start','старт'],
+  ['i-peak','пик, вершина'],['i-spark','искра, идея'],['i-stack','стек, слои'],['i-flag','флаг, финиш']];
+const ALL_ART = [...MOTIF_DATA.m.map(m=>m.id), ...ICONS.map(i=>i[0])];
 
 const DEFAULTS = {
   ratio:"16:9", type:"webinar", brand:"", decktag:"",
-  colors:{green:"#4ade80", amber:"#fbbf24"},
-  art:true, export:"none",
-  layouts:Object.fromEntries(LAYOUTS.map(l=>[l.id,'on']))
+  theme:"night", colors:{...THEMES.night.c},
+  fontPreset:"avantgarde", fonts:{display:"Unbounded", head:"Manrope", body:"Golos Text"},
+  art:true, animate:true, export:"none",
+  ui:{cornerTag:true, menu:"quiet", brand:true, progress:"both", size:"m", tone:"muted"},
+  images:{embed:"inline", format:"webp", maxWidth:1800, place:"half", fit:"contain", matchBg:true, trim:true, round:true},
+  layouts:Object.fromEntries(LAYOUTS.map(l=>[l.id,'on'])),
+  motifs:Object.fromEntries(ALL_ART.map(id=>[id,'on']))
 };
 const LT_STATES = [['prefer','Чаще','p'],['on','Можно',''],['off','Выкл','x']];
 
@@ -314,20 +642,41 @@ function merge(base, over){
   for (const k in over||{}) {
     if (!(k in base)) continue;
     if (over[k] && typeof over[k]==='object' && !Array.isArray(over[k])) {
-      for (const kk in base[k]) if (kk in over[k]) out[k][kk] = over[k][kk];
+      for (const kk in (k==='motifs' ? over[k] : base[k])) if (kk in over[k]) out[k][kk] = over[k][kk];
     } else out[k] = over[k];
   }
   return out;
 }
 
+const setRadio = (name, v) => f.querySelectorAll(`input[name="${name}"]`).forEach(r=>r.checked = r.value===String(v));
+const getRadio = (name, d) => f.querySelector(`input[name="${name}"]:checked`)?.value ?? d;
+
+function renderTiles(){
+  document.getElementById('themeTiles').innerHTML = Object.entries(THEMES).map(([id,t])=>`<label class="tile"><input type="radio" name="theme" value="${id}">
+    <div class="theme-sw" style="background:${t.c.bg}">${['green','amber','blue','violet'].map(k=>`<i style="background:${t.c[k]}"></i>`).join('')}<b style="color:${t.c.fg}">Аа</b></div>
+    <div class="tile-name">${t.n}</div><div class="tile-desc">${t.d}</div></label>`).join('');
+  document.getElementById('fontTiles').innerHTML = Object.entries(FONT_PRESETS).map(([id,p])=>`<label class="tile"><input type="radio" name="fontPreset" value="${id}">
+    <div class="font-sample"><span class="d" style="font-family:${fontStack(p.f[0])};font-weight:700">Заголовок</span><span class="t" style="font-family:${fontStack(p.f[2])}">Текст слайда, 2026</span></div>
+    <div class="tile-name">${p.n}</div><div class="tile-desc">${[...new Set(p.f)].join(' · ')}<br>${p.d}</div></label>`).join('');
+  const l = document.createElement('link'); l.rel = 'stylesheet';
+  l.href = fontsUrl(Object.values(FONT_PRESETS).flatMap(p=>p.f)); document.head.appendChild(l);
+}
+
 function fill(){
-  f.querySelectorAll('input[name=ratio]').forEach(r=>r.checked = r.value===cfg.ratio);
-  f.querySelectorAll('input[name=export]').forEach(r=>r.checked = r.value===cfg.export);
+  setRadio('ratio', cfg.ratio); setRadio('export', cfg.export);
   F.type.value = cfg.type; F.brand.value = cfg.brand; F.decktag.value = cfg.decktag;
-  F.art.checked = !!cfg.art;
+  F.art.checked = !!cfg.art; F.animate.checked = !!cfg.animate;
+  setRadio('theme', cfg.theme); setRadio('fontPreset', cfg.fontPreset);
+  document.getElementById('customNote').hidden = cfg.theme!=='custom';
   f.querySelectorAll('[data-color]').forEach(i=>i.value = cfg.colors[i.dataset.color]);
   showColors();
-  renderLayouts();
+  const u = cfg.ui; F.ui_cornerTag.checked = !!u.cornerTag; F.ui_brand.checked = !!u.brand;
+  setRadio('ui_menu', u.menu); setRadio('ui_progress', u.progress); setRadio('ui_size', u.size); setRadio('ui_tone', u.tone);
+  const im = cfg.images;
+  setRadio('img_embed', im.embed); setRadio('img_format', im.format); setRadio('img_width', im.maxWidth);
+  setRadio('img_place', im.place); setRadio('img_fit', im.fit);
+  F.img_matchBg.checked = !!im.matchBg; F.img_trim.checked = !!im.trim; F.img_round.checked = !!im.round;
+  renderLayouts(); renderMotifs(); markStale();
 }
 
 function showColors(){
@@ -335,15 +684,31 @@ function showColors(){
 }
 
 function read(e){
-  cfg.ratio = f.querySelector('input[name=ratio]:checked')?.value || DEFAULTS.ratio;
-  cfg.export = f.querySelector('input[name=export]:checked')?.value || 'none';
+  const t = e?.target, name = t?.name || '';
+  if (name.startsWith('lt-') || name.startsWith('mo-')) return;   // у сеток свои обработчики
+  if (name==='theme' && THEMES[t.value]) {
+    cfg.theme = t.value; cfg.colors = {...THEMES[t.value].c};
+    f.querySelectorAll('[data-color]').forEach(i=>i.value = cfg.colors[i.dataset.color]);
+  } else if (t?.dataset?.color) {
+    cfg.colors[t.dataset.color] = t.value; cfg.theme = 'custom'; setRadio('theme', 'custom');
+  } else if (name==='fontPreset' && FONT_PRESETS[t.value]) {
+    cfg.fontPreset = t.value; const [display, head, body] = FONT_PRESETS[t.value].f; cfg.fonts = {display, head, body};
+  }
+  document.getElementById('customNote').hidden = cfg.theme!=='custom';
+  cfg.ratio = getRadio('ratio', DEFAULTS.ratio); cfg.export = getRadio('export', 'none');
   cfg.type = F.type.value; cfg.brand = F.brand.value.trim(); cfg.decktag = F.decktag.value.trim();
-  cfg.art = F.art.checked;
-  f.querySelectorAll('[data-color]').forEach(i=>cfg.colors[i.dataset.color] = i.value);
+  cfg.art = F.art.checked; cfg.animate = F.animate.checked;
+  cfg.ui = {cornerTag:F.ui_cornerTag.checked, menu:getRadio('ui_menu','quiet'), brand:F.ui_brand.checked,
+            progress:getRadio('ui_progress','both'), size:getRadio('ui_size','m'), tone:getRadio('ui_tone','muted')};
+  cfg.images = {embed:getRadio('img_embed','inline'), format:getRadio('img_format','webp'), maxWidth:+getRadio('img_width',1800),
+                place:getRadio('img_place','half'), fit:getRadio('img_fit','contain'),
+                matchBg:F.img_matchBg.checked, trim:F.img_trim.checked, round:F.img_round.checked};
   showColors();
   queueSave();
-  // Превью зависят от акцентов, пропорций, арта и подписей — перерисовать с задержкой
-  if (e && e.target.name!=='type' && e.target.name!=='export') { clearTimeout(ltTimer); ltTimer = setTimeout(refreshFrames, 350); }
+  // Превью зависят почти от всего, кроме типа, экспорта и картинок — перерисовать с задержкой
+  if (e && !['type','export'].includes(name) && !name.startsWith('img_')) {
+    clearTimeout(ltTimer); ltTimer = setTimeout(()=>{ markStale(); if (['theme','animate'].includes(name) || t?.dataset?.color) renderMotifs(); }, e.type==='input' ? 350 : 60);
+  }
 }
 
 // ---------- автосохранение, как в Fix It ----------
@@ -362,7 +727,6 @@ async function save(){
 
 f.addEventListener('input', read);
 f.addEventListener('change', read);
-// Сброс — только после подтверждения: первый клик взводит, второй (в течение 4 с) сбрасывает
 const resetBtn = document.getElementById('reset'), resetLabel = resetBtn.querySelector('span');
 let resetArmed = null;
 resetBtn.onclick = ()=>{
@@ -379,16 +743,19 @@ document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='s'
 
 // ---------- навигация по разделам ----------
 const navs = document.querySelectorAll('.sidebar .navchip[data-target]');
+const HASH = {'sec-look':'look','sec-ui':'ui','sec-layouts':'layouts','sec-art':'art','sec-images':'images'};
+let curPane = 'sec-basics';
 function showPane(id){
+  curPane = id;
   navs.forEach(n=>n.classList.toggle('active', n.dataset.target===id));
   document.querySelectorAll('.pane').forEach(p=>p.hidden = p.id!==id);
-  history.replaceState(null,'', id==='sec-layouts' ? '#layouts' : location.pathname);
-  if (id==='sec-layouts') document.querySelectorAll('.lt-frame iframe').forEach(fit);
+  history.replaceState(null,'', HASH[id] ? '#'+HASH[id] : location.pathname);
+  refreshCurrent();
   window.scrollTo(0,0);
 }
 navs.forEach(n=>n.onclick = ()=>showPane(n.dataset.target));
 
-// ---------- раскладки ----------
+// ---------- рендер слайда для превью ----------
 let tplCache = null, ltGroup = 'Все', ltTimer = null;
 async function getTemplate(){
   if (tplCache) return tplCache;
@@ -397,31 +764,95 @@ async function getTemplate(){
   return tplCache = await r.text();
 }
 
+const hexRgb = h => { h = h.replace('#',''); if (h.length===3) h = [...h].map(x=>x+x).join(''); return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)); };
+const isLight = () => { const [r,g,b] = hexRgb(cfg.colors.bg); return (0.299*r + 0.587*g + 0.114*b) > 140; };
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+
+// Перекраска: каждый дефолтный хекс шаблона → цвет темы, плюс rgb-тройки акцентов в rgba(...)
+function recolor(t){
+  const def = THEMES.night.c, c = cfg.colors, hex = {}, trip = {};
+  for (const k of COLOR_KEYS) if (c[k] && c[k].toLowerCase()!==def[k]) {
+    hex[def[k]] = c[k];
+    if (!['bg','bg2','fg','muted','dim','card','card2','line'].includes(k)) trip[hexRgb(def[k]).join(',')] = hexRgb(c[k]).join(',');
+  }
+  const hk = Object.keys(hex), tk = Object.keys(trip);
+  if (hk.length) t = t.replace(new RegExp(hk.map(escRe).join('|'),'gi'), m=>hex[m.toLowerCase()]);
+  if (tk.length) t = t.replace(new RegExp(tk.map(k=>k.split(',').join(',\\s*')).join('|'),'g'), m=>trip[m.replace(/\s/g,'')]);
+  if (isLight()) t = t.replace(/color:\s*#fff\b/gi, 'color:var(--fg)').replace(/rgba\(255,\s*255,\s*255/g, 'rgba(0,0,0')
+                      .replace(/(fill|stroke)="#fff(fff)?"/gi, `$1="${c.fg}"`);
+  return t;
+}
+const stripAnim = t => t.replace(/<(animate|animateTransform|animateMotion|set)\b[^>]*\/>/g,'').replace(/<(animate|animateTransform|animateMotion|set)\b[^>]*>[\s\S]*?<\/\1>/g,'');
+
+function uiCss(){
+  const u = cfg.ui, sel = '.corner-tag,.brand,.counter'; let s = '';
+  if (!u.cornerTag) s += '.corner-tag{display:none!important}';
+  if (!u.brand) s += '.brand{display:none!important}';
+  if (u.menu==='hover') s += '.menu-btn{opacity:0}.menu-btn:hover,.menu-btn[aria-expanded="true"]{opacity:.95}';
+  if (u.menu==='off') s += '.menu-btn{display:none!important}';
+  if (u.progress==='counter') s += '.counter-bar{display:none!important}';
+  if (u.progress==='bar') s += '.counter{display:none!important}';
+  if (u.progress==='off') s += '.counter-wrap{display:none!important}';
+  if (u.size==='s') s += `${sel}{font-size:.62rem}`;
+  if (u.size==='l') s += `${sel}{font-size:.88rem}`;
+  if (u.tone==='dim') s += `${sel}{color:var(--dim)}`;
+  if (u.tone==='bright') s += `${sel}{color:var(--fg)}`;
+  return s;
+}
+
 function slideDoc(tpl, html){
-  const c = cfg.colors;
-  const hex = c.green.replace('#',''), rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)).join(',');
+  const fo = cfg.fonts;
   const css = `<style>
-    :root{--green:${c.green};--amber:${c.amber};--green-lo:rgba(${rgb},.1)}
-    .progress,.counter,.navbottom,#auto-bar,.menu-btn,.menu-panel,.dots,.notes,.hint,.nav,.fs-btn{display:none!important}
+    @import url('${fontsUrl([fo.display, fo.head, fo.body])}');
+    :root{--font-display:${fontStack(fo.display)};--font-head:${fontStack(fo.head)};--font-body:${fontStack(fo.body)}}
+    .progress,.navbottom,#auto-bar,.menu-panel,.dots,.notes,.hint,.nav,.fs-btn{display:none!important}
+    ${uiCss()}
     ${cfg.art ? '' : '.art:not(.pic):not([style*="z-index:1"]){display:none!important}'}
+    ${cfg.animate ? '' : '*,*::before,*::after{animation:none!important;transition:none!important}'}
   </style>`;
-  const slide = html.replace('class="slide', 'class="slide active');
-  return tpl.replace('<!-- TITLE_PLACEHOLDER -->','Раскладка')
-    .replace('<!-- BRAND_PLACEHOLDER -->', cfg.brand || 'Бренд')
+  let doc = tpl.replace('<!-- TITLE_PLACEHOLDER -->','Раскладка')
+    .replace('<!-- BRAND_PLACEHOLDER -->', cfg.brand || 'Бренд · сайт')
     .replace('<!-- DECKTAG_PLACEHOLDER -->', cfg.decktag || 'Курс · Сессия 2')
-    .replace('<!-- SLIDES_PLACEHOLDER -->', slide)
-    .replace('class="deck"', cfg.ratio==='9:16' ? 'class="deck ratio-9-16"' : 'class="deck"')
-    .replace('</head>', css + '</head>');
+    .replace('<!-- SLIDES_PLACEHOLDER -->', html.replace('class="slide', 'class="slide active'))
+    .replace('class="deck"', cfg.ratio==='9:16' ? 'class="deck ratio-9-16"' : 'class="deck"');
+  doc = recolor(doc);
+  if (!cfg.animate) doc = stripAnim(doc);
+  return doc.replace('</head>', css + '</head>');
 }
 
 function fit(frame){ const w = frame.parentElement.clientWidth; if (w) frame.style.transform = `scale(${w/1280})`; }
 
+// Перерисовываем только видимый раздел; остальные — при открытии
+const stale = new Set();
+function markStale(){ ['look','ui','lt'].forEach(k=>stale.add(k)); refreshCurrent(); }
+function refreshCurrent(){
+  const k = {'sec-look':'look','sec-ui':'ui','sec-layouts':'lt'}[curPane];
+  if (k && stale.has(k)) { stale.delete(k); ({look:refreshLook, ui:refreshUi, lt:refreshFrames})[k](); }
+  else document.querySelectorAll(`#${curPane} .lt-frame iframe`).forEach(fit);
+}
+const LH = id => LAYOUTS.find(l=>l.id===id).h;
+async function setFrame(ifr, html){ try { ifr.srcdoc = slideDoc(await getTemplate(), html); fit(ifr); } catch {} }
+function refreshLook(){ setFrame(document.getElementById('pv1'), LH('title')); setFrame(document.getElementById('pv2'), LH('bullets')); }
+function refreshUi(){ setFrame(document.getElementById('pvU'), LH('qa')); }
+
+// ---------- раскладки ----------
 function countLayouts(){
   const v = Object.values(cfg.layouts);
   const on = v.filter(s=>s!=='off').length, pref = v.filter(s=>s==='prefer').length;
   document.getElementById('ltCount').innerHTML = `используются <b>${on}</b> из ${v.length}` + (pref ? ` · чаще <b>${pref}</b>` : '');
   document.getElementById('navCount').textContent = `${on}/${v.length}`;
 }
+
+let ltView = localStorage.getItem('slides-lt-view') || 'grid';
+function applyView(){
+  document.getElementById('ltGrid').className = 'lt-grid' + (ltView!=='grid' ? ' view-'+ltView : '');
+  document.querySelectorAll('#ltView .pill').forEach(b=>b.classList.toggle('selected', b.dataset.view===ltView));
+  requestAnimationFrame(()=>document.querySelectorAll('#ltGrid iframe').forEach(fit));
+}
+document.getElementById('ltView').onclick = e=>{
+  const v = e.target.closest('[data-view]')?.dataset.view; if (!v) return;
+  ltView = v; localStorage.setItem('slides-lt-view', v); applyView();
+};
 
 function renderLayouts(){
   const grid = document.getElementById('ltGrid');
@@ -434,9 +865,10 @@ function renderLayouts(){
       <div class="lt-body"><h3>${l.n}<small>${l.g}</small></h3><p>${l.w}</p><code>${l.c}</code>
       <div class="lt-foot"><div class="pillgroup">${LT_STATES.map(([v,t,cls])=>`<label class="pill ${cls}"><input type="radio" name="lt-${l.id}" value="${v}" ${s===v?'checked':''}>${t}</label>`).join('')}</div></div></div></article>`;
   }).join('');
+  applyView();
   countLayouts();
   grid.querySelectorAll('.lt-frame').forEach(fr=>fr.onclick = ()=>openZoom(fr.closest('.lt').dataset.id));
-  refreshFrames();
+  stale.add('lt'); refreshCurrent();
 }
 
 async function refreshFrames(){
@@ -445,7 +877,7 @@ async function refreshFrames(){
   catch { document.getElementById('ltGrid').innerHTML = '<p class="pane-desc">Превью работают только через сервер: <code>/slides-generator setup</code>.</p>'; return; }
   document.querySelectorAll('#ltGrid .lt').forEach(card=>{
     const ifr = card.querySelector('iframe');
-    ifr.srcdoc = slideDoc(tpl, LAYOUTS.find(l=>l.id===card.dataset.id).h);
+    ifr.srcdoc = slideDoc(tpl, LH(card.dataset.id));
     fit(ifr);
   });
 }
@@ -469,7 +901,60 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.getEleme
 document.getElementById('ltFilter').onclick = e=>{ const g=e.target.dataset?.g; if(g){ ltGroup=g; renderLayouts(); } };
 window.addEventListener('resize', ()=>document.querySelectorAll('.lt-frame iframe').forEach(fit));
 
-showPane(location.hash==='#layouts' ? 'sec-layouts' : 'sec-basics');
+// ---------- иллюстрации ----------
+let moGroup = 'Все';
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+async function buildDefs(){
+  let tpl; try { tpl = await getTemplate(); } catch { return false; }
+  let d = [...tpl.matchAll(/<defs>[\s\S]*?<\/defs>/g)].map(m=>m[0]).sort((a,b)=>b.length-a.length)[0] || '';
+  d = recolor(d); if (!cfg.animate) d = stripAnim(d);
+  document.getElementById('defsHost').innerHTML = `<svg width="0" height="0" style="position:absolute">${d}</svg>`;
+  return true;
+}
+function moCard(id, name, where, icon){
+  const s = cfg.motifs[id], sym = document.getElementById(id);
+  const vb = sym?.getAttribute('viewBox') || (icon ? '0 0 48 48' : '0 0 420 560');
+  return `<article class="mo ${s}" data-id="${id}"><div class="mo-art${icon?' icon':''}"><svg viewBox="${vb}"><use href="#${id}"/></svg></div>
+    <div class="mo-body"><h3>${cap(name)}<code>${id}</code></h3>${where?`<p>${where}</p>`:''}
+    <div class="pillgroup">${LT_STATES.map(([v,t,cls])=>`<label class="pill ${cls}"><input type="radio" name="mo-${id}" value="${v}" ${s===v?'checked':''}>${t}</label>`).join('')}</div></div></article>`;
+}
+function countMotifs(){
+  const v = Object.values(cfg.motifs), on = v.filter(s=>s!=='off').length, pref = v.filter(s=>s==='prefer').length;
+  document.getElementById('moCount').innerHTML = `используются <b>${on}</b> из ${v.length}` + (pref ? ` · чаще <b>${pref}</b>` : '');
+  document.getElementById('navMoCount').textContent = `${on}/${v.length}`;
+}
+async function renderMotifs(){
+  const groups = ['Все', ...Object.keys(MOTIF_DATA.c), 'Иконки', 'Новые'];
+  document.getElementById('moFilter').innerHTML = groups.map(g=>`<button type="button" class="pill ${g===moGroup?'selected':''}" data-g="${g}">${g.split(' / ')[0]}</button>`).join('');
+  countMotifs();
+  const wrap = document.getElementById('moWrap');
+  if (!(await buildDefs())) { wrap.innerHTML = '<p class="pane-desc">Галерея работает только через сервер: <code>/slides-generator setup</code>.</p>'; return; }
+  wrap.style.setProperty('--mo-bg', cfg.colors.bg);
+  const byId = Object.fromEntries(MOTIF_DATA.m.map(m=>[m.id,m]));
+  const motifs = ids => `<div class="mo-grid">${ids.filter(id=>byId[id]).map(id=>moCard(id, byId[id].n, byId[id].w)).join('')}</div>`;
+  const icons = `<div class="mo-grid">${ICONS.map(([id,n])=>moCard(id, n, 'иконка над заголовком карточки', true)).join('')}</div>`;
+  // мотивы из template.html, которых ещё нет в описаниях, — группа «Новые»
+  const known = new Set(ALL_ART), extra = [...document.querySelectorAll('#defsHost symbol')].map(s=>s.id).filter(id=>id && !known.has(id));
+  extra.forEach(id=>{ if (!cfg.motifs[id]) cfg.motifs[id] = 'on'; });
+  const extras = extra.length ? `<p class="mo-sub">Новые · ${extra.length}</p><div class="mo-grid">${extra.map(id=>moCard(id, id, '', /^i-/.test(id))).join('')}</div>` : '';
+  if (extra.length) countMotifs();
+  if (!extra.length) document.querySelector('#moFilter [data-g="Новые"]')?.remove();
+  wrap.innerHTML = moGroup==='Все' ? `<p class="mo-sub">Мотивы · ${MOTIF_DATA.m.length}</p>${motifs(MOTIF_DATA.m.map(m=>m.id))}${extras}<p class="mo-sub">Иконки для карточек · ${ICONS.length}</p>${icons}`
+    : moGroup==='Новые' ? extras
+    : moGroup==='Иконки' ? icons : `<p class="mo-sub">${moGroup}</p>${motifs(MOTIF_DATA.c[moGroup])}`;
+  wrap.classList.toggle('static-art', !cfg.animate);
+}
+document.getElementById('moFilter').onclick = e=>{ const g=e.target.dataset?.g; if(g){ moGroup=g; renderMotifs(); } };
+document.getElementById('moWrap').addEventListener('change', e=>{
+  const card = e.target.closest('.mo'); if (!card) return;
+  cfg.motifs[card.dataset.id] = e.target.value;
+  card.className = 'mo ' + e.target.value;
+  countMotifs(); queueSave();
+});
+
+renderTiles();
+const startPane = Object.keys(HASH).find(k=>'#'+HASH[k]===location.hash) || 'sec-basics';
+showPane(startPane);
 fetch('/config').then(r=>r.ok?r.json():Promise.reject()).then(j=>{cfg=merge(DEFAULTS,j);fill();setStatus('Все изменения сохранены','');})
   .catch(()=>{ fill(); setStatus('Сервер не отвечает','error'); });
 </script>

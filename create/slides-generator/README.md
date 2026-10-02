@@ -2,7 +2,7 @@
 
 A [Claude Code](https://claude.ai/code) skill that turns a Markdown file into a self-contained, single-file HTML slide deck.
 
-**Dark minimal style** · animated SVG art · 50 geometric motifs · keyboard navigation · speaker notes · autoplay
+**Dark minimal style** · animated SVG art · 74 geometric motifs · keyboard navigation · speaker notes · autoplay
 
 ![Slide example](https://i.imgur.com/placeholder.png)
 
@@ -99,7 +99,7 @@ The skill infers layout from content: text-heavy → left/right 50/50; grids/ste
 `template.html` is the single source of truth. It contains:
 
 - CSS custom properties (`:root`) for colors, fonts, spacing
-- 50 `<symbol>` SVG motifs — add your own in the same `420×560` canvas style
+- 74 `<symbol>` SVG motifs — add your own in the same `420×560` canvas style
 - JS for navigation, autoplay, speaker notes, fullscreen
 
 **Color palette** — 6 accent variables, all configurable:

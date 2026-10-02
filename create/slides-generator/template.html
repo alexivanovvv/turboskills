@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><!-- TITLE_PLACEHOLDER --></title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Manrope:wght@500;600;700;800&family=Golos+Text:wght@400;500;600;700&family=Lora:ital,wght@1,400;1,500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Manrope:wght@500;600;700;800&family=Golos+Text:wght@400;500;600;700&family=Lora:ital,wght@1,400;1,500&family=JetBrains+Mono:wght@400;600&display=swap');
   :root{
     --bg:#080a0c;--bg2:#0e1117;--fg:#e8eaf0;--muted:#a7adbe;--dim:#5b6276;
     --green:#4ade80;--green-lo:rgba(74,222,128,.1);--amber:#fbbf24;--blue:#38bdf8;--violet:#c084fc;--orange:#fb923c;--pink:#f472b6;
@@ -13,6 +13,7 @@
     --font-display:'Unbounded',-apple-system,BlinkMacSystemFont,sans-serif;
     --font-head:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;
     --font-body:'Golos Text',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
     --body-size:clamp(1.1rem,1.6cqw,1.42rem);
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -113,7 +114,6 @@
   .sec-title{font-family:var(--font-display);font-size:clamp(2.1rem,5.2cqw,4rem);font-weight:700;color:#fff;letter-spacing:-.015em;line-height:1.16}
   .sec-title .g2{color:var(--fg)}
   .sec-sub{margin-top:1.5rem;font-size:clamp(1rem,1.6cqw,1.35rem);color:var(--muted);max-width:30ch;line-height:1.5}
-  .progress{position:fixed;left:0;top:0;height:2px;background:linear-gradient(90deg,var(--green),var(--amber));transition:width .32s;z-index:30;box-shadow:0 0 10px rgba(74,222,128,.4)}
   #auto-bar{position:fixed;left:0;top:0;height:2px;width:0;background:rgba(251,191,36,.55);z-index:31;pointer-events:none;transition:none}
   #auto-bar.running{animation:auto-count 20s linear forwards}
   #auto-bar.running.fast{animation:auto-count 7s linear forwards}
@@ -134,19 +134,18 @@
   .menu-item:hover{background:rgba(255,255,255,.06)}
   .menu-item:hover svg,.menu-item.on svg{opacity:1}
   .menu-item.on{color:var(--amber)}
+  .menu-sep{height:1px;background:rgba(255,255,255,.06);margin:.25rem .4rem}
+  .menu-status{display:none;color:var(--muted);font-size:.7rem;line-height:1.45;padding:.35rem .65rem;max-width:236px}
+  .menu-status.show{display:block}
+  .menu-status.err{color:#f87171}
   .menu-item kbd{margin-left:auto;font-family:var(--font-body);font-size:.66rem;color:var(--dim);letter-spacing:.02em}
   .menu-hint{color:var(--dim);font-size:.66rem;line-height:1.55;padding:.55rem .65rem .35rem;margin-top:.2rem;border-top:1px solid rgba(255,255,255,.06);letter-spacing:.02em}
-  .hint{position:fixed;right:1.6vw;top:calc(1.5vh + 2.5rem);color:var(--muted);font-size:.72rem;z-index:35;background:rgba(16,18,23,.9);border:1px solid rgba(255,255,255,.08);padding:.4rem .75rem;border-radius:8px;letter-spacing:.01em;opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .3s,transform .3s;backdrop-filter:blur(8px)}
   #fast-btn.on{color:var(--green)}
-  .counter{position:fixed;right:2.2vw;bottom:1.8vh;color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums;z-index:30;letter-spacing:.05em}
+  .counter-wrap{position:fixed;right:2.2cqw;bottom:1.8vh;display:flex;align-items:center;gap:.65rem;z-index:30}
+  .counter{color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums;letter-spacing:.05em}
+  .counter-bar{width:64px;height:3px;border-radius:2px;background:rgba(255,255,255,.14);overflow:hidden}
+  .counter-fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,var(--green),var(--amber));transition:width .32s;box-shadow:0 0 8px rgba(74,222,128,.35)}
   .brand{position:fixed;left:2.2vw;bottom:1.8vh;color:var(--muted);font-size:.72rem;z-index:30;letter-spacing:.12em;text-transform:uppercase}
-  /* one-time onboarding tooltip pointing at the ⋯ menu, shown only on slide 1 */
-  .hint.show{opacity:1;transform:translateY(0)}
-  .navbottom{position:fixed;left:50%;bottom:1.8vh;transform:translateX(-50%);display:flex;align-items:center;gap:1.6rem;z-index:30}
-  .dots.solo{gap:8px}
-  .dots{display:flex;gap:6px}
-  .dots button{width:6px;height:6px;border-radius:50%;border:none;background:rgba(255,255,255,.22);cursor:pointer;padding:0;transition:background .2s,transform .2s}
-  .dots button.on{background:var(--green);transform:scale(1.4)}
   .notes{position:fixed;left:0;right:0;bottom:0;max-height:40vh;overflow:auto;background:rgba(6,7,10,.97);border-top:1px solid var(--line);padding:1.4rem 9vw 1.8rem;z-index:40;transform:translateY(100%);transition:transform .28s ease}
   .notes.show{transform:translateY(0)}
   .notes h4{color:var(--green);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:.6rem}
@@ -224,6 +223,18 @@
   .art.img{padding:0;overflow:hidden;align-items:stretch}
   .art.img img{width:100%;height:100%;object-fit:cover;display:block}
   /* Иллюстрации из исходных слайдов: целиком, без обрезки */
+  /* Слайд «План сессии»: лестница уровней (нативно, вместо картинки) */
+  .art.levels{padding:0 4cqw 0 1cqw}
+  .lv-wrap{position:relative;width:min(100%,520px);display:flex;flex-direction:column;align-items:center;gap:clamp(.7rem,1.8vh,1.2rem);padding-top:clamp(4.5rem,11vh,7rem)}
+  .lv{font-family:var(--font-head);font-weight:800;font-size:clamp(1.05rem,1.75cqw,1.5rem);letter-spacing:-.01em;color:#2b2416;text-align:center;padding:clamp(1.1rem,3.4vh,1.9rem) 0;border-radius:12px;border:3px solid}
+  .lv1{width:46%;background:#6dd77c;border-color:#47b85a;box-shadow:0 0 0 0 rgba(74,222,128,.5);animation:lvpulse 2.6s ease-out infinite}
+  .lv2{width:74%;background:#ffca4d;border-color:#f0a81a}
+  .lv3{width:100%;background:#ffe0c8;border-color:#fb923c}
+  .lv-hint{position:absolute;top:0;right:0;width:46%;display:flex;flex-direction:column;align-items:flex-end;color:var(--fg)}
+  .lv-hint span{font-family:var(--font-display);font-weight:700;font-size:clamp(.8rem,1.25cqw,1.05rem);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  .lv-hint svg{width:clamp(56px,6.5cqw,90px);margin-right:4%;margin-top:.3rem}
+  @keyframes lvpulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.45)}70%,100%{box-shadow:0 0 0 18px rgba(74,222,128,0)}}
+  @media (prefers-reduced-motion:reduce){.lv1{animation:none}}
   .art.pic{padding:7vh 4cqw 7vh 1cqw}
   .art.pic img{max-width:100%;max-height:80vh;width:auto;height:auto;object-fit:contain;border-radius:14px;display:block}
   .wide-pic{display:block;width:100%;max-height:50vh;object-fit:contain;border-radius:14px;margin:0 auto}
@@ -239,6 +250,148 @@
   .stack{display:grid;grid-template-columns:repeat(2,auto 1fr);gap:1.1rem 1.4rem;align-items:center}
   .stack .sk{font-family:var(--font-head);font-weight:600;font-size:clamp(1rem,1.5cqw,1.3rem);color:var(--fg)}
   .stack .sv{justify-self:start;font-size:clamp(1rem,1.45cqw,1.25rem);font-weight:600;color:#0a0b0e;padding:.4rem .95rem;border-radius:8px;line-height:1.25}
+  /* === +12 раскладок (2026-10-02) === */
+  /* bignum: одна большая цифра + подпись (50/50) */
+  .bigstat{display:flex;flex-direction:column;gap:.6rem;margin-top:.4rem}
+  .bs-n{font-family:var(--font-display);font-weight:800;font-size:clamp(4.5rem,11cqw,10rem);line-height:.95;letter-spacing:-.04em;color:var(--green)}
+  .bs-n small{font-size:.42em;letter-spacing:-.01em;margin-left:.08em}
+  .bs-l{font-family:var(--font-head);font-weight:700;font-size:clamp(1.25rem,2cqw,1.8rem);color:#fff;line-height:1.25;max-width:22ch}
+  .bs-src{color:var(--muted);font-size:clamp(.9rem,1.2cqw,1.05rem);margin-top:.6rem}
+  /* statement: крупное утверждение по центру во всю ширину */
+  .slide.statement{align-items:center;text-align:center}
+  .st-text{font-family:var(--font-display);font-weight:700;font-size:clamp(2.2rem,5.2cqw,4.6rem);line-height:1.18;letter-spacing:-.015em;max-width:22ch;margin:0 auto}
+  .st-by{margin-top:2.2rem;font-family:var(--font-head);font-size:clamp(.8rem,1.1cqw,.95rem);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  /* vs: было → стало, две колонки со стрелкой */
+  .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:3rem;align-items:center;max-width:none}
+  .vs-h{font-family:var(--font-display);font-weight:700;font-size:clamp(1.15rem,1.8cqw,1.5rem);margin-bottom:1.2rem}
+  .vs-col.before .vs-h{color:var(--red)}.vs-col.after .vs-h{color:var(--green)}
+  .vs-col ul{max-width:none}
+  .vs-col.before li{color:var(--muted)}.vs-col.before li::before{background:var(--red)}
+  .vs-arr{width:clamp(56px,5.5cqw,84px);height:clamp(56px,5.5cqw,84px);border-radius:50%;display:grid;place-items:center;background:var(--green-lo);color:var(--green);font-size:clamp(1.5rem,2.4cqw,2.2rem);font-weight:700}
+  /* timeline: горизонтальная ось с вехами */
+  .tline{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2rem;margin-top:1.2rem;padding-top:2.6rem;max-width:none}
+  .tline::before{content:"";position:absolute;left:0;right:0;top:.55rem;height:2px;background:linear-gradient(90deg,var(--green),var(--blue),var(--violet))}
+  .tl-item{position:relative}
+  .tl-item::before{content:"";position:absolute;left:0;top:-2.6rem;width:1.1rem;height:1.1rem;border-radius:50%;background:var(--bg);border:3px solid var(--c,var(--green))}
+  .tl-item.now::before{background:var(--c,var(--green));box-shadow:0 0 0 7px rgba(74,222,128,.18)}
+  .tl-when{font-family:var(--font-display);font-weight:700;font-size:clamp(1.3rem,2cqw,1.8rem);color:var(--c,var(--green));margin-bottom:.45rem}
+  .tl-t{font-family:var(--font-display);font-weight:600;color:#fff;font-size:clamp(1rem,1.45cqw,1.28rem);margin-bottom:.4rem;line-height:1.16}
+  .tl-d{color:var(--muted);font-size:var(--body-size);line-height:1.42}
+  /* hbars: горизонтальные бары-сравнение, растут при показе */
+  .hbars{display:grid;grid-template-columns:auto 1fr auto;gap:1.3rem 1.1rem;align-items:center;max-width:none;margin-top:.4rem}
+  .hb-row{display:contents}
+  .hb-l{font-family:var(--font-head);font-weight:700;color:#fff;font-size:clamp(1rem,1.5cqw,1.3rem)}
+  .hb-track{height:clamp(14px,1.6cqw,22px);border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
+  .hb-fill{height:100%;width:var(--w);border-radius:99px;background:var(--c,var(--green))}
+  .slide.active .hb-fill{animation:hbgrow 1.1s cubic-bezier(.2,0,0,1) both}
+  @keyframes hbgrow{from{width:0}}
+  .hb-v{font-family:var(--font-display);font-weight:700;color:var(--c,var(--green));font-size:clamp(1.05rem,1.6cqw,1.4rem);min-width:3.5ch;text-align:right}
+  /* funnel: воронка из сужающихся полос */
+  .funnel{display:flex;flex-direction:column;align-items:center;gap:.55rem;max-width:none;margin-top:.4rem}
+  .fn-l{display:flex;justify-content:space-between;align-items:center;gap:1rem;width:var(--w);padding:.85rem 1.3rem;border-radius:12px;background:color-mix(in srgb,var(--c) 22%,transparent);border-left:4px solid var(--c)}
+  .fn-t{font-family:var(--font-head);font-weight:700;color:#fff;font-size:clamp(.95rem,1.4cqw,1.22rem)}
+  .fn-v{font-family:var(--font-display);font-weight:700;color:var(--c);font-size:clamp(1.05rem,1.6cqw,1.4rem)}
+  /* venn: три пересекающихся круга */
+  .venn{position:relative;width:min(100%,76vh);aspect-ratio:1.15;margin:.2rem auto 0}
+  .vn{position:absolute;width:56%;aspect-ratio:1;border-radius:50%;background:color-mix(in srgb,var(--c) 16%,transparent);border:2px solid color-mix(in srgb,var(--c) 70%,transparent);display:flex;padding:9%;font-family:var(--font-display);font-weight:600;color:var(--c);font-size:clamp(.95rem,1.45cqw,1.25rem);line-height:1.15}
+  .vn.a{left:4%;top:0;align-items:flex-start;justify-content:flex-start;padding-top:22%}
+  .vn.b{right:4%;top:0;align-items:flex-start;justify-content:flex-end;text-align:right;padding-top:22%}
+  .vn.c{left:22%;bottom:0;align-items:flex-end;justify-content:center;text-align:center}
+  .vn-c{position:absolute;left:50%;top:50%;transform:translate(-50%,-30%);font-family:var(--font-display);font-weight:800;color:#fff;font-size:clamp(.95rem,1.4cqw,1.2rem);text-align:center;background:var(--bg);padding:.35rem .7rem;border-radius:8px}
+  /* agenda: план с таймингом, текущий пункт подсвечен */
+  .agenda{display:flex;flex-direction:column;max-width:none;margin-top:.2rem}
+  .ag-row{display:grid;grid-template-columns:3.2ch 1fr auto;gap:1.1rem;align-items:baseline;padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.07)}
+  .ag-row:last-child{border-bottom:none}
+  .ag-n{font-family:var(--font-display);font-weight:700;color:var(--dim);font-size:clamp(.95rem,1.35cqw,1.15rem)}
+  .ag-t{font-size:var(--body-size);color:var(--fg);line-height:1.35}
+  .ag-m{color:var(--muted);font-size:clamp(.88rem,1.2cqw,1.02rem);font-variant-numeric:tabular-nums}
+  .ag-row.now .ag-n,.ag-row.now .ag-m{color:var(--green)}.ag-row.now .ag-t{color:#fff;font-weight:650}
+  .ag-row.done .ag-t{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.2)}
+  /* testimonial: отзыв с большой кавычкой */
+  .testi{position:relative;max-width:none;padding-top:clamp(3rem,6cqw,5rem)}
+  .testi::before{content:"\201C";position:absolute;left:-.05em;top:-.12em;font-family:'Lora',Georgia,serif;font-size:clamp(7rem,13cqw,11rem);line-height:1;color:var(--amber);opacity:.85}
+  .ts-text{font-family:'Lora',Georgia,serif;font-style:italic;font-size:clamp(1.35rem,2.3cqw,2.05rem);line-height:1.45;color:#fff;max-width:30ch}
+  .ts-who{display:flex;align-items:center;gap:1rem;margin-top:2rem}
+  .ts-av{width:clamp(48px,4.4cqw,64px);height:clamp(48px,4.4cqw,64px);border-radius:50%;display:grid;place-items:center;background:var(--card2);color:var(--amber);font-family:var(--font-display);font-weight:700;font-size:1.05rem;flex:none;object-fit:cover}
+  .ts-name{font-family:var(--font-head);font-weight:700;color:#fff;font-size:clamp(1rem,1.4cqw,1.2rem)}
+  .ts-role{color:var(--muted);font-size:clamp(.88rem,1.2cqw,1.02rem)}
+  /* prompt: окно промпта, моноширинный текст, переменные подсвечены */
+  .prompt{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:none;margin-top:.2rem}
+  .pr-bar{display:flex;align-items:center;gap:.45rem;padding:.7rem 1rem;border-bottom:1px solid var(--line)}
+  .pr-bar i{width:.7rem;height:.7rem;border-radius:50%;background:var(--dim);opacity:.6}
+  .pr-bar span{margin-left:.6rem;font-family:var(--font-head);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .pr-body{padding:1.2rem 1.4rem 1.4rem;font-family:var(--font-mono);font-size:clamp(.95rem,1.35cqw,1.18rem);line-height:1.65;color:var(--fg);white-space:pre-wrap}
+  .pr-body .pv{color:var(--amber);background:rgba(251,191,36,.12);border-radius:4px;padding:0 .2em}
+  .pr-body .pc{color:var(--dim)}
+  .pr-body::after{content:"";display:inline-block;width:.55em;height:1.1em;vertical-align:text-bottom;background:var(--green);margin-left:.15em;animation:caret 1.1s steps(1) infinite}
+  @keyframes caret{50%{opacity:0}}
+  /* chat: диалог пузырями */
+  .chat{display:flex;flex-direction:column;gap:.9rem;max-width:none;margin-top:.2rem}
+  .msg{max-width:84%;padding:.85rem 1.15rem;border-radius:18px;font-size:var(--body-size);line-height:1.45}
+  .msg .who{display:block;font-family:var(--font-head);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:.3rem;opacity:.75}
+  .msg.me{align-self:flex-end;background:var(--card2);color:var(--fg);border-bottom-right-radius:6px}
+  .msg.ai{align-self:flex-start;background:rgba(56,189,248,.12);color:#fff;border-bottom-left-radius:6px}
+  .msg.ai .who{color:var(--blue)}
+  .slide.active .msg{animation:msgin .5s ease both}
+  .slide.active .msg:nth-child(2){animation-delay:.35s}.slide.active .msg:nth-child(3){animation-delay:.7s}.slide.active .msg:nth-child(4){animation-delay:1.05s}
+  @keyframes msgin{from{opacity:0;transform:translateY(10px)}}
+  /* bleed: фото на весь слайд + крупный текст поверх */
+  .slide.bleed{justify-content:flex-end;padding:8vh 8cqw 11vh}
+  .bleed-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+  .slide.bleed::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(8,10,12,.15) 0%,rgba(8,10,12,.55) 55%,rgba(8,10,12,.94) 100%)}
+  .slide.bleed h1,.slide.bleed h2{max-width:20ch}
+  /* === +7 раскладок по референсам PowerPoint/Keynote (2026-10-02) === */
+  /* flip: визуал слева, текст справа */
+  .slide.flip{padding:8vh 8cqw 8vh 52cqw}
+  .slide.flip>.art{right:auto;left:0}
+  /* side-tag: вертикальная метка раздела у левого края (модификатор любого слайда) */
+  .side-tag{position:absolute;left:2.4cqw;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font-family:var(--font-head);font-size:clamp(.7rem,.95cqw,.85rem);letter-spacing:.32em;text-transform:uppercase;color:var(--dim);font-weight:700;max-width:none}
+  /* logos: стена логотипов 6 (3×2) или 12 (6×2); img или текст-вордмарк */
+  .logos{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.07);border-radius:14px;overflow:hidden;max-width:none;margin-top:.4rem}
+  .logos.l12{grid-template-columns:repeat(6,1fr)}
+  .lg{background:var(--bg);display:flex;align-items:center;justify-content:center;gap:.6rem;min-height:clamp(90px,15vh,150px);padding:1rem;font-family:var(--font-display);font-weight:700;font-size:clamp(1rem,1.6cqw,1.4rem);color:var(--fg);letter-spacing:-.01em}
+  .logos.l12 .lg{min-height:clamp(70px,11vh,110px);font-size:clamp(.85rem,1.25cqw,1.1rem)}
+  .lg img{max-width:70%;max-height:56px;object-fit:contain;filter:grayscale(1) brightness(1.6);opacity:.85}
+  .lg i{width:.75em;height:.75em;border-radius:3px;background:var(--c,var(--blue));flex:none}
+  /* pricing: тарифы, рекомендуемый — .plan.hi */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;align-items:stretch;max-width:none;margin-top:.4rem}
+  .plan{border:1px solid var(--line);border-radius:18px;padding:1.6rem 1.7rem;display:flex;flex-direction:column}
+  .plan.hi{border:1.5px solid var(--green);background:var(--green-lo)}
+  .pl-badge{align-self:flex-start;font-family:var(--font-head);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:#0a0b0e;background:var(--green);border-radius:99px;padding:.25rem .7rem;margin-bottom:.9rem}
+  .pl-n{font-family:var(--font-display);font-weight:700;color:#fff;font-size:clamp(1.1rem,1.6cqw,1.4rem);margin-bottom:.5rem}
+  .pl-p{font-family:var(--font-display);font-weight:800;font-size:clamp(1.9rem,3.2cqw,2.9rem);color:var(--fg);letter-spacing:-.02em;line-height:1.05}
+  .pl-p small{font-size:.38em;color:var(--muted);font-weight:600;letter-spacing:0;margin-left:.3em}
+  .plan.hi .pl-p{color:var(--green)}
+  .plan ul{margin-top:1.2rem;gap:.55rem;max-width:none}
+  .plan li{font-size:clamp(.95rem,1.35cqw,1.15rem);margin-bottom:0}
+  /* case: задача → решение → результат */
+  .case{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:3rem;max-width:none;margin-top:.4rem}
+  .cs-k{font-family:var(--font-display);font-weight:700;font-size:clamp(1.05rem,1.6cqw,1.35rem);color:var(--c);margin-bottom:.8rem}
+  .cs-t{color:var(--fg);font-size:var(--body-size);line-height:1.5}
+  .cs-n{font-family:var(--font-display);font-weight:800;font-size:clamp(2.6rem,5cqw,4.4rem);line-height:1;letter-spacing:-.03em;color:var(--green);margin-bottom:.4rem}
+  .cs-n+.cs-t{color:var(--muted)}
+  .cs-who{margin-top:2.4rem;color:var(--muted);font-size:clamp(.9rem,1.2cqw,1.05rem)}
+  .cs-who b{color:#fff;font-weight:650}
+  /* contact: финальный слайд с контактами и QR */
+  .contacts{display:grid;grid-template-columns:auto 1fr;gap:1rem 2rem;align-items:baseline;max-width:none;margin-top:.6rem}
+  .ct-k{font-family:var(--font-head);font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:700}
+  .ct-v{font-size:clamp(1.15rem,1.8cqw,1.55rem);color:#fff;font-weight:600}
+  .art.qr{flex-direction:column;gap:1.2rem}
+  .art.qr img{width:min(62%,320px);aspect-ratio:1;border-radius:18px;background:#fff;padding:14px;image-rendering:pixelated}
+  .art.qr span{color:var(--muted);font-size:clamp(.9rem,1.2cqw,1.05rem)}
+  /* gallery: 2–3 фото в ряд (.g3) или мозаика 1 большое + 2 (.mosaic) */
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;height:56vh;max-width:none;margin-top:.4rem}
+  .gallery.g2{grid-template-columns:repeat(2,1fr)}
+  .gallery.mosaic{grid-template-columns:1.6fr 1fr;grid-template-rows:1fr 1fr}
+  .gallery.mosaic figure:first-child{grid-row:span 2}
+  .gallery figure{position:relative;border-radius:14px;overflow:hidden;min-height:0}
+  .gallery img{width:100%;height:100%;object-fit:cover;display:block}
+  .gallery figcaption{position:absolute;left:0;right:0;bottom:0;padding:1.6rem 1rem .8rem;background:linear-gradient(transparent,rgba(8,10,12,.85));color:#fff;font-family:var(--font-head);font-weight:700;font-size:clamp(.9rem,1.25cqw,1.08rem)}
+  /* faq: вопросы и ответы в две колонки */
+  .faq{display:grid;grid-template-columns:1fr 1fr;gap:2rem 3.4rem;max-width:none;margin-top:.4rem}
+  .fq-q{font-family:var(--font-display);font-weight:600;color:#fff;font-size:clamp(1.02rem,1.5cqw,1.3rem);line-height:1.2;margin-bottom:.5rem;padding-left:1.6rem;position:relative}
+  .fq-q::before{content:"?";position:absolute;left:0;top:0;color:var(--amber);font-weight:800}
+  .fq-a{color:var(--muted);font-size:var(--body-size);line-height:1.45;padding-left:1.6rem}
   /* 9:16 vertical mode */
   .deck.ratio-9-16{position:relative;width:min(100vw,56.25vh);height:min(177.7vw,100vh);aspect-ratio:9/16;margin:0 auto}
   .deck.ratio-9-16 .slide{padding:9vh 8cqw}
@@ -259,7 +412,7 @@
     .slide.active{opacity:1!important}
     .slide.wide{justify-content:flex-start;padding:2cm}
     .art{position:absolute;right:0;top:0;width:40%;height:auto;opacity:1!important}
-    .progress,.counter,.navbottom,#auto-bar,.menu-btn,.menu-panel,.corner-tag,.dots,.notes,.hint{display:none!important}
+    .counter-wrap,#auto-bar,.menu-btn,.menu-panel,.corner-tag,.notes{display:none!important}
     h1,h2,h3,h4,.sec-title,.qa-big{color:#000!important}
     .g,.g2,.g3{color:#000!important;background:none!important;padding:0}
     .kicker{color:#222!important}
@@ -276,7 +429,7 @@
 </head>
 <body>
 
-<!-- ===== Библиотека визуалов: зелёный + янтарь, 20 мотивов ===== -->
+<!-- ===== Библиотека визуалов: синий + фиолетовый, 74 мотива ===== -->
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
   <defs>
     <pattern id="d_g" width="11" height="11" patternUnits="userSpaceOnUse"><circle cx="5.5" cy="5.5" r="2.2" fill="#38bdf8"/></pattern>
@@ -773,6 +926,279 @@
       <circle r="7" fill="#c084fc"><animateMotion dur="6s" repeatCount="indefinite" path="M40 360 Q 210 180 380 360"/></circle>
     </symbol>
     <!-- статичные иконки карточек (синий+фиолетовый, без анимации) -->
+    <!-- ===== +24 мотива (2026-10-02) ===== -->
+    <symbol id="neural" viewBox="0 0 420 560">
+      <g stroke="#38bdf8" stroke-width="2" opacity=".28">
+        <path d="M80 160 L210 120 M80 160 L210 220 M80 160 L210 320 M80 280 L210 120 M80 280 L210 220 M80 280 L210 320 M80 280 L210 420 M80 400 L210 220 M80 400 L210 320 M80 400 L210 420"/>
+        <path d="M210 120 L340 220 M210 220 L340 220 M210 320 L340 220 M210 220 L340 340 M210 320 L340 340 M210 420 L340 340"/>
+      </g>
+      <path d="M80 280 L210 220 L340 220" fill="none" stroke="#c084fc" stroke-width="4" stroke-dasharray="14 300" opacity=".9"><animate attributeName="stroke-dashoffset" values="0;-314" dur="2.8s" repeatCount="indefinite"/></path>
+      <path d="M80 400 L210 320 L340 340" fill="none" stroke="#38bdf8" stroke-width="4" stroke-dasharray="14 300" opacity=".9"><animate attributeName="stroke-dashoffset" values="-150;-464" dur="2.8s" repeatCount="indefinite"/></path>
+      <circle cx="80" cy="160" r="18" fill="url(#d_g)"/><circle cx="80" cy="280" r="18" fill="#38bdf8" opacity=".7"/><circle cx="80" cy="400" r="18" fill="url(#d_g)"/>
+      <circle cx="210" cy="120" r="20" fill="#38bdf8" opacity=".45"/><circle cx="210" cy="220" r="20" fill="url(#s_a)"/>
+      <circle cx="210" cy="320" r="20" fill="#38bdf8" opacity=".6"/><circle cx="210" cy="420" r="20" fill="url(#d_g)"/>
+      <circle cx="340" cy="220" r="24" fill="#c084fc"><animate attributeName="opacity" values=".6;1;.6" dur="2.8s" repeatCount="indefinite"/></circle>
+      <circle cx="340" cy="340" r="24" fill="#38bdf8" opacity=".75"/>
+    </symbol>
+
+    <symbol id="iceberg" viewBox="0 0 420 560">
+      <g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="7s" repeatCount="indefinite"/>
+        <polygon points="160,230 205,150 240,190 265,230" fill="#38bdf8" opacity=".9"/>
+        <polygon points="160,230 265,230 330,330 300,440 210,500 110,430 80,320" fill="url(#d_g)" opacity=".55"/>
+        <polygon points="210,500 300,440 330,330 265,230" fill="url(#s_a)" opacity=".35"/>
+      </g>
+      <path d="M30 230 Q 75 220 120 230 T 210 230 T 300 230 T 390 230" fill="none" stroke="#c084fc" stroke-width="4"><animate attributeName="d" values="M30 230 Q 75 220 120 230 T 210 230 T 300 230 T 390 230;M30 230 Q 75 240 120 230 T 210 230 T 300 230 T 390 230;M30 230 Q 75 220 120 230 T 210 230 T 300 230 T 390 230" dur="4s" repeatCount="indefinite"/></path>
+      <rect x="30" y="234" width="360" height="290" rx="20" fill="#38bdf8" opacity=".05"/>
+    </symbol>
+
+    <symbol id="hourglass" viewBox="0 0 420 560">
+      <g><animateTransform attributeName="transform" type="rotate" values="0 210 280;0 210 280;180 210 280;180 210 280" keyTimes="0;0.85;0.95;1" dur="10s" repeatCount="indefinite"/>
+        <rect x="110" y="96" width="200" height="16" rx="8" fill="#38bdf8"/>
+        <rect x="110" y="448" width="200" height="16" rx="8" fill="#38bdf8"/>
+        <path d="M130 112 L290 112 L290 140 Q 290 220 222 280 Q 290 340 290 420 L290 448 L130 448 L130 420 Q 130 340 198 280 Q 130 220 130 140 Z" fill="none" stroke="#38bdf8" stroke-width="4" opacity=".55"/>
+        <path d="M150 150 L270 150 Q 262 220 210 268 Q 158 220 150 150 Z" fill="url(#d_a)"><animate attributeName="opacity" values="1;.15" dur="10s" repeatCount="indefinite"/></path>
+        <path d="M150 432 L270 432 Q 262 380 210 345 Q 158 380 150 432 Z" fill="#c084fc"><animate attributeName="opacity" values=".15;.9" dur="10s" repeatCount="indefinite"/></path>
+        <line x1="210" y1="270" x2="210" y2="420" stroke="#c084fc" stroke-width="3" stroke-dasharray="4 8"><animate attributeName="stroke-dashoffset" values="0;-24" dur=".8s" repeatCount="indefinite"/></line>
+      </g>
+    </symbol>
+
+    <symbol id="puzzle" viewBox="0 0 420 560">
+      <path d="M90 170 h110 v36 a22 22 0 1 1 0 44 v36 h-110 Z" fill="url(#d_g)" opacity=".85"/>
+      <path d="M90 290 h110 v120 h-110 Z" fill="#38bdf8" opacity=".45"/>
+      <path d="M220 290 h40 a22 22 0 1 1 44 0 h26 v120 h-110 Z" fill="url(#s_a)" opacity=".7"/>
+      <g><animateTransform attributeName="transform" type="translate" values="60 -60;0 0;0 0;60 -60" keyTimes="0;0.35;0.8;1" dur="7s" repeatCount="indefinite"/>
+        <path d="M220 170 h110 v116 h-26 a22 22 0 1 0 -44 0 h-40 v-36 a22 22 0 1 1 0 -44 Z" fill="#c084fc" opacity=".9"/>
+      </g>
+    </symbol>
+
+    <symbol id="key" viewBox="0 0 420 560">
+      <circle cx="210" cy="190" r="120" fill="url(#d_g)" opacity=".35"/>
+      <g><animateTransform attributeName="transform" type="rotate" values="0 210 190;-90 210 190;-90 210 190;0 210 190" keyTimes="0;0.3;0.7;1" dur="8s" repeatCount="indefinite"/>
+        <circle cx="210" cy="190" r="62" fill="none" stroke="#38bdf8" stroke-width="22"/>
+        <circle cx="210" cy="190" r="18" fill="#c084fc"/>
+      </g>
+      <rect x="199" y="252" width="22" height="230" rx="6" fill="#38bdf8"/>
+      <rect x="221" y="410" width="46" height="18" rx="4" fill="#c084fc"/>
+      <rect x="221" y="448" width="32" height="18" rx="4" fill="#38bdf8" opacity=".7"/>
+    </symbol>
+
+    <symbol id="eye" viewBox="0 0 420 560">
+      <path d="M30 280 Q 210 90 390 280 Q 210 470 30 280 Z" fill="url(#d_g)" opacity=".35"/>
+      <path d="M30 280 Q 210 90 390 280 Q 210 470 30 280 Z" fill="none" stroke="#38bdf8" stroke-width="4" opacity=".7"/>
+      <g><animateTransform attributeName="transform" type="translate" values="0 0;-50 0;-50 0;45 0;45 0;0 0" keyTimes="0;0.15;0.4;0.55;0.8;1" dur="9s" repeatCount="indefinite"/>
+        <circle cx="210" cy="280" r="72" fill="#38bdf8" opacity=".55"/>
+        <circle cx="210" cy="280" r="34" fill="#c084fc"/>
+        <circle cx="194" cy="262" r="10" fill="#080a0c"/>
+      </g>
+      <circle cx="210" cy="280" r="150" fill="none" stroke="#c084fc" stroke-width="2" opacity=".2" stroke-dasharray="6 10"><animateTransform attributeName="transform" type="rotate" from="0 210 280" to="360 210 280" dur="50s" repeatCount="indefinite"/></circle>
+    </symbol>
+
+    <symbol id="infinity" viewBox="0 0 420 560">
+      <path d="M210 280 C 270 190 380 190 380 280 C 380 370 270 370 210 280 C 150 190 40 190 40 280 C 40 370 150 370 210 280 Z" fill="none" stroke="#38bdf8" stroke-width="26" opacity=".25"/>
+      <path d="M210 280 C 270 190 380 190 380 280 C 380 370 270 370 210 280 C 150 190 40 190 40 280 C 40 370 150 370 210 280 Z" fill="none" stroke="url(#s_g)" stroke-width="26" opacity=".6"/>
+      <path d="M210 280 C 270 190 380 190 380 280 C 380 370 270 370 210 280 C 150 190 40 190 40 280 C 40 370 150 370 210 280 Z" fill="none" stroke="#c084fc" stroke-width="8" stroke-linecap="round" stroke-dasharray="120 900"><animate attributeName="stroke-dashoffset" values="0;-1020" dur="7s" repeatCount="indefinite"/></path>
+      <circle r="12" fill="#c084fc"><animateMotion dur="7s" repeatCount="indefinite" path="M210 280 C 270 190 380 190 380 280 C 380 370 270 370 210 280 C 150 190 40 190 40 280 C 40 370 150 370 210 280 Z"/></circle>
+    </symbol>
+
+    <symbol id="bubbles" viewBox="0 0 420 560">
+      <g><animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0" dur="6s" repeatCount="indefinite"/>
+        <rect x="50" y="120" width="230" height="110" rx="28" fill="url(#d_g)" opacity=".85"/>
+        <path d="M90 228 L80 270 L130 228 Z" fill="#38bdf8" opacity=".6"/>
+      </g>
+      <g><animateTransform attributeName="transform" type="translate" values="0 0;0 8;0 0" dur="6s" repeatCount="indefinite"/>
+        <rect x="150" y="270" width="220" height="100" rx="28" fill="#c084fc" opacity=".75"/>
+        <path d="M320 368 L340 408 L290 368 Z" fill="#c084fc" opacity=".75"/>
+      </g>
+      <rect x="70" y="420" width="120" height="60" rx="22" fill="url(#s_g)" opacity=".6"/>
+      <g fill="#080a0c"><circle cx="105" cy="450" r="6"><animate attributeName="opacity" values="1;.2;1" dur="1.4s" repeatCount="indefinite"/></circle><circle cx="130" cy="450" r="6"><animate attributeName="opacity" values="1;.2;1" dur="1.4s" begin=".2s" repeatCount="indefinite"/></circle><circle cx="155" cy="450" r="6"><animate attributeName="opacity" values="1;.2;1" dur="1.4s" begin=".4s" repeatCount="indefinite"/></circle></g>
+    </symbol>
+
+    <symbol id="atom" viewBox="0 0 420 560">
+      <g fill="none" stroke="#38bdf8" stroke-width="3" opacity=".45">
+        <ellipse cx="210" cy="280" rx="170" ry="60"/>
+        <ellipse cx="210" cy="280" rx="170" ry="60" transform="rotate(60 210 280)"/>
+        <ellipse cx="210" cy="280" rx="170" ry="60" transform="rotate(-60 210 280)"/>
+      </g>
+      <circle cx="210" cy="280" r="40" fill="url(#d_a)"/>
+      <circle cx="210" cy="280" r="22" fill="#c084fc"><animate attributeName="r" values="22;28;22" dur="3s" repeatCount="indefinite"/></circle>
+      <circle r="12" fill="#38bdf8"><animateMotion dur="5s" repeatCount="indefinite" path="M40 280 A170 60 0 1 0 380 280 A170 60 0 1 0 40 280"/></circle>
+      <g transform="rotate(60 210 280)"><circle r="11" fill="#c084fc"><animateMotion dur="7s" repeatCount="indefinite" path="M380 280 A170 60 0 1 0 40 280 A170 60 0 1 0 380 280"/></circle></g>
+      <g transform="rotate(-60 210 280)"><circle r="10" fill="#38bdf8" opacity=".8"><animateMotion dur="6s" repeatCount="indefinite" path="M40 280 A170 60 0 1 0 380 280 A170 60 0 1 0 40 280"/></circle></g>
+    </symbol>
+
+    <symbol id="equalizer" viewBox="0 0 420 560">
+      <g>
+        <rect x="60" y="200" width="34" height="160" rx="8" fill="#38bdf8" opacity=".55"><animate attributeName="height" values="160;60;220;160" dur="2.4s" repeatCount="indefinite"/><animate attributeName="y" values="200;250;170;200" dur="2.4s" repeatCount="indefinite"/></rect>
+        <rect x="112" y="150" width="34" height="260" rx="8" fill="url(#d_g)"><animate attributeName="height" values="260;120;300;260" dur="3s" repeatCount="indefinite"/><animate attributeName="y" values="150;220;130;150" dur="3s" repeatCount="indefinite"/></rect>
+        <rect x="164" y="110" width="34" height="340" rx="8" fill="#c084fc" opacity=".85"><animate attributeName="height" values="340;180;280;340" dur="2.6s" repeatCount="indefinite"/><animate attributeName="y" values="110;190;140;110" dur="2.6s" repeatCount="indefinite"/></rect>
+        <rect x="216" y="170" width="34" height="220" rx="8" fill="#38bdf8" opacity=".7"><animate attributeName="height" values="220;320;100;220" dur="2.8s" repeatCount="indefinite"/><animate attributeName="y" values="170;120;230;170" dur="2.8s" repeatCount="indefinite"/></rect>
+        <rect x="268" y="210" width="34" height="140" rx="8" fill="url(#s_a)"><animate attributeName="height" values="140;240;80;140" dur="2.2s" repeatCount="indefinite"/><animate attributeName="y" values="210;160;240;210" dur="2.2s" repeatCount="indefinite"/></rect>
+        <rect x="320" y="240" width="34" height="80" rx="8" fill="#38bdf8" opacity=".45"><animate attributeName="height" values="80;180;120;80" dur="3.2s" repeatCount="indefinite"/><animate attributeName="y" values="240;190;220;240" dur="3.2s" repeatCount="indefinite"/></rect>
+      </g>
+    </symbol>
+
+    <symbol id="rocket" viewBox="0 0 420 560">
+      <g><animateTransform attributeName="transform" type="translate" values="0 10;0 -10;0 10" dur="3s" repeatCount="indefinite"/>
+        <path d="M210 90 C 270 150 280 240 266 330 L154 330 C 140 240 150 150 210 90 Z" fill="#38bdf8" opacity=".85"/>
+        <path d="M154 330 L120 390 L164 370 Z M266 330 L300 390 L256 370 Z" fill="#c084fc"/>
+        <circle cx="210" cy="210" r="26" fill="#080a0c"/><circle cx="210" cy="210" r="14" fill="#c084fc"/>
+        <path d="M176 340 L244 340 L232 380 L188 380 Z" fill="url(#s_g)" opacity=".7"/>
+        <path d="M186 384 Q 210 470 234 384 Z" fill="#c084fc" opacity=".8"><animate attributeName="d" values="M186 384 Q 210 470 234 384 Z;M186 384 Q 210 430 234 384 Z;M186 384 Q 210 470 234 384 Z" dur=".5s" repeatCount="indefinite"/></path>
+      </g>
+      <g fill="#38bdf8" opacity=".5">
+        <circle cx="90" cy="100" r="4"><animate attributeName="cy" values="40;560" dur="2.5s" repeatCount="indefinite"/></circle>
+        <circle cx="340" cy="200" r="3"><animate attributeName="cy" values="0;560" dur="2s" repeatCount="indefinite"/></circle>
+        <circle cx="60" cy="300" r="3"><animate attributeName="cy" values="100;560" dur="2.2s" repeatCount="indefinite"/></circle>
+        <circle cx="360" cy="400" r="4"><animate attributeName="cy" values="60;560" dur="2.8s" repeatCount="indefinite"/></circle>
+      </g>
+    </symbol>
+
+    <symbol id="heartbeat" viewBox="0 0 420 560">
+      <rect x="30" y="160" width="360" height="240" rx="18" fill="url(#h_g)" opacity=".12"/>
+      <path d="M20 290 L120 290 L145 240 L170 340 L195 190 L225 370 L250 290 L400 290" fill="none" stroke="#38bdf8" stroke-width="5" opacity=".3" stroke-linejoin="round"/>
+      <path d="M20 290 L120 290 L145 240 L170 340 L195 190 L225 370 L250 290 L400 290" fill="none" stroke="#c084fc" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="160 700"><animate attributeName="stroke-dashoffset" values="160;-700" dur="3s" repeatCount="indefinite"/></path>
+      <circle cx="195" cy="190" r="10" fill="#38bdf8"><animate attributeName="r" values="6;14;6" dur="3s" repeatCount="indefinite"/></circle>
+    </symbol>
+
+    <symbol id="sieve" viewBox="0 0 420 560">
+      <g fill="#38bdf8">
+        <rect x="80" y="70" width="22" height="22" rx="4" opacity=".6"><animate attributeName="y" values="60;190;190" keyTimes="0;0.5;1" dur="4s" repeatCount="indefinite"/></rect>
+        <circle cx="160" cy="80" r="12" fill="#c084fc"><animate attributeName="cy" values="60;360" dur="4s" repeatCount="indefinite"/></circle>
+        <rect x="220" y="70" width="26" height="26" rx="4" opacity=".5"><animate attributeName="y" values="40;188;188" keyTimes="0;0.5;1" dur="4s" begin="1s" repeatCount="indefinite"/></rect>
+        <circle cx="290" cy="80" r="12" fill="#c084fc"><animate attributeName="cy" values="40;360" dur="4s" begin="2s" repeatCount="indefinite"/></circle>
+        <rect x="320" y="70" width="20" height="20" rx="4" opacity=".7"><animate attributeName="y" values="50;192;192" keyTimes="0;0.5;1" dur="4s" begin="2.5s" repeatCount="indefinite"/></rect>
+      </g>
+      <path d="M50 212 Q 210 250 370 212" fill="none" stroke="#38bdf8" stroke-width="6"/>
+      <path d="M60 220 Q 210 256 360 220 L 330 236 Q 210 266 90 236 Z" fill="url(#s_g)" opacity=".6"/>
+      <rect x="110" y="380" width="200" height="110" rx="14" fill="url(#d_a)" opacity=".7"/>
+      <rect x="110" y="380" width="200" height="110" rx="14" fill="none" stroke="#c084fc" stroke-width="3"/>
+    </symbol>
+
+    <symbol id="scatter" viewBox="0 0 420 560">
+      <line x1="60" y1="470" x2="380" y2="470" stroke="#38bdf8" stroke-width="3" opacity=".5"/>
+      <line x1="60" y1="470" x2="60" y2="90" stroke="#38bdf8" stroke-width="3" opacity=".5"/>
+      <g fill="#38bdf8" opacity=".6">
+        <circle cx="100" cy="420" r="9"/><circle cx="130" cy="390" r="7"/><circle cx="150" cy="410" r="10"/><circle cx="180" cy="350" r="8"/>
+        <circle cx="205" cy="370" r="11"/><circle cx="230" cy="300" r="8"/><circle cx="255" cy="320" r="9"/><circle cx="280" cy="250" r="10"/>
+        <circle cx="300" cy="270" r="7"/><circle cx="330" cy="200" r="9"/><circle cx="350" cy="170" r="8"/>
+      </g>
+      <circle cx="240" cy="150" r="22" fill="url(#d_a)"/><circle cx="240" cy="150" r="10" fill="#c084fc"><animate attributeName="r" values="10;16;10" dur="3s" repeatCount="indefinite"/></circle>
+      <line x1="80" y1="440" x2="370" y2="150" stroke="#c084fc" stroke-width="4" stroke-dasharray="420" stroke-dashoffset="420" stroke-linecap="round"><animate attributeName="stroke-dashoffset" values="420;0;0;420" keyTimes="0;0.4;0.85;1" dur="7s" repeatCount="indefinite"/></line>
+    </symbol>
+
+    <symbol id="donut" viewBox="0 0 420 560">
+      <g transform="rotate(-90 210 280)">
+        <circle cx="210" cy="280" r="130" fill="none" stroke="url(#d_g)" stroke-width="60" opacity=".6"/>
+        <circle cx="210" cy="280" r="130" fill="none" stroke="#38bdf8" stroke-width="60" stroke-dasharray="380 1000" opacity=".8"/>
+        <circle cx="210" cy="280" r="130" fill="none" stroke="#c084fc" stroke-width="60" stroke-dasharray="0 386 200 1000"><animate attributeName="stroke-dasharray" values="0 386 0 1000;0 386 200 1000;0 386 200 1000;0 386 0 1000" keyTimes="0;0.3;0.85;1" dur="8s" repeatCount="indefinite"/></circle>
+      </g>
+      <circle cx="210" cy="280" r="56" fill="url(#s_a)" opacity=".35"/>
+      <circle cx="210" cy="280" r="16" fill="#c084fc"/>
+    </symbol>
+
+    <symbol id="fan" viewBox="0 0 420 560">
+      <g transform="translate(210 430)">
+        <rect x="-70" y="-300" width="140" height="210" rx="14" fill="#38bdf8" opacity=".35"><animateTransform attributeName="transform" type="rotate" values="0;-36;-36;0" keyTimes="0;0.3;0.8;1" dur="7s" repeatCount="indefinite"/></rect>
+        <rect x="-70" y="-300" width="140" height="210" rx="14" fill="url(#d_g)" opacity=".8"><animateTransform attributeName="transform" type="rotate" values="0;-18;-18;0" keyTimes="0;0.3;0.8;1" dur="7s" repeatCount="indefinite"/></rect>
+        <rect x="-70" y="-300" width="140" height="210" rx="14" fill="url(#s_a)" opacity=".75"><animateTransform attributeName="transform" type="rotate" values="0;18;18;0" keyTimes="0;0.3;0.8;1" dur="7s" repeatCount="indefinite"/></rect>
+        <rect x="-70" y="-300" width="140" height="210" rx="14" fill="#c084fc" opacity=".55"><animateTransform attributeName="transform" type="rotate" values="0;36;36;0" keyTimes="0;0.3;0.8;1" dur="7s" repeatCount="indefinite"/></rect>
+        <rect x="-70" y="-300" width="140" height="210" rx="14" fill="#38bdf8"/>
+        <circle cx="0" cy="-195" r="20" fill="#080a0c"/><circle cx="0" cy="-195" r="9" fill="#c084fc"/>
+      </g>
+    </symbol>
+
+    <symbol id="door" viewBox="0 0 420 560">
+      <rect x="110" y="110" width="200" height="370" rx="6" fill="url(#d_a)" opacity=".55"/>
+      <rect x="110" y="110" width="200" height="370" rx="6" fill="none" stroke="#38bdf8" stroke-width="5"/>
+      <path d="M110 110 L240 150 L240 470 L110 480 Z" fill="#38bdf8" opacity=".85"><animate attributeName="d" values="M110 110 L310 110 L310 480 L110 480 Z;M110 110 L200 150 L200 455 L110 480 Z;M110 110 L200 150 L200 455 L110 480 Z;M110 110 L310 110 L310 480 L110 480 Z" keyTimes="0;0.3;0.8;1" dur="8s" repeatCount="indefinite"/></path>
+      <path d="M310 480 L400 540 L20 540 L110 480 Z" fill="#c084fc" opacity=".25"/>
+      <circle cx="260" cy="300" r="70" fill="#c084fc" opacity=".25"><animate attributeName="opacity" values="0;.35;.35;0" keyTimes="0;0.3;0.8;1" dur="8s" repeatCount="indefinite"/></circle>
+    </symbol>
+
+    <symbol id="maze" viewBox="0 0 420 560">
+      <g fill="none" stroke="#38bdf8" stroke-width="10" stroke-linecap="round" opacity=".5">
+        <path d="M60 110 H360 V450 H60 V170"/>
+        <path d="M120 110 V200 H200 M260 110 V170 H300 V260"/>
+        <path d="M60 260 H140 V330 M200 200 V330 H260 M360 330 H300 V390 H200"/>
+        <path d="M120 390 V450 M140 390 H160"/>
+      </g>
+      <path d="M90 140 V230 H170 V300 H230 V230 H330 V420 H230" fill="none" stroke="#c084fc" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="900" stroke-dashoffset="900"><animate attributeName="stroke-dashoffset" values="900;0;0;900" keyTimes="0;0.6;0.9;1" dur="8s" repeatCount="indefinite"/></path>
+      <circle cx="90" cy="140" r="12" fill="url(#d_g)"/>
+      <circle cx="230" cy="420" r="16" fill="#c084fc"><animate attributeName="r" values="12;18;12" dur="2.5s" repeatCount="indefinite"/></circle>
+    </symbol>
+
+    <symbol id="pendulum" viewBox="0 0 420 560">
+      <line x1="90" y1="100" x2="330" y2="100" stroke="#38bdf8" stroke-width="6" opacity=".6"/>
+      <path d="M90 460 A 260 260 0 0 0 330 460" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 10" opacity=".35"/>
+      <g><animateTransform attributeName="transform" type="rotate" values="28 210 100;-28 210 100;28 210 100" dur="4s" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" repeatCount="indefinite"/>
+        <line x1="210" y1="100" x2="210" y2="400" stroke="#38bdf8" stroke-width="4"/>
+        <circle cx="210" cy="430" r="44" fill="url(#d_a)"/>
+        <circle cx="210" cy="430" r="44" fill="none" stroke="#c084fc" stroke-width="5"/>
+        <circle cx="210" cy="430" r="14" fill="#c084fc"/>
+      </g>
+      <circle cx="210" cy="100" r="10" fill="#c084fc"/>
+    </symbol>
+
+    <symbol id="tree" viewBox="0 0 420 560">
+      <g fill="none" stroke="#38bdf8" stroke-width="4" opacity=".55">
+        <path d="M210 120 V200 M210 200 H110 V280 M210 200 H310 V280 M110 280 V330 M110 330 H60 V390 M110 330 H160 V390 M310 280 V390 M310 330 H360 V390"/>
+      </g>
+      <rect x="160" y="80" width="100" height="56" rx="12" fill="#c084fc"/>
+      <rect x="70" y="250" width="80" height="48" rx="10" fill="url(#d_g)"/>
+      <rect x="270" y="250" width="80" height="48" rx="10" fill="#38bdf8" opacity=".75"/>
+      <g fill="#38bdf8" opacity=".5"><rect x="30" y="390" width="60" height="44" rx="9"/><rect x="130" y="390" width="60" height="44" rx="9"/></g>
+      <rect x="280" y="390" width="60" height="44" rx="9" fill="url(#s_a)"/><rect x="330" y="390" width="60" height="44" rx="9" fill="#38bdf8" opacity=".4"/>
+      <circle r="7" fill="#c084fc"><animateMotion dur="5s" repeatCount="indefinite" path="M210 136 V200 H110 V330 H160 V390"/></circle>
+      <circle r="7" fill="#c084fc"><animateMotion dur="5s" begin="2.5s" repeatCount="indefinite" path="M210 136 V200 H310 V330 H360 V390"/></circle>
+    </symbol>
+
+    <symbol id="magnifier" viewBox="0 0 420 560">
+      <g fill="#38bdf8" opacity=".3">
+        <rect x="50" y="150" width="320" height="16" rx="8"/><rect x="50" y="200" width="260" height="16" rx="8"/><rect x="50" y="250" width="300" height="16" rx="8"/>
+        <rect x="50" y="300" width="220" height="16" rx="8"/><rect x="50" y="350" width="290" height="16" rx="8"/><rect x="50" y="400" width="240" height="16" rx="8"/>
+      </g>
+      <g><animateTransform attributeName="transform" type="translate" values="0 0;90 60;-20 140;0 0" dur="10s" repeatCount="indefinite"/>
+        <circle cx="170" cy="230" r="78" fill="url(#d_a)" opacity=".45"/>
+        <rect x="120" y="222" width="110" height="18" rx="9" fill="#c084fc"/>
+        <circle cx="170" cy="230" r="78" fill="none" stroke="#38bdf8" stroke-width="12"/>
+        <line x1="226" y1="286" x2="290" y2="350" stroke="#38bdf8" stroke-width="22" stroke-linecap="round"/>
+      </g>
+    </symbol>
+
+    <symbol id="clock" viewBox="0 0 420 560">
+      <circle cx="210" cy="280" r="160" fill="url(#d_g)" opacity=".25"/>
+      <circle cx="210" cy="280" r="160" fill="none" stroke="#38bdf8" stroke-width="6" opacity=".7"/>
+      <g stroke="#38bdf8" stroke-width="6" stroke-linecap="round" opacity=".6">
+        <line x1="210" y1="135" x2="210" y2="155"/><line x1="355" y1="280" x2="335" y2="280"/><line x1="210" y1="425" x2="210" y2="405"/><line x1="65" y1="280" x2="85" y2="280"/>
+      </g>
+      <path d="M210 280 L210 120 A160 160 0 0 1 348 200 Z" fill="#c084fc" opacity=".35"><animateTransform attributeName="transform" type="rotate" from="0 210 280" to="360 210 280" dur="40s" repeatCount="indefinite"/></path>
+      <line x1="210" y1="280" x2="210" y2="190" stroke="#38bdf8" stroke-width="10" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 210 280" to="360 210 280" dur="40s" repeatCount="indefinite"/></line>
+      <line x1="210" y1="280" x2="210" y2="150" stroke="#c084fc" stroke-width="5" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 210 280" to="360 210 280" dur="6s" repeatCount="indefinite"/></line>
+      <circle cx="210" cy="280" r="12" fill="#c084fc"/>
+    </symbol>
+
+    <symbol id="team" viewBox="0 0 420 560">
+      <circle cx="210" cy="300" r="170" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 10" opacity=".35"><animateTransform attributeName="transform" type="rotate" from="0 210 300" to="360 210 300" dur="60s" repeatCount="indefinite"/></circle>
+      <circle cx="140" cy="180" r="26" fill="#38bdf8" opacity=".45"/><path d="M95 270 Q 95 220 140 220 Q 185 220 185 270 Z" fill="url(#d_g)" opacity=".7"/>
+      <circle cx="280" cy="180" r="26" fill="url(#s_a)"/><path d="M235 270 Q 235 220 280 220 Q 325 220 325 270 Z" fill="#38bdf8" opacity=".45"/>
+      <circle cx="90" cy="300" r="32" fill="url(#d_g)"/><path d="M35 410 Q 35 350 90 350 Q 145 350 145 410 Z" fill="#38bdf8" opacity=".6"/>
+      <circle cx="330" cy="300" r="32" fill="#38bdf8" opacity=".75"/><path d="M275 410 Q 275 350 330 350 Q 385 350 385 410 Z" fill="url(#s_a)" opacity=".8"/>
+      <g><animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0" dur="5s" repeatCount="indefinite"/>
+        <circle cx="210" cy="300" r="42" fill="#c084fc"/><path d="M138 440 Q 138 362 210 362 Q 282 362 282 440 Z" fill="#c084fc" opacity=".85"/>
+      </g>
+    </symbol>
+
+    <symbol id="chain" viewBox="0 0 420 560">
+      <g><animateTransform attributeName="transform" type="rotate" values="-4 210 280;4 210 280;-4 210 280" dur="6s" repeatCount="indefinite"/>
+      <g fill="none" stroke-width="22">
+        <rect x="150" y="70" width="120" height="150" rx="60" stroke="#38bdf8" opacity=".75"/>
+        <rect x="150" y="190" width="120" height="150" rx="60" stroke="url(#s_a)"/>
+        <rect x="150" y="310" width="120" height="150" rx="60" stroke="#38bdf8" opacity=".45"/>
+      </g>
+      <rect x="150" y="190" width="120" height="150" rx="60" fill="none" stroke="#c084fc" stroke-width="6"><animate attributeName="opacity" values=".2;1;.2" dur="3s" repeatCount="indefinite"/></rect>
+      </g>
+    </symbol>
+
     <symbol id="i-aim" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="#38bdf8" stroke-width="3.2"/><circle cx="24" cy="24" r="9" fill="none" stroke="#38bdf8" stroke-width="3.2" opacity=".55"/><circle cx="24" cy="24" r="3.6" fill="#c084fc"/></symbol>
     <symbol id="i-heart" viewBox="0 0 48 48"><path d="M24 39 C 10 28 8 17 17 14 C 21 12.5 24 16 24 18 C 24 16 27 12.5 31 14 C 40 17 38 28 24 39 Z" fill="#c084fc"/></symbol>
     <symbol id="i-talk" viewBox="0 0 48 48"><rect x="4" y="8" width="26" height="19" rx="5" fill="#38bdf8"/><path d="M11 25 l0 7 l8 -7 Z" fill="#38bdf8"/><rect x="20" y="21" width="24" height="17" rx="5" fill="#c084fc"/><path d="M37 36 l0 7 l-8 -7 Z" fill="#c084fc"/></symbol>
@@ -785,22 +1211,27 @@
   </defs>
 </svg>
 
-<div class="progress" id="progress"></div>
 <div id="auto-bar"></div>
 <div class="corner-tag"><!-- DECKTAG_PLACEHOLDER --></div>
 <button id="menu-btn" class="menu-btn" aria-label="Меню" aria-expanded="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
-<div class="hint" id="onboard-hint">Меню: автопоказ, полный экран</div>
 <div class="menu-panel" id="menu-panel">
   <button id="auto-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>Автовоспроизведение</button>
   <button id="fast-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5v11l7.5-5.5zM12.5 6.5v11l7.5-5.5z"/></svg>Быстрый показ</button>
   <button id="fs-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Полный экран<kbd>Ctrl F</kbd></button>
+  <div class="menu-sep"></div>
+  <button id="rebuild-btn" class="menu-item" title="Пересобрать деск на актуальном шаблоне и настройках скилла"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4.5V8h3.5M4 13a8 8 0 0 0 14.6 4.5M20 19.5V16h-3.5"/></svg>Обновить интерфейс</button>
+  <button id="settings-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Настройки</button>
+  <div class="menu-status" id="menu-status"></div>
   <div class="menu-hint">← → слайды · Ctrl+N заметки · Ctrl+B/E начало/конец</div>
 </div>
 <div class="brand"><!-- BRAND_PLACEHOLDER --></div>
-<div class="counter" id="counter">01 / 21</div>
-<div class="navbottom"><div class="dots solo" id="dots"></div></div>
+<div class="counter-wrap">
+  <div class="counter-bar"><div class="counter-fill" id="counter-fill"></div></div>
+  <div class="counter" id="counter">01 / 18</div>
+</div>
 <div class="deck" id="deck">
 <!-- SLIDES_PLACEHOLDER -->
+
 
 </div>
 <div class="notes" id="notes"><h4>Спикерские заметки</h4><p id="notes-body"></p></div>
@@ -808,21 +1239,18 @@
   const slides=Array.from(document.querySelectorAll('.slide'));
   const total=slides.length;
   let i=0;
-  const prog=document.getElementById('progress');
   const counter=document.getElementById('counter');
+  const counterFill=document.getElementById('counter-fill');
   const notes=document.getElementById('notes');
   const notesBody=document.getElementById('notes-body');
-  const dotsWrap=document.getElementById('dots');
-  slides.forEach((_,idx)=>{const b=document.createElement('button');b.addEventListener('click',()=>go(idx));dotsWrap.appendChild(b)});
-  const dots=Array.from(dotsWrap.children);
   function pad(n){return String(n).padStart(2,'0')}
+  const SKEY='slide:'+location.pathname;
   function render(){
     slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
-    prog.style.width=((i+1)/total*100)+'%';
+    counterFill.style.width=((i+1)/total*100)+'%';
     counter.textContent=pad(i+1)+' / '+pad(total);
-    dots.forEach((d,idx)=>d.classList.toggle('on',idx===i));
     notesBody.textContent=slides[i].dataset.notes||'';
-    history.replaceState(null,'','#slide-'+(i+1));
+    try{sessionStorage.setItem(SKEY,i)}catch(e){}  // не #slide-N в URL: Chromium хранит зум file:// по полному адресу → у каждого слайда был бы свой зум
   }
   // Auto-present
   let autoPlay=false,autoFast=false,autoTimer=null;
@@ -858,18 +1286,34 @@
   document.getElementById('fs-btn').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen()}else{document.documentElement.requestFullscreen()}menuPanel.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');});
   const menuBtn=document.getElementById('menu-btn');
   const menuPanel=document.getElementById('menu-panel');
-  const onboardHint=document.getElementById('onboard-hint');
-  menuBtn.addEventListener('click',e=>{e.stopPropagation();const open=menuPanel.classList.toggle('open');menuBtn.setAttribute('aria-expanded',open);onboardHint.classList.remove('show');});
-  if(i===0){setTimeout(()=>onboardHint.classList.add('show'),700);setTimeout(()=>onboardHint.classList.remove('show'),5200);}
+  menuBtn.addEventListener('click',e=>{e.stopPropagation();const open=menuPanel.classList.toggle('open');menuBtn.setAttribute('aria-expanded',open);});
   menuPanel.addEventListener('click',e=>e.stopPropagation());
+  // ⋯ → «Обновить интерфейс»: settings server (skill slides-generator, LaunchAgent) rebuilds this file on the current template.html + config.json; reload keeps #slide-N
+  const SG='http://127.0.0.1:7361',menuStatus=document.getElementById('menu-status');
+  const say=(t,err)=>{menuStatus.textContent=t;menuStatus.className='menu-status show'+(err?' err':'');};
+  document.getElementById('rebuild-btn').addEventListener('click',async e=>{
+    e.stopPropagation();
+    if(location.protocol!=='file:'){say('Обновление работает только для локального файла',1);return;}
+    say('Обновляю…');
+    try{
+      const r=await fetch(SG+'/rebuild',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:decodeURIComponent(location.pathname)})});
+      if(!r.ok)throw new Error(await r.text());
+      location.reload();
+    }catch(err){say(err instanceof TypeError?'Сервер настроек не отвечает. Запусти: python3 ~/.claude/skills/slides-generator/settings.py':'Ошибка: '+err.message,1);}
+  });
+  document.getElementById('settings-btn').addEventListener('click',()=>window.open(SG+'/','_blank'));
   document.addEventListener('click',()=>{menuPanel.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');});
   let tx=null;
   document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX});
   document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50){dx<0?next():prev()}tx=null});
   document.getElementById('deck').addEventListener('click',e=>{if(e.target.closest('button,a'))return;if(e.clientX>window.innerWidth*.5)next();});
+  // #slide-N при открытии (скриншоты, ссылки) → прыжок и сразу убрать хеш, чтобы адрес и зум были одни на весь деск; после reload — слайд из sessionStorage
+  const dropHash=()=>history.replaceState(null,'',location.pathname+location.search);
   const _h=location.hash.match(/^#slide-(\d+)$/);
-  if(_h)i=Math.max(0,Math.min(total-1,parseInt(_h[1])-1));
-  window.addEventListener('hashchange',()=>{const _m=location.hash.match(/^#slide-(\d+)$/);if(_m){i=Math.max(0,Math.min(total-1,parseInt(_m[1])-1));render();}});
+  let _s=null;try{_s=sessionStorage.getItem(SKEY)}catch(e){}
+  if(_h){i=Math.max(0,Math.min(total-1,parseInt(_h[1])-1));dropHash();}
+  else if(_s!==null&&!isNaN(+_s))i=Math.max(0,Math.min(total-1,+_s));
+  window.addEventListener('hashchange',()=>{const _m=location.hash.match(/^#slide-(\d+)$/);if(_m){i=Math.max(0,Math.min(total-1,parseInt(_m[1])-1));dropHash();render();}});
   render();
 
   // Раскрытие из превью индекса: деск стартует в прямоугольнике карточки и вырастает на весь экран (FLIP)
