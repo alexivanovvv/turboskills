@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Slides — настройки</title>
+<title>skill /slides-generator - settings</title>
 <style>
 
   @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600&family=JetBrains+Mono:wght@500;700&display=swap');
@@ -129,6 +129,7 @@
   .lt.off { opacity: 0.45; }
   .lt.off .lt-frame { filter: grayscale(1); }
   .lt-frame { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #080a0c; cursor: zoom-in; border-bottom: 1px solid var(--line); }
+  .lt-frame .dk-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .lt-frame iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 720px; border: 0; transform-origin: 0 0; pointer-events: none; }
   .lt-body { padding: 8px 8px 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .lt-body h3 { margin: 0; font-size: 13px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -195,7 +196,11 @@
   .mo-body h3 { margin: 0; font-size: 12px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mo .st label { width: 20px; }
   .mo-sub { font-family: var(--font-num); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); margin: 26px 0 10px; }
-  .static-art svg * { animation: none !important; }
+  .static-art svg:not(.live) * { animation: none !important; }
+  .mo-selects { display: flex; gap: 10px; flex-wrap: wrap; }
+  .mo-sel { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text3); }
+  .mo-sel select { font: inherit; font-size: 13px; font-weight: 600; color: var(--text); background: var(--surface1); border: 1px solid var(--line); border-radius: var(--r-pill); padding: 7px 12px; cursor: pointer; }
+  .mo-sel select:hover { background: var(--card-hover); }
 
   .ui-preview { position: relative; max-width: 960px; margin: 6px 0 8px; }
   .ui-preview .lt-frame { border: 1px solid var(--line); border-radius: var(--r-inner); cursor: default; }
@@ -414,14 +419,21 @@
     <section class="pane" id="sec-art" hidden>
       <div class="pane-head">
         <h2>Иллюстрации</h2>
-        <p class="pane-desc">Скилл подбирает мотив по смыслу слайда. ★ — чаще, ✓ — можно, ⊘ — никогда. Наведение — название.</p>
       </div>
-      <div class="mini-sw">
+      <div class="mini-sw mo-tools">
         <label title="Выкл — слайды без иллюстраций, текст во всю ширину"><span class="switch"><input type="checkbox" name="art"><span class="slider"></span></span>SVG-арт</label>
         <label title="Выкл — всё статично (PDF, слабые проекторы)"><span class="switch"><input type="checkbox" name="animate"><span class="slider"></span></span>Анимация</label>
       </div>
       <div class="lt-bar" style="margin-top:16px">
-        <div class="pillgroup" id="moFilter"></div>
+        <div class="mo-selects">
+          <label class="mo-sel">Фильтр <select id="moFilter"></select></label>
+          <label class="mo-sel">Сортировка <select id="moSort">
+            <option value="">Как в каталоге</option>
+            <option value="name">По названию</option>
+            <option value="prefer">Сначала ★ чаще</option>
+            <option value="off">Сначала выключенные</option>
+          </select></label>
+        </div>
         <span class="lt-count" id="moCount"></span>
       </div>
       <div id="moWrap"></div>
@@ -594,6 +606,62 @@ const LAYOUTS = [
    h:`<section class="slide wide"><p class="kicker">Как это было</p><h2>Офлайн-<span class="g">интенсив</span></h2><div class="gallery mosaic"><figure><img src="${PH_IMG}" alt=""><figcaption>День 1 · разбор кейсов</figcaption></figure><figure><img src="${PH_IMG}" alt=""><figcaption>Работа в парах</figcaption></figure><figure><img src="${PH_IMG}" alt=""><figcaption>Демо участников</figcaption></figure></div></section>`},
   {id:'faq', g:'Во всю ширину', n:'FAQ', c:'.faq · .fq-q + .fq-a', w:'Частые вопросы и короткие ответы, 4–6 пар в две колонки. Перед Q&amp;A или в продающей части.',
    h:`<section class="slide wide"><p class="kicker">Частые вопросы</p><h2>Что обычно <span class="g2">спрашивают</span></h2><div class="faq"><div><p class="fq-q">Нужно ли уметь программировать?</p><p class="fq-a">Нет. Всё делаем словами и готовыми шаблонами.</p></div><div><p class="fq-q">Сколько времени в неделю?</p><p class="fq-a">3–4 часа: сессия плюс практика.</p></div><div><p class="fq-q">Какие инструменты платные?</p><p class="fq-a">Подписка Claude Pro; остальное бесплатно.</p></div><div><p class="fq-q">Что если пропущу сессию?</p><p class="fq-a">Запись и конспект появятся в тот же день.</p></div></div></section>`},
+  {id:'matrix', g:'Схемы и модели', n:'Матрица 2×2', c:'.vis > .mx (.noaxis) · .mx-c (--c) > .mx-t + .mx-d · .mx-x / .mx-y', w:'Модель из 4 зон: Эйзенхауэр, срочно/важно, окно Джохари (.noaxis — без осей). Текст-вывод слева, матрица справа.',
+   h:`<section class="slide"><p class="kicker">Приоритеты</p><h2>Что отдать <span class="g">ИИ</span> первым</h2><p class="lead">Начинайте с правого верхнего угла: частые задачи, где ошибка дешёвая.</p><div class="vis"><div class="mx"><div class="mx-c" style="--c:var(--amber)"><p class="mx-t">Помощник</p><p class="mx-d">Редко, но риск высок — ИИ готовит черновик</p></div><div class="mx-c" style="--c:var(--green)"><p class="mx-t">Автоматизировать</p><p class="mx-d">Часто и безопасно — отдать целиком</p></div><div class="mx-c" style="--c:var(--dim)"><p class="mx-t">Не трогать</p><p class="mx-d">Редко и рискованно</p></div><div class="mx-c" style="--c:var(--blue)"><p class="mx-t">Шаблон</p><p class="mx-d">Часто, но нужна проверка</p></div><span class="mx-x">Частота →</span><span class="mx-y">Безопасность →</span></div></div></section>`},
+  {id:'code', g:'50/50: текст + арт', n:'Код', c:'.vis > .code > .cd-bar + .cd-body > div (.hi) · токены .k .s .c .v .n', w:'Конфиг, промпт-шаблон, скрипт: 6–14 строк, ключевая подсвечена. Слева — что смотреть.',
+   h:`<section class="slide"><p class="kicker">Настройка</p><h2>Один файл — <span class="g">вся память</span></h2><ul><li>Кто вы и чем заняты</li><li>Как отвечать</li><li>Что никогда не делать</li></ul><div class="vis"><div class="code"><div class="cd-bar"><i></i><i></i><i></i><span>CLAUDE.md</span></div><div class="cd-body"><div><span class="c"># Обо мне</span></div><div>Коуч руководителей, <span class="n">12</span> лет практики</div><div> </div><div><span class="c"># Как отвечать</span></div><div class="hi"><span class="k">-</span> Коротко, по-русски, без воды</div><div><span class="k">-</span> Сначала вывод, потом детали</div><div> </div><div><span class="c"># Нельзя</span></div><div><span class="k">-</span> Удалять файлы <span class="s">без подтверждения</span></div></div></div></div></section>`},
+  {id:'callouts', g:'Во всю ширину', n:'Скрин с метками', c:'.callouts > .co-pic (img + .co-pin --x --y) + .co-list > .co-i > .co-n + .co-t/.co-d', w:'Разбор интерфейса или схемы: номера на картинке и пояснения справа, 3–5 меток.',
+   h:`<section class="slide wide"><p class="kicker">Интерфейс</p><h2>Где что <span class="g">находится</span></h2><div class="callouts"><div class="co-pic"><img src="${PH_IMG}" alt=""><span class="co-pin" style="--x:26%;--y:27%">1</span><span class="co-pin" style="--x:73%;--y:27%;--c:var(--blue)">2</span><span class="co-pin" style="--x:50%;--y:71%;--c:var(--amber)">3</span></div><div class="co-list"><div class="co-i"><span class="co-n">1</span><div><p class="co-t">Проекты</p><p class="co-d">Папки с контекстом под задачу</p></div></div><div class="co-i"><span class="co-n" style="--c:var(--blue)">2</span><div><p class="co-t">Инструменты</p><p class="co-d">Поиск, файлы, коннекторы</p></div></div><div class="co-i"><span class="co-n" style="--c:var(--amber)">3</span><div><p class="co-t">Поле запроса</p><p class="co-d">Сюда — задача и пример</p></div></div></div></div></section>`},
+  {id:'diff', g:'Во всю ширину', n:'Правка текста', c:'.diff > .df-col.before / .after > .df-h + .df-t (del / ins) · .df-why', w:'Как ИИ (или вы) улучшили текст: удалённое красным, добавленное зелёным. Промпт до/после, письмо, оффер.',
+   h:`<section class="slide wide"><p class="kicker">Промпт до и после</p><h2>Добавили <span class="g">роль и формат</span></h2><div class="diff"><div class="df-col before"><p class="df-h">Было</p><p class="df-t">Напиши <del>хороший</del> пост про выгорание <del>для соцсетей</del>.</p></div><div class="df-col after"><p class="df-h">Стало</p><p class="df-t"><ins>Ты — коуч руководителей.</ins> Напиши пост про выгорание <ins>для LinkedIn: 120 слов, одна история, вопрос в конце.</ins></p></div></div></section>`},
+  {id:'kpi', g:'Во всю ширину', n:'Метрики', c:'.kpis > .kp > .kp-n (small) + .kp-d.up/.down + .kp-l', w:'3–4 ключевые цифры с динамикой: отчёт, результаты потока, трекшн.',
+   h:`<section class="slide wide"><p class="kicker">Итоги квартала</p><h2>Цифры <span class="g">потока</span></h2><div class="kpis"><div class="kp"><p class="kp-n">186</p><span class="kp-d up">+42%</span><p class="kp-l">участников</p></div><div class="kp"><p class="kp-n">74<small>%</small></p><span class="kp-d up">+9 п.</span><p class="kp-l">дошли до финала</p></div><div class="kp"><p class="kp-n">9,1</p><span class="kp-d up">+0,4</span><p class="kp-l">NPS из 10</p></div><div class="kp"><p class="kp-n">3,2<small>ч</small></p><span class="kp-d down">−0,6</span><p class="kp-l">в неделю на практику</p></div></div></section>`},
+  {id:'proscons', g:'Во всю ширину', n:'За и против', c:'.pc > .pc-col.pro / .con > .pc-h + ul · .pc-v', w:'Взвешенное решение: аргументы с двух сторон и вердикт внизу.',
+   h:`<section class="slide wide"><p class="kicker">Решение</p><h2>Свой агент или <span class="g2">готовый сервис</span>?</h2><div class="pc"><div class="pc-col pro"><p class="pc-h">Свой агент</p><ul><li>Под ваш процесс</li><li>Данные остаются у вас</li><li>Нет абонплаты</li></ul></div><div class="pc-col con"><p class="pc-h">Минусы</p><ul><li>2–3 недели на настройку</li><li>Нужно поддерживать</li><li>Ошибки — на вас</li></ul></div><p class="pc-v"><b>Вердикт</b>Начните с готового, свой — когда процесс устоялся</p></div></section>`},
+  {id:'wall', g:'Во всю ширину', n:'Стена отзывов', c:'.wall > .wa > .wa-t + .wa-w (b --c)', w:'5–7 коротких отзывов кирпичиками. Продающий блок, итоги потока.',
+   h:`<section class="slide wide"><p class="kicker">Отзывы</p><h2>Что говорят <span class="g">участники</span></h2><div class="wall"><div class="wa"><p class="wa-t">«Наконец перестал бояться ИИ — теперь это коллега»</p><p class="wa-w"><b>Ирина</b>HR-директор</p></div><div class="wa"><p class="wa-t">«Сэкономила 6 часов в неделю уже после второй сессии. Отчёты собираю за 15 минут»</p><p class="wa-w"><b style="--c:var(--green)">Анна</b>руководитель отдела</p></div><div class="wa"><p class="wa-t">«Лучший практический курс за год»</p><p class="wa-w"><b style="--c:var(--blue)">Дмитрий</b>CEO</p></div><div class="wa"><p class="wa-t">«Домашки — то, что реально внедряешь»</p><p class="wa-w"><b>Олег</b>продакт</p></div><div class="wa"><p class="wa-t">«Собрала своего агента для записи встреч и разбора задач»</p><p class="wa-w"><b style="--c:var(--violet)">Мария</b>коуч</p></div><div class="wa"><p class="wa-t">«Без воды и хайпа»</p><p class="wa-w"><b style="--c:var(--green)">Павел</b>CTO</p></div></div></section>`},
+  {id:'beforeafter', g:'Во всю ширину', n:'До / после (шторка)', c:'.slide.ba > img.ba-a + img.ba-b + .ba-line + .ba-l.l/.r + .ba-cap', w:'Две картинки одного кадра: шторка открывается при показе. Редизайн, обработка фото, «было/стало» интерфейса.',
+   h:`<section class="slide ba"><img class="ba-a" src="${PH_PHOTO}" alt=""><img class="ba-b" src="${PH_IMG}" alt=""><div class="ba-line"></div><span class="ba-l l">До</span><span class="ba-l r">После</span><div class="ba-cap"><h2>Дашборд <span class="g">после ИИ</span></h2></div></section>`},
+  {id:'spotlight', g:'Во всю ширину', n:'Прожектор', c:'.slide.spot > img.sp-img + .sp-box (--x --y --w --h) + .sp-cap', w:'Одна картинка, подсвечен фрагмент. Серия таких слайдов с одной картинкой = «наезд» по деталям.',
+   h:`<section class="slide spot"><img class="sp-img" src="${PH_IMG}" alt=""><div class="sp-box" style="--x:52;--y:9;--w:42;--h:36"></div><div class="sp-cap"><p class="kicker">Деталь 2 из 3</p><h3>Блок инструментов</h3><p>Здесь включаются поиск, файлы и коннекторы.</p></div></section>`},
+  {id:'video', g:'Интерактив', n:'Видео', c:'.video > video[data-autoplay muted loop] / iframe / img(gif)', w:'Запись демо, GIF, YouTube. data-autoplay — играет только на активном слайде.',
+   h:`<section class="slide wide"><p class="kicker">Демо</p><h2>Агент собирает <span class="g">отчёт</span> за 40 секунд</h2><div class="video"><img src="${PH_IMG}" alt=""></div></section>`},
+  {id:'offer', g:'50/50: текст + арт', n:'Оффер', c:'.of-dl + h2 + ul + .of-price > .of-p + .of-old · .of-cta + .art.qr', w:'Предложение в конце вебинара: что входит, цена, дедлайн и QR на оплату.',
+   h:`<section class="slide"><span class="of-dl">До пятницы</span><h2>Поток <span class="g">«AI Native»</span></h2><ul><li>6 живых сессий</li><li>Разбор домашек</li><li>Шаблоны и агенты</li></ul><div class="of-price"><span class="of-p">490 €</span><span class="of-old">690 €</span></div><p class="of-cta">Сканируйте QR — место закрепится за вами</p><div class="art qr"><img src="${PH_IMG}" alt=""><span>Оплата</span></div></section>`},
+  {id:'guarantee', g:'50/50: текст + арт', n:'Гарантия', c:'.vis > .seal > div > .sl-n + .sl-l', w:'Гарантия возврата, срок, «без риска». Слева — условия, справа — печать с крупной цифрой.',
+   h:`<section class="slide"><p class="kicker">Без риска</p><h2>Не подошло — <span class="g">вернём деньги</span></h2><p class="lead">Пройдите две сессии. Если не нашли пользы — напишите, вернём всю сумму без вопросов.</p><div class="vis"><div class="seal"><div><p class="sl-n">14</p><p class="sl-l">дней гарантии</p></div></div></div></section>`},
+  {id:'question', g:'Акценты', n:'Открытый вопрос', c:'.slide.wide.question > .kicker + .qn-text + .qn-lines > i×3 + .qn-meta', w:'Вопрос для рефлексии: пауза, участники пишут ответ себе или в чат.',
+   h:`<section class="slide wide question"><p class="kicker">Вопрос себе</p><p class="qn-text">Какую задачу на этой неделе вы <span class="g">больше не будете</span> делать руками?</p><div class="qn-lines"><i></i><i></i><i></i></div><p class="qn-meta">2 минуты · запишите себе</p></section>`},
+  {id:'progress', g:'Каркас сессии', n:'Карта программы', c:'.pmap (--n --at) > .pm-i (.done / .now) > .pm-dot + .pm-t + .pm-d', w:'Где мы в курсе: пройденные сессии, текущая («Вы здесь»), впереди. Вместо recap или после него.',
+   h:`<section class="slide wide"><p class="kicker">Программа</p><h2>Где мы <span class="g">сейчас</span></h2><div class="pmap" style="--n:5;--at:2"><div class="pm-i done"><span class="pm-dot">1</span><p class="pm-t">Основы</p><p class="pm-d">Чаты и промпты</p></div><div class="pm-i done"><span class="pm-dot">2</span><p class="pm-t">Контекст</p><p class="pm-d">Проекты и память</p></div><div class="pm-i now"><span class="pm-dot">3</span><p class="pm-t">Инструменты</p><p class="pm-d">Вы здесь</p></div><div class="pm-i"><span class="pm-dot">4</span><p class="pm-t">Агенты</p><p class="pm-d">Автоматизация</p></div><div class="pm-i"><span class="pm-dot">5</span><p class="pm-t">Система</p><p class="pm-d">Всё вместе</p></div></div></section>`},
+  {id:'pyramid', g:'Схемы и модели', n:'Пирамида', c:'.pyr (--n) > .py-r (--i с 0, --c) > .py-s + .py-t > h4 + p', w:'Иерархия уровней: Маслоу, уровни зрелости, фундамент → вершина. 3–5 уровней, вершина сверху.',
+   h:`<section class="slide wide"><p class="kicker">Уровни зрелости</p><h2>Как растёт <span class="g">ИИ-навык</span></h2><div class="pyr" style="--n:4"><div class="py-r" style="--i:0;--c:var(--green)"><div class="py-s">4</div><div class="py-t"><h4>Система</h4><p>Агенты работают без вас</p></div></div><div class="py-r" style="--i:1;--c:var(--blue)"><div class="py-s">3</div><div class="py-t"><h4>Процессы</h4><p>Повторяемые сценарии и шаблоны</p></div></div><div class="py-r" style="--i:2;--c:var(--violet)"><div class="py-s">2</div><div class="py-t"><h4>Контекст</h4><p>Проекты, память, свои файлы</p></div></div><div class="py-r" style="--i:3;--c:var(--amber)"><div class="py-s">1</div><div class="py-t"><h4>Чат</h4><p>Разовые вопросы</p></div></div></div></section>`},
+  {id:'cycle', g:'Схемы и модели', n:'Цикл', c:'.vis > .cyc (--n) > .cy-i (--i с 0, --c) > .cy-n + .cy-t + .cy-d · .cy-c', w:'Повторяющийся процесс из 3–6 шагов: PDCA, цикл обратной связи, спринт. Объяснение слева.',
+   h:`<section class="slide"><p class="kicker">Привычка</p><h2>Цикл <span class="g">улучшения</span> промпта</h2><p class="lead">Каждый круг — 5 минут. Через неделю у вас готовый шаблон.</p><div class="vis"><div class="cyc" style="--n:4"><div class="cy-i" style="--i:0"><span class="cy-n">1</span><p class="cy-t">Запрос</p></div><div class="cy-i" style="--i:1;--c:var(--blue)"><span class="cy-n">2</span><p class="cy-t">Ответ</p></div><div class="cy-i" style="--i:2;--c:var(--amber)"><span class="cy-n">3</span><p class="cy-t">Оценка</p></div><div class="cy-i" style="--i:3;--c:var(--violet)"><span class="cy-n">4</span><p class="cy-t">Правка</p></div><p class="cy-c">5 минут</p></div></div></section>`},
+  {id:'tree', g:'Схемы и модели', n:'Дерево', c:'.tree > .tr-root + .tr-br > .tr-b (--c) > .tr-h + .tr-l > span', w:'Декомпозиция: цель → направления → конкретные задачи. 3–4 ветви, по 2–4 листа.',
+   h:`<section class="slide wide"><p class="kicker">Декомпозиция</p><h2>Из чего состоит <span class="g">ассистент</span></h2><div class="tree"><div class="tr-root">ИИ-ассистент</div><div class="tr-br"><div class="tr-b"><p class="tr-h">Контекст</p><div class="tr-l"><span>CLAUDE.md</span><span>Проекты</span><span>Память</span></div></div><div class="tr-b" style="--c:var(--blue)"><p class="tr-h">Инструменты</p><div class="tr-l"><span>Поиск</span><span>Файлы</span><span>Календарь</span><span>Почта</span></div></div><div class="tr-b" style="--c:var(--amber)"><p class="tr-h">Сценарии</p><div class="tr-l"><span>Скиллы</span><span>Расписание</span></div></div></div></div></section>`},
+  {id:'decision', g:'Схемы и модели', n:'Дерево решений', c:'.decide > .dc-s > .dc-q + .dc-no (b) · .dc-end', w:'Цепочка «да/нет» из 2–4 вопросов: когда применять инструмент, куда направить клиента.',
+   h:`<section class="slide wide"><p class="kicker">Чек перед запуском</p><h2>Отдавать задачу <span class="g">агенту</span>?</h2><div class="decide"><div class="dc-s"><div class="dc-q">Задача повторяется хотя бы раз в неделю?</div><div class="dc-no"><b>нет</b>Делайте в чате</div></div><div class="dc-s"><div class="dc-q">Результат легко проверить?</div><div class="dc-no"><b>нет</b>Только черновик</div></div><div class="dc-s"><div class="dc-q">Ошибка обойдётся дёшево?</div><div class="dc-no"><b>нет</b>С подтверждением</div></div><div class="dc-end">Агент</div></div></section>`},
+  {id:'tiers', g:'Схемы и модели', n:'Слои', c:'.tiers > .ti-r (--c) > .ti-n + .ti-d + .ti-tag', w:'Архитектура или стек сверху вниз: интерфейс → логика → данные. 3–5 слоёв.',
+   h:`<section class="slide wide"><p class="kicker">Архитектура</p><h2>Стек <span class="g">личного ИИ</span></h2><div class="tiers"><div class="ti-r" style="--c:var(--green)"><p class="ti-n">Интерфейс</p><p class="ti-d">Чат, телефон, голос</p><span class="ti-tag">вы</span></div><div class="ti-r" style="--c:var(--blue)"><p class="ti-n">Скиллы</p><p class="ti-d">Готовые сценарии под задачи</p><span class="ti-tag">автоматика</span></div><div class="ti-r" style="--c:var(--violet)"><p class="ti-n">Коннекторы</p><p class="ti-d">Почта, календарь, Notion, Drive</p><span class="ti-tag">MCP</span></div><div class="ti-r" style="--c:var(--amber)"><p class="ti-n">Знания</p><p class="ti-d">Vault, заметки, транскрипты</p><span class="ti-tag">данные</span></div></div></section>`},
+  {id:'radar', g:'Схемы и модели', n:'Радар', c:'.vis > .radar > svg (.rd-g, .rd-a --c, text) · .lgd > i (--c)', w:'Профиль по 5–8 осям: оценка навыков, сравнение двух вариантов. Вывод и легенда слева.',
+   h:`<section class="slide"><p class="kicker">Разбор промпта</p><h2>Что <span class="g">добавили</span></h2><p class="lead">Сильнее всего выросли контекст и роль — отсюда качество ответа.</p><div class="lgd"><span><i style="--c:var(--dim)"></i>Было</span><span><i style="--c:var(--green)"></i>Стало</span></div><div class="vis"><div class="radar"><svg viewBox="-125 -110 250 220"><polygon class="rd-g" points="0.0,-20.0 17.3,-10.0 17.3,10.0 0.0,20.0 -17.3,10.0 -17.3,-10.0"/><polygon class="rd-g" points="0.0,-40.0 34.6,-20.0 34.6,20.0 0.0,40.0 -34.6,20.0 -34.6,-20.0"/><polygon class="rd-g" points="0.0,-60.0 52.0,-30.0 52.0,30.0 0.0,60.0 -52.0,30.0 -52.0,-30.0"/><polygon class="rd-g" points="0.0,-80.0 69.3,-40.0 69.3,40.0 0.0,80.0 -69.3,40.0 -69.3,-40.0"/><line class="rd-g" x1="0" y1="0" x2="0.0" y2="-80.0"/><line class="rd-g" x1="0" y1="0" x2="69.3" y2="-40.0"/><line class="rd-g" x1="0" y1="0" x2="69.3" y2="40.0"/><line class="rd-g" x1="0" y1="0" x2="0.0" y2="80.0"/><line class="rd-g" x1="0" y1="0" x2="-69.3" y2="40.0"/><line class="rd-g" x1="0" y1="0" x2="-69.3" y2="-40.0"/><polygon class="rd-a" style="--c:var(--dim)" points="0.0,-36.0 41.6,-24.0 20.8,12.0 0.0,16.0 -24.2,14.0 -17.3,-10.0"/><polygon class="rd-a" style="--c:var(--green)" points="0.0,-72.0 58.9,-34.0 55.4,32.0 0.0,56.0 -52.0,30.0 -58.9,-34.0"/><text x="0.0" y="-93.0" text-anchor="middle">Контекст</text><text x="83.1" y="-45.0" text-anchor="start">Роль</text><text x="83.1" y="51.0" text-anchor="start">Формат</text><text x="0.0" y="99.0" text-anchor="middle">Примеры</text><text x="-83.1" y="51.0" text-anchor="end">Ограничения</text><text x="-83.1" y="-45.0" text-anchor="end">Проверка</text></svg></div></div></section>`},
+  {id:'spectrum', g:'Схемы и модели', n:'Спектр', c:'.spec > .sp-r > .sp-a + .sp-line > i (--v 0–100, --c, data-l) + .sp-b', w:'Положение на шкалах между полюсами: стиль, позиционирование, «где мы сейчас». 2–4 шкалы.',
+   h:`<section class="slide wide"><p class="kicker">Самооценка</p><h2>Где вы <span class="g">сейчас</span></h2><div class="spec"><div class="sp-r"><span class="sp-a">Делаю сам</span><div class="sp-line"><i style="--v:28" data-l="вы"></i></div><span class="sp-b">Делегирую ИИ</span></div><div class="sp-r"><span class="sp-a">Разовые чаты</span><div class="sp-line"><i style="--v:62;--c:var(--blue)" data-l="вы"></i></div><span class="sp-b">Система</span></div><div class="sp-r"><span class="sp-a">Осторожно</span><div class="sp-line"><i style="--v:80;--c:var(--amber)" data-l="вы"></i></div><span class="sp-b">Смело</span></div></div></section>`},
+  {id:'scale', g:'Схемы и модели', n:'Шкала с отметкой', c:'.scale (--v) > .sc-bar > span (--w --c) + i.sc-m[data-v] · .sc-desc > p (--w)', w:'Одна оценка на шкале с зонами: уровень риска, готовности, результат теста.',
+   h:`<section class="slide wide"><p class="kicker">Результат диагностики</p><h2>Готовность команды к <span class="g">ИИ</span></h2><div class="scale" style="--v:68"><div class="sc-bar"><span style="--w:40;--c:var(--red)">Старт</span><span style="--w:35;--c:var(--amber)">Пробуют</span><span style="--w:25;--c:var(--green)">Внедряют</span><i class="sc-m" data-v="68"></i></div></div><div class="sc-desc"><p style="--w:40"><b>0–40</b>Нет общих практик</p><p style="--w:35"><b>40–75</b>Энтузиасты, нет системы</p><p style="--w:25"><b>75–100</b>Процессы и метрики</p></div></section>`},
+  {id:'waterline', g:'Схемы и модели', n:'Айсберг', c:'.slide.wide.waterline > .wt-top (h2) + .wt-line + .wt-bot > .kicker + .wt-items > div > h4 + p', w:'Видимое и скрытое: симптомы над водой, причины под ней. Модели поведения, культура, система.',
+   h:`<section class="slide wide waterline"><div class="wt-top"><p class="kicker">Что видно</p><h2>«ИИ отвечает <span class="g2">плохо</span>»</h2></div><div class="wt-line"></div><div class="wt-bot"><p class="kicker">Что под водой</p><div class="wt-items"><div><h4>Нет контекста</h4><p>ИИ не знает, кто вы и для кого текст</p></div><div style="--c:var(--violet)"><h4>Нет примера</h4><p>Неясно, как выглядит хороший результат</p></div><div style="--c:var(--green)"><h4>Нет проверки</h4><p>Первый ответ принимают как финальный</p></div></div></div></section>`},
+  {id:'quiz', g:'Интерактив', n:'Квиз', c:'.vis > .quiz.rvm > .qz-o (.ok) > .qz-l · ответ — по «→»', w:'Вопрос аудитории с вариантами. Первое нажатие «→» подсвечивает правильный ответ, второе — следующий слайд.',
+   h:`<section class="slide"><p class="kicker">Проверим себя</p><h2>Что сильнее всего улучшит <span class="g">ответ</span>?</h2><p class="lead">Напишите букву в чат</p><div class="vis"><div class="quiz rvm on"><div class="qz-o"><span class="qz-l">A</span>Слово «пожалуйста»</div><div class="qz-o ok"><span class="qz-l">B</span>Пример хорошего результата</div><div class="qz-o"><span class="qz-l">C</span>Более длинный запрос</div><div class="qz-o"><span class="qz-l">D</span>Писать капсом</div></div></div></section>`},
+  {id:'poll', g:'Интерактив', n:'Опрос', c:'.poll > .po-o (--c) > .po-n + .po-t · .po-hint', w:'Вопрос залу: 3–4 варианта с цифрами, ответ — цифрой в чат. Разогрев, сбор мнений.',
+   h:`<section class="slide wide"><p class="kicker">Опрос</p><h2>Как часто вы пользуетесь <span class="g">ИИ</span>?</h2><div class="poll"><div class="po-o"><span class="po-n">1</span><p class="po-t">Пару раз пробовал</p></div><div class="po-o" style="--c:var(--blue)"><span class="po-n">2</span><p class="po-t">Раз в неделю</p></div><div class="po-o" style="--c:var(--amber)"><span class="po-n">3</span><p class="po-t">Каждый день</p></div><div class="po-o" style="--c:var(--violet)"><span class="po-n">4</span><p class="po-t">Не представляю работу без него</p></div></div><p class="po-hint">Напишите цифру в чат</p></section>`},
+  {id:'timer', g:'Интерактив', n:'Таймер', c:'.vis > .timer (--t секунд) > div > .tm-v + .tm-l', w:'Упражнение на время: задание слева, кольцо обратного отсчёта стартует при показе слайда.',
+   h:`<section class="slide"><p class="kicker">Практика</p><h2>Напишите промпт <span class="g">с ролью</span></h2><ul><li>Роль и аудитория</li><li>Пример результата</li><li>Формат ответа</li></ul><div class="vis"><div class="timer" style="--t:420"><div><div class="tm-v"></div><p class="tm-l">осталось</p></div></div></div></section>`},
+  {id:'checkwide', g:'Интерактив', n:'Чек-лист', c:'.chk > .ck-i (.on — отмечен, .rvm — отмечается по «→») > small', w:'Чек-лист на всю ширину: итоги, «проверьте себя», требования. До 8 пунктов в 2 колонки.',
+   h:`<section class="slide wide"><p class="kicker">Итоги</p><h2>Что у вас <span class="g">уже есть</span></h2><div class="chk"><div class="ck-i on">Аккаунт и подписка<small>Claude Pro или Max</small></div><div class="ck-i on">Проект с контекстом<small>файлы и инструкции</small></div><div class="ck-i on">Первый шаблон промпта</div><div class="ck-i">Коннектор к почте<small>на следующей сессии</small></div><div class="ck-i">Свой скилл</div><div class="ck-i">Агент по расписанию</div></div></section>`},
+  {id:'reveal', g:'Интерактив', n:'Пошаговый показ', c:'любые элементы с .rv (появляются по «→») · .rvm (видимы, получают .on)', w:'Пункты появляются по одному по «→», «←» прячет последний. Предыдущие пункты приглушаются. Работает с ul > li, карточками, .ck-i.',
+   h:`<section class="slide"><p class="kicker">Три правила</p><h2>Перед каждым <span class="g">запросом</span></h2><ul><li class="rv on">Кто читает результат?</li><li class="rv on">Как выглядит хороший ответ?</li><li class="rv on">Что ИИ не должен делать?</li></ul>${art('checklist')}</section>`},
 ];
 
 // ---------- темы, шрифты, иллюстрации ----------
@@ -766,6 +834,8 @@ function showPane(id){
   navs.forEach(n=>n.classList.toggle('active', n.dataset.target===id));
   document.querySelectorAll('.pane').forEach(p=>p.hidden = p.id!==id);
   history.replaceState(null,'', HASH[id] ? '#'+HASH[id] : location.pathname);
+  const nav = [...navs].find(n=>n.dataset.target===id);
+  document.title = 'skill /slides-generator - settings - ' + (nav ? nav.childNodes[2].textContent.trim() : '');
   refreshCurrent();
   if (id==='sec-decks' && !decks) renderDecks();
   window.scrollTo(0,0);
@@ -832,10 +902,20 @@ function slideDoc(tpl, html){
     .replace('<!-- DECKTAG_PLACEHOLDER -->', cfg.decktag || 'Курс · Сессия 2')
     .replace('<!-- SLIDES_PLACEHOLDER -->', html.replace('class="slide', 'class="slide active'))
     .replace('class="deck"', cfg.ratio==='9:16' ? 'class="deck ratio-9-16"' : 'class="deck"');
+  // в превью оставляем только мотивы, которые есть на слайде (иначе 113 анимированных <symbol> в каждом iframe)
+  doc = doc.replace(/<symbol id="([^"]+)"[\s\S]*?<\/symbol>/g, (m,id)=>html.includes('#'+id+'"') ? m : '');
   doc = recolor(doc);
   if (!cfg.animate) doc = stripAnim(doc);
   return doc.replace('</head>', css + '</head>');
 }
+
+// iframe грузится, только когда карточка рядом с экраном, и выгружается, когда ушла далеко или раздел скрыт
+const lazyIO = new IntersectionObserver(es=>es.forEach(e=>{
+  const f = e.target;
+  if (e.isIntersecting) { if (!f.dataset.on) { f.dataset.on = 1; f._load(); fit(f); } }
+  else if (f.dataset.on) { delete f.dataset.on; f.removeAttribute('srcdoc'); f.src = 'about:blank'; }
+}), {rootMargin:'400px 0px'});
+function lazyFrame(f, load){ f._load = load; if (f.dataset.on) load(); else lazyIO.observe(f); }
 
 function fit(frame){ const w = frame.parentElement.clientWidth; if (w) frame.style.transform = `scale(${w/1280})`; }
 
@@ -868,7 +948,7 @@ function renderLayouts(){
   const list = LAYOUTS.filter(l=>ltGroup==='Все'||l.g===ltGroup);
   grid.innerHTML = list.map(l=>{
     const s = cfg.layouts[l.id];
-    return `<article class="lt ${s}" data-id="${l.id}" title="${(l.w+' · '+l.c).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')}"><div class="lt-frame"><iframe loading="lazy" title="${l.n}"></iframe></div>
+    return `<article class="lt ${s}" data-id="${l.id}" title="${(l.w+' · '+l.c).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')}"><div class="lt-frame"><iframe title="${l.n}"></iframe></div>
       <div class="lt-body"><h3>${l.n}</h3>${stateCtl('lt-'+l.id, s)}</div></article>`;
   }).join('');
   countLayouts();
@@ -881,9 +961,8 @@ async function refreshFrames(){
   try { tpl = await getTemplate(); }
   catch { document.getElementById('ltGrid').innerHTML = '<p class="pane-desc">Превью работают только через сервер: <code>/slides-generator setup</code>.</p>'; return; }
   document.querySelectorAll('#ltGrid .lt').forEach(card=>{
-    const ifr = card.querySelector('iframe');
-    ifr.srcdoc = slideDoc(tpl, LH(card.dataset.id));
-    fit(ifr);
+    const ifr = card.querySelector('iframe'), id = card.dataset.id;
+    lazyFrame(ifr, ()=>{ ifr.srcdoc = slideDoc(tpl, LH(id)); });
   });
 }
 
@@ -909,7 +988,7 @@ async function showZoom(){
   document.getElementById('zoomText').innerHTML = `<b>${l.n}</b> · ${zoomIdx+1} / ${zoomList.length} · ← → листать · Esc — закрыть`;
 }
 function stepZoom(d){ zoomIdx = (zoomIdx + d + zoomList.length) % zoomList.length; showZoom(); }
-const closeZoom = ()=>{ document.getElementById('zoom').hidden = true; };
+const closeZoom = ()=>{ document.getElementById('zoom').hidden = true; document.getElementById('zoomFrame').removeAttribute('srcdoc'); };
 document.getElementById('zoom').onclick = closeZoom;
 document.getElementById('zPrev').onclick = e=>{ e.stopPropagation(); stepZoom(-1); };
 document.getElementById('zNext').onclick = e=>{ e.stopPropagation(); stepZoom(1); };
@@ -923,13 +1002,15 @@ document.getElementById('ltFilter').onclick = e=>{ const g=e.target.dataset?.g; 
 window.addEventListener('resize', ()=>document.querySelectorAll('.lt-frame iframe').forEach(fit));
 
 // ---------- иллюстрации ----------
-let moGroup = 'Все';
+let moGroup = 'Все', moSort = '', animDoc = null;
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 async function buildDefs(){
   let tpl; try { tpl = await getTemplate(); } catch { return false; }
   let d = [...tpl.matchAll(/<defs>[\s\S]*?<\/defs>/g)].map(m=>m[0]).sort((a,b)=>b.length-a.length)[0] || '';
-  d = recolor(d); if (!cfg.animate) d = stripAnim(d);
-  document.getElementById('defsHost').innerHTML = `<svg width="0" height="0" style="position:absolute">${d}</svg>`;
+  d = recolor(d);
+  // в галерее статика; живая версия — в detached-копии, подставляется при наведении
+  animDoc = cfg.animate ? new DOMParser().parseFromString(`<svg xmlns="http://www.w3.org/2000/svg">${d}</svg>`, 'image/svg+xml') : null;
+  document.getElementById('defsHost').innerHTML = `<svg width="0" height="0" style="position:absolute">${stripAnim(d)}</svg>`;
   return true;
 }
 function moCard(id, name, where, icon){
@@ -945,27 +1026,43 @@ function countMotifs(){
   document.getElementById('navMoCount').textContent = `${on}/${v.length}`;
 }
 async function renderMotifs(){
-  const groups = ['Все', ...Object.keys(MOTIF_DATA.c), 'Иконки', 'Новые'];
-  document.getElementById('moFilter').innerHTML = groups.map(g=>`<button type="button" class="pill ${g===moGroup?'selected':''}" data-g="${g}">${g.split(' / ')[0]}</button>`).join('');
   countMotifs();
   const wrap = document.getElementById('moWrap');
   if (!(await buildDefs())) { wrap.innerHTML = '<p class="pane-desc">Галерея работает только через сервер: <code>/slides-generator setup</code>.</p>'; return; }
   wrap.style.setProperty('--mo-bg', cfg.colors.bg);
   const byId = Object.fromEntries(MOTIF_DATA.m.map(m=>[m.id,m]));
-  const motifs = ids => `<div class="mo-grid">${ids.filter(id=>byId[id]).map(id=>moCard(id, byId[id].n, byId[id].w)).join('')}</div>`;
-  const icons = `<div class="mo-grid">${ICONS.map(([id,n])=>moCard(id, n, '', true)).join('')}</div>`;
+  const rank = id => moSort==='prefer' ? (cfg.motifs[id]==='prefer'?0:1) : moSort==='off' ? (cfg.motifs[id]==='off'?0:1) : 0;
+  const order = (ids, nameOf) => moSort ? [...ids].sort((a,b)=>rank(a)-rank(b) || (moSort==='name' ? String(nameOf(a)).localeCompare(nameOf(b),'ru') : 0)) : ids;
+  const motifs = ids => `<div class="mo-grid">${order(ids.filter(id=>byId[id]), id=>byId[id].n).map(id=>moCard(id, byId[id].n, byId[id].w)).join('')}</div>`;
+  const icons = `<div class="mo-grid">${order(ICONS.map(i=>i[0]), id=>ICONS.find(i=>i[0]===id)[1]).map(id=>moCard(id, ICONS.find(i=>i[0]===id)[1], '', true)).join('')}</div>`;
   // мотивы из template.html, которых ещё нет в описаниях, — группа «Новые»
   const known = new Set(ALL_ART), extra = [...document.querySelectorAll('#defsHost symbol')].map(s=>s.id).filter(id=>id && !known.has(id));
   extra.forEach(id=>{ if (!cfg.motifs[id]) cfg.motifs[id] = 'on'; });
-  const extras = extra.length ? `<p class="mo-sub">Новые</p><div class="mo-grid">${extra.map(id=>moCard(id, id, '', /^i-/.test(id))).join('')}</div>` : '';
+  const extras = extra.length ? `<p class="mo-sub">Новые</p><div class="mo-grid">${order(extra, id=>id).map(id=>moCard(id, id, '', /^i-/.test(id))).join('')}</div>` : '';
   if (extra.length) countMotifs();
-  if (!extra.length) document.querySelector('#moFilter [data-g="Новые"]')?.remove();
+  const groups = ['Все', ...Object.keys(MOTIF_DATA.c), 'Иконки', ...(extra.length ? ['Новые'] : [])];
+  if (!groups.includes(moGroup)) moGroup = 'Все';
+  document.getElementById('moFilter').innerHTML = groups.map(g=>`<option value="${g}" ${g===moGroup?'selected':''}>${g}</option>`).join('');
   wrap.innerHTML = moGroup==='Все' ? `${motifs(MOTIF_DATA.m.map(m=>m.id))}${extras}<p class="mo-sub">Иконки</p>${icons}`
     : moGroup==='Новые' ? extras
     : moGroup==='Иконки' ? icons : motifs(MOTIF_DATA.c[moGroup]);
-  wrap.classList.toggle('static-art', !cfg.animate);
+  wrap.classList.add('static-art');
 }
-document.getElementById('moFilter').onclick = e=>{ const g=e.target.dataset?.g; if(g){ moGroup=g; renderMotifs(); } };
+document.getElementById('moFilter').onchange = e=>{ moGroup = e.target.value; renderMotifs(); };
+document.getElementById('moSort').onchange = e=>{ moSort = e.target.value; renderMotifs(); };
+// анимация — только при наведении на превью
+{
+  const play = (e, on) => {
+    const art = e.target.closest?.('.mo-art'); if (!art || !animDoc) return;
+    const svg = art.querySelector('svg'), id = art.closest('.mo').dataset.id, sym = animDoc.getElementById(id);
+    if (!sym) return;
+    svg.classList.toggle('live', on);
+    svg.innerHTML = on ? sym.innerHTML : `<use href="#${id}"/>`;
+  };
+  const w = document.getElementById('moWrap');
+  w.addEventListener('mouseover', e=>{ if (!e.relatedTarget?.closest?.('.mo-art') || e.relatedTarget.closest('.mo-art')!==e.target.closest('.mo-art')) play(e, true); });
+  w.addEventListener('mouseout', e=>{ if (e.relatedTarget?.closest?.('.mo-art') !== e.target.closest('.mo-art')) play(e, false); });
+}
 document.getElementById('moWrap').addEventListener('change', e=>{
   const card = e.target.closest('.mo'); if (!card) return;
   cfg.motifs[card.dataset.id] = e.target.value;
@@ -986,10 +1083,10 @@ async function renderDecks(){
   all.textContent = `Обновить устаревшие (${old.length})`; all.classList.remove('selected');
   const date = t => new Date(t*1000).toLocaleDateString('ru', {day:'2-digit', month:'2-digit'});
   grid.innerHTML = decks.map((d,k)=>`<article class="lt${d.archived?' dk-arch':''}" data-k="${k}" title="${d.folder.replace(/"/g,'&quot;')}">
-    <div class="lt-frame"><iframe loading="lazy" src="/deck?view=embed&path=${encodeURIComponent(d.path)}" title="${d.title.replace(/"/g,'&quot;')}"></iframe></div>
+    <div class="lt-frame">${d.thumb ? `<img class="dk-thumb" loading="lazy" src="/thumb?path=${encodeURIComponent(d.path)}&t=${d.mtime}" alt="">` : `<iframe data-src="/deck?view=embed&path=${encodeURIComponent(d.path)}" title="${d.title.replace(/"/g,'&quot;')}"></iframe>`}</div>
     <div class="lt-body"><h3>${d.title}</h3><span class="dk-meta">${d.outdated?'<span class="dk-old-dot" title="Старый шаблон"></span>':''}${d.comments?`💬 ${d.comments} · `:''}${d.slides} сл. · ${date(d.mtime)}</span></div>
     <div class="dk-acts">${d.outdated?'<button type="button" data-a="rebuild">Обновить</button>':''}<button type="button" data-a="lint">Проверить</button><button type="button" data-a="export">PDF</button></div></article>`).join('');
-  grid.querySelectorAll('iframe').forEach(f=>{ fit(f); f.onload = ()=>fit(f); });
+  grid.querySelectorAll('iframe').forEach(f=>lazyFrame(f, ()=>{ f.src = f.dataset.src; }));
 }
 document.getElementById('dkGrid').addEventListener('click', async e=>{
   const card = e.target.closest('.lt'); if (!card) return;
@@ -1002,7 +1099,7 @@ document.getElementById('dkGrid').addEventListener('click', async e=>{
   try {
     const r = await post('/'+b.dataset.a, d.path), t = await r.text();
     if (!r.ok) throw new Error(t);
-    if (b.dataset.a==='rebuild') { b.remove(); card.querySelector('.dk-old-dot')?.remove(); card.querySelector('iframe').src += ''; return; }
+    if (b.dataset.a==='rebuild') { b.remove(); card.querySelector('.dk-old-dot')?.remove(); const f = card.querySelector('iframe'); if (f?.dataset.on) f.src = f.dataset.src; return; }
     const j = JSON.parse(t); out = j.out || 'Готово'; bad = !j.ok;
   } catch (err) { out = err.message; bad = true; }
   finally { b.disabled = false; b.textContent = label; }

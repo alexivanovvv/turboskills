@@ -30,7 +30,7 @@ user-invocable: true
 | `ui.*` | углы слайда — добавь в конец `<style>` шаблона: `cornerTag:false` → `.corner-tag{display:none!important}`; `brand:false` → `.brand{display:none!important}`; `menu:"hover"` → `.menu-btn{opacity:0}.menu-btn:hover,.menu-btn[aria-expanded="true"]{opacity:.95}`, `menu:"off"` → `.menu-btn{display:none!important}` (хоткеи работают); `progress:"counter"` → скрыть `.counter-bar`, `"bar"` → скрыть `.counter`, `"off"` → скрыть `.counter-wrap`; `size:"s"/"l"` → `.corner-tag,.brand,.counter{font-size:.62rem / .88rem}`; `tone:"dim"/"bright"` → те же селекторы `color:var(--dim) / var(--fg)` |
 | `art: false` | слайды без SVG-арта: не вставляй `.art`, текстовые слайды делай `.slide.wide` |
 | `export` | `pdf` / `png` / `both` — после проверки запусти `export.sh "<deck.html>" <mode>`; `none` — не экспортируй |
-| `layouts.<id>` | `off` — **никогда не используй** эту раскладку, подбери другую подходящую; `prefer` — выбирай её при любом подходящем контенте; `on` или нет ключа — по ситуации. id: `title` титул, `divider` разделитель, `homework` домашка, `qa` Q&A, `bullets` тезисы, `focus` фокус-бокс, `quote` цитата/Bad→Good, `route` маршрут, `picture` схема/скрин, `author` автор, `grid3x2` `.cards.g3w`, `row4` `.cards.g4`, `row5` `.cards.g5`, `numcards` `.numgrid`, `steps` `.pgrid.row4`, `demo` `.demo-list.two`, `cols2` две группы, `table` таблица, `hexring` кольцо из 6, `bignum` большая цифра, `statement` манифест, `bleed` фото во весь слайд, `testimonial` отзыв, `agenda` план с таймингом, `prompt` окно промпта, `chat` диалог, `funnel` воронка, `hbars` бары, `timeline` таймлайн, `vs` было→стало, `venn` Венн, `flip` визуал слева, `contact` контакты+QR, `logos` стена логотипов, `pricing` тарифы, `case` кейс, `gallery` галерея фото, `faq` FAQ |
+| `layouts.<id>` | `off` — **никогда не используй** эту раскладку, подбери другую подходящую; `prefer` — выбирай её при любом подходящем контенте; `on` или нет ключа — по ситуации. id: `title` титул, `divider` разделитель, `homework` домашка, `qa` Q&A, `bullets` тезисы, `focus` фокус-бокс, `quote` цитата/Bad→Good, `route` маршрут, `picture` схема/скрин, `author` автор, `grid3x2` `.cards.g3w`, `row4` `.cards.g4`, `row5` `.cards.g5`, `numcards` `.numgrid`, `steps` `.pgrid.row4`, `demo` `.demo-list.two`, `cols2` две группы, `table` таблица, `hexring` кольцо из 6, `bignum` большая цифра, `statement` манифест, `bleed` фото во весь слайд, `testimonial` отзыв, `agenda` план с таймингом, `prompt` окно промпта, `chat` диалог, `funnel` воронка, `hbars` бары, `timeline` таймлайн, `vs` было→стало, `venn` Венн, `flip` визуал слева, `contact` контакты+QR, `logos` стена логотипов, `pricing` тарифы, `case` кейс, `gallery` галерея фото, `faq` FAQ, `matrix` матрица 2×2, `code` код, `callouts` скрин с метками, `diff` правка текста, `kpi` метрики, `proscons` за/против, `wall` стена отзывов, `beforeafter` шторка до/после, `spotlight` прожектор, `video` видео, `offer` оффер, `guarantee` гарантия, `question` открытый вопрос, `progress` карта программы, `pyramid` пирамида, `cycle` цикл, `tree` дерево, `decision` дерево решений, `tiers` слои, `radar` радар, `spectrum` спектр, `scale` шкала с отметкой, `waterline` айсберг, `quiz` квиз, `poll` опрос, `timer` таймер, `checkwide` чек-лист, `reveal` пошаговый показ |
 | `motifs.<id>` | SVG-мотивы и иконки (`orbital`, `i-aim`, …): `off` — **никогда не используй**, подбери другой мотив из того же кластера; `prefer` — бери при любом подходящем смысле; `on`/нет ключа — по ситуации |
 | `images.*` | готовые картинки (скрины, схемы, фото, кадры старой колоды, из интернета): `embed` — `inline` base64 в HTML (дефолт) / `folder` файлы в `img/` рядом с деском (`src="img/…"`) / `link` URL как есть, без скачивания; `format` — `webp` (q≈88, дефолт) / `original`; `maxWidth` — `thumbnail(N)` перед сохранением (1800); `place` — `half` `.art.pic` (дефолт) / `wide` `.wide-pic`+`.wide-cap` (широкие схемы — всегда wide); `fit` — `contain` / `cover` (`object-fit` у картинки); `matchBg` — поднять чёрный фон до `--bg`; `trim` — автоподрезка по bbox + отступ 3.5%; `round: false` — `border-radius:0` |
 
@@ -229,6 +229,41 @@ UI-акценты (заголовки, буллеты, разделители) �
 | `case` | `.case` > 3 колонки (`--c`) с `.cs-k` + `.cs-t` / `.cs-n`, ниже `.cs-who` | кейс клиента: задача → решение → результат |
 | `gallery` | `.gallery(.g2/.mosaic)` > `figure > img + figcaption` | 2–3 фото рядом или мозаика |
 | `faq` | `.faq` > `div > .fq-q + .fq-a` | частые вопросы, 4–6 пар |
+
+**Вторая волна (+28, 2026-10-02).** `.vis` — содержательный визуал в правой половине 50/50 (вместо `.art`, в 9:16 и на узком экране уходит под текст). Демо-разметка каждой — в массиве `LAYOUTS` в `settings.html`, копируй оттуда.
+
+| id | Разметка | Когда |
+|---|---|---|
+| `matrix` | `.vis > .mx` (`.noaxis`) > `.mx-c` (--c) > `.mx-t + .mx-d` · `.mx-x` / `.mx-y` | 2×2: Эйзенхауэр, срочно/важно, Джохари (`.noaxis`) |
+| `code` | `.vis > .code > .cd-bar + .cd-body > div` (`.hi`), токены `.k .s .c .v .n` | конфиг, промпт-шаблон, скрипт 6–14 строк |
+| `callouts` | wide · `.callouts > .co-pic (img + .co-pin --x --y --c) + .co-list > .co-i > .co-n + .co-t/.co-d` | разбор интерфейса/схемы, 3–5 меток |
+| `diff` | wide · `.diff > .df-col.before/.after > .df-h + .df-t` (`del`/`ins`) | промпт/письмо до и после правки |
+| `kpi` | wide · `.kpis > .kp > .kp-n (small) + .kp-d.up/.down + .kp-l` | 3–4 метрики с дельтой |
+| `proscons` | wide · `.pc > .pc-col.pro/.con > .pc-h + ul` · `.pc-v` | за/против + вердикт |
+| `wall` | wide · `.wall > .wa > .wa-t + .wa-w (b --c)` | 5–7 коротких отзывов |
+| `beforeafter` | `.slide.ba > img.ba-a + img.ba-b + .ba-line + .ba-l.l/.r + .ba-cap` | один кадр до/после, шторка при показе |
+| `spotlight` | `.slide.spot > img.sp-img + .sp-box (--x --y --w --h в %) + .sp-cap` | подсветка фрагмента; серия = «наезд» по деталям |
+| `video` | wide · `.video > video[data-autoplay muted loop]` / iframe / gif | демо-запись; играет только на активном слайде |
+| `offer` | `.of-dl + h2 + ul + .of-price > .of-p + .of-old · .of-cta` + `.art.qr` | оффер в конце вебинара |
+| `guarantee` | `.vis > .seal > div > .sl-n + .sl-l` | гарантия возврата |
+| `question` | `.slide.wide.question > .qn-text + .qn-lines > i×3 + .qn-meta` | вопрос для рефлексии |
+| `progress` | wide · `.pmap` (--n, --at с 0) `> .pm-i.done/.now > .pm-dot + .pm-t + .pm-d` | где мы в курсе («Вы здесь») |
+| `pyramid` | wide · `.pyr` (--n) `> .py-r` (--i с 0 сверху, --c) `> .py-s + .py-t > h4 + p` | иерархия 3–5 уровней |
+| `cycle` | `.vis > .cyc` (--n) `> .cy-i` (--i, --c) `> .cy-n + .cy-t` · `.cy-c` | цикл 3–6 шагов |
+| `tree` | wide · `.tree > .tr-root + .tr-br > .tr-b (--c) > .tr-h + .tr-l > span` | декомпозиция цель → ветви → задачи |
+| `decision` | wide · `.decide > .dc-s > .dc-q + .dc-no (b)` · `.dc-end` | цепочка «да/нет» из 2–4 вопросов |
+| `tiers` | wide · `.tiers > .ti-r (--c) > .ti-n + .ti-d + .ti-tag` | слои стека/архитектуры |
+| `radar` | `.vis > .radar > svg` (viewBox -125 -110 250 220, r=80, `.rd-g`, `.rd-a` --c, `text`) · `.lgd` | профиль по 5–8 осям |
+| `spectrum` | wide · `.spec > .sp-r > .sp-a + .sp-line > i (--v 0–100, --c, data-l) + .sp-b` | положение между полюсами |
+| `scale` | wide · `.scale (--v) > .sc-bar > span (--w --c) + i.sc-m[data-v]` · `.sc-desc > p (--w)` | оценка на шкале с зонами |
+| `waterline` | `.slide.wide.waterline > .wt-top + .wt-line + .wt-bot > .wt-items` | видимое/скрытое (айсберг) |
+| `quiz` | `.vis > .quiz.rvm > .qz-o (.ok) > .qz-l` | вопрос с вариантами; «→» подсвечивает ответ |
+| `poll` | wide · `.poll > .po-o (--c) > .po-n + .po-t` · `.po-hint` | вопрос залу, ответ цифрой в чат |
+| `timer` | `.vis > .timer (--t секунд) > div > .tm-v + .tm-l` | упражнение на время; отсчёт стартует при показе |
+| `checkwide` | wide · `.chk > .ck-i (.on, .rvm) > small` | чек-лист до 8 пунктов в 2 колонки |
+| `reveal` | класс `.rv` на любых элементах (`li`, карточки) · `.rvm` — виден, получает `.on` | пункты по одному по «→»; «←» прячет |
+
+**Пошаговый показ:** работает только в живом показе; в превью, `?view=embed`, скриншотах по `#slide-N` и печати всё раскрыто. Не больше 1 квиза/reveal подряд, по 3–5 шагов.
 
 **Модификатор `.side-tag`** — `<p class="side-tag">Раздел</p>` первым элементом любого слайда: вертикальная метка раздела у левого края (тихий ориентир внутри длинного блока). Не на разделителях и не на `flip`-слайдах с картинкой слева.
 

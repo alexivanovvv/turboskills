@@ -116,7 +116,7 @@ class Handler(BaseHTTPRequestHandler):
                 out.append({"path": str(p), "title": f[: -len(DECK_SUFFIX)].rstrip(" —"),
                             "folder": str(p.parent.relative_to(VAULT / "PROJECTS")), "mtime": p.stat().st_mtime,
                             "archived": "_ARCHIVE" in p.parts, "comments": len(json.loads(side.read_text())) if side.exists() else 0,
-                            "pdf": p.with_suffix(".pdf").exists(), **info})
+                            "pdf": p.with_suffix(".pdf").exists(), "thumb": (p.parent / "thumb.webp").exists(), **info})
         out.sort(key=lambda d: (d["archived"], -d["mtime"]))
         self._json(out)
 
@@ -147,6 +147,12 @@ class Handler(BaseHTTPRequestHandler):
         if url.path == "/deck":
             try:
                 return self._send(200, self._deck(parse_qs(url.query).get("path", [""])[0]).read_bytes(), "text/html; charset=utf-8")
+            except ValueError as e:
+                return self._send(404, str(e))
+        if url.path == "/thumb":
+            try:
+                t = self._deck(parse_qs(url.query).get("path", [""])[0]).parent / "thumb.webp"
+                return self._send(200, t.read_bytes(), "image/webp") if t.exists() else self._send(404, "no thumb")
             except ValueError as e:
                 return self._send(404, str(e))
         if self.path in ("/", "/settings.html"):
