@@ -696,6 +696,133 @@
   .deck.ratio-9-16 :is(.poll,.kpis,.decide,.wt-items){grid-auto-flow:row}
   .deck.ratio-9-16 .kp{border-left:none;padding:0 0 1.4rem}.deck.ratio-9-16 .wall{columns:1}
   @media print{ .rv{opacity:1!important;transform:none!important} .timer::before{display:none} }
+  /* === +10 раскладок: бенто, графики, путь клиента, канбан (2026-10-02, третья волна) === */
+  /* bento: мозаика блоков 4×2 — .bn.big (2×2), .bn.w (2×1), обычные 1×1; --c — акцент блока */
+  .bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:1fr 1fr;gap:1rem;height:min(58vh,580px);max-width:none;margin-top:.4rem}
+  .bn{position:relative;overflow:hidden;border-radius:20px;padding:1.5rem 1.6rem;background:var(--card);display:flex;flex-direction:column;justify-content:flex-end;gap:.45rem;min-height:0}
+  .bn.big{grid-column:span 2;grid-row:span 2;padding:2.2rem 2.3rem;background:linear-gradient(150deg,color-mix(in srgb,var(--c,var(--green)) 24%,var(--card)),var(--card) 68%)}
+  .bn.big::after{content:"";position:absolute;inset:0;pointer-events:none;--k:color-mix(in srgb,var(--c,var(--green)) 40%,transparent);--h:color-mix(in srgb,var(--c,var(--green)) 6%,transparent);background:radial-gradient(circle at 96% 4%,transparent 0 calc(15cqw - 2px),var(--k) 0 15cqw,var(--h) 0 calc(15cqw + 3.2rem),transparent 0)}
+  .bn.w{grid-column:span 2}
+  .bn-i{position:absolute;top:1.4rem;left:1.6rem;min-width:2.6rem;height:2.6rem;padding:0 .7rem;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--c,var(--green)) 16%,transparent);color:var(--c,var(--green));font-family:var(--font-display);font-weight:800;font-size:1rem}
+  .bn.big .bn-i{top:2.2rem;left:2.3rem}
+  .bn-n{font-family:var(--font-display);font-weight:800;font-size:clamp(2.2rem,4.2cqw,3.8rem);line-height:1;letter-spacing:-.02em;color:var(--c,var(--green))}
+  .bn.big .bn-n{font-size:clamp(3.6rem,7.4cqw,6.8rem)}
+  .bn-t{font-family:var(--font-display);font-weight:700;color:#fff;font-size:clamp(1.02rem,1.55cqw,1.36rem);line-height:1.2}
+  .bn.big .bn-t{font-size:clamp(1.4rem,2.5cqw,2.2rem)}
+  .bn-d{color:var(--muted);font-size:clamp(.9rem,1.25cqw,1.1rem);line-height:1.4}
+  .bn.big .bn-d{font-size:clamp(1rem,1.5cqw,1.3rem);max-width:30ch}
+  /* donutchart: кольцевая диаграмма в .vis; сегменты — --seg (conic-gradient), легенда .dn-lgd слева */
+  .donut{position:relative;width:min(100%,60vh);aspect-ratio:1;display:grid;place-items:center;text-align:center}
+  .donut::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--seg,conic-gradient(var(--green) 0 60%,var(--card2) 0));-webkit-mask:radial-gradient(farthest-side,transparent 64%,#000 calc(64% + 1px));mask:radial-gradient(farthest-side,transparent 64%,#000 calc(64% + 1px))}
+  .slide.active .donut::before{animation:dnin 1.2s cubic-bezier(.2,0,0,1) both}
+  @keyframes dnin{from{transform:rotate(-140deg) scale(.86);opacity:0}}
+  .dn-n{font-family:var(--font-display);font-weight:800;font-size:clamp(3rem,6.2cqw,5.6rem);line-height:1;letter-spacing:-.02em;color:#fff}
+  .dn-l{margin-top:.7rem;font-family:var(--font-head);font-weight:800;font-size:clamp(.72rem,1cqw,.9rem);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .dn-lgd{display:flex;flex-direction:column;gap:1.05rem;margin-top:2rem;max-width:30rem}
+  .dn-lgd>div{display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;padding-bottom:1.05rem;border-bottom:1px solid rgba(255,255,255,.07);font-size:clamp(1.02rem,1.5cqw,1.3rem);color:var(--fg)}
+  .dn-lgd>div:last-child{border-bottom:none;padding-bottom:0}
+  .dn-lgd>div::before{content:"";width:.85em;height:.85em;border-radius:4px;background:var(--c)}
+  .dn-lgd b{font-family:var(--font-display);font-weight:700;color:var(--c)}
+  /* linechart: SVG viewBox 0 0 100 100 (preserveAspectRatio none, y сверху вниз) + точки .lc-pt (--x --y в % снизу) + подписи оси .lc-x */
+  .lc{position:relative;height:min(48vh,460px);flex:none;margin:3.2rem 0 3rem;max-width:none}
+  .lc svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .lc .lc-g{stroke:rgba(255,255,255,.07);stroke-width:1;vector-effect:non-scaling-stroke}
+  .lc .lc-area{fill:var(--c,var(--green));opacity:.1}
+  .lc .lc-line{fill:none;stroke:var(--c,var(--green));stroke-width:3.5;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+  .lc .lc-line.alt{stroke:var(--dim);stroke-width:2.5;stroke-dasharray:6 7}
+  .slide.active .lc svg{animation:lcdraw 1.6s cubic-bezier(.4,0,.2,1) both}
+  @keyframes lcdraw{from{clip-path:inset(-10% 100% -10% 0)}to{clip-path:inset(-10% -2% -10% 0)}}
+  .slide.active .lc-pt{animation:lcpt .4s ease both;animation-delay:calc(var(--x)*.016s)}
+  @keyframes lcpt{from{opacity:0;transform:translate(-50%,-50%) scale(.3)}}
+  .lc-pt{position:absolute;z-index:1;left:calc(var(--x)*1%);top:calc(100% - var(--y)*1%);width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid var(--c,var(--green));transform:translate(-50%,-50%)}
+  .lc-pt[data-v]::after{content:attr(data-v);position:absolute;bottom:calc(100% + .55rem);left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--font-display);font-weight:700;font-size:clamp(.95rem,1.4cqw,1.25rem);color:var(--fg)}
+  .lc-pt.big{width:22px;height:22px;background:var(--c,var(--green));box-shadow:0 0 0 9px color-mix(in srgb,var(--c,var(--green)) 20%,transparent)}
+  .lc-pt.big::after{bottom:calc(100% + .9rem);font-size:clamp(1.9rem,3.4cqw,3rem);font-weight:800;color:var(--c,var(--green))}
+  .lc-x{position:absolute;left:0;right:0;top:calc(100% + 1rem)}
+  .lc-x span{position:absolute;left:calc(var(--x)*1%);transform:translateX(-50%);white-space:nowrap;font-family:var(--font-head);font-weight:700;font-size:clamp(.78rem,1.05cqw,.95rem);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  /* journey: путь клиента — кривая эмоций (SVG viewBox 0 0 100 100, x = (i+.5)/n·100, y = 100 − e) + этапы */
+  .journey{--n:5;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));max-width:none;margin-top:.4rem}
+  .jr-curve{grid-column:1/-1;position:relative;height:min(24vh,230px);margin:.6rem 0 2rem}
+  .jr-curve::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px dashed rgba(255,255,255,.12)}
+  .jr-curve svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .jr-curve path{fill:none;stroke:var(--blue);stroke-width:3;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .jr-p{position:absolute;z-index:1;left:calc((var(--i) + .5)*100%/var(--n));top:calc(100% - var(--e)*1%);width:clamp(30px,2.6cqw,40px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;transform:translate(-50%,-50%);background:var(--c,var(--blue));color:#0a0b0e;font-family:var(--font-display);font-weight:800;font-size:clamp(.85rem,1.2cqw,1.05rem);box-shadow:0 0 0 7px color-mix(in srgb,var(--c,var(--blue)) 20%,transparent)}
+  .jr-lo,.jr-hi{position:absolute;left:0;font-family:var(--font-head);font-weight:800;font-size:clamp(.62rem,.85cqw,.76rem);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .jr-hi{top:-.4rem}.jr-lo{bottom:-.4rem}
+  .jr-s{padding:1.3rem 1.4cqw 0;border-top:1px solid var(--line)}
+  .jr-s+.jr-s{border-left:1px solid rgba(255,255,255,.05)}
+  .jr-k{font-family:var(--font-head);font-weight:800;font-size:clamp(.66rem,.9cqw,.8rem);letter-spacing:.16em;text-transform:uppercase;color:var(--c,var(--muted));margin-bottom:.5rem}
+  .jr-t{font-family:var(--font-display);font-weight:700;color:#fff;font-size:clamp(1rem,1.5cqw,1.32rem);line-height:1.2}
+  .jr-d{margin-top:.45rem;color:var(--muted);font-size:clamp(.9rem,1.25cqw,1.1rem);line-height:1.4}
+  /* kanban: дорожная карта Сейчас / Дальше / Потом; колонки .kb-col (--c) > .kb-h (b — счётчик) + .kb-card */
+  .kanban{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.3rem;align-items:start;max-width:none;margin-top:.4rem}
+  .kb-col{border-radius:20px;padding:1.1rem 1.1rem .4rem;background:color-mix(in srgb,var(--c,var(--green)) 6%,var(--card));min-height:min(52vh,500px)}
+  .kb-h{display:flex;align-items:center;gap:.7rem;padding:.4rem .5rem 1.1rem;font-family:var(--font-head);font-weight:800;font-size:clamp(.74rem,1cqw,.9rem);letter-spacing:.16em;text-transform:uppercase;color:var(--c,var(--green))}
+  .kb-h::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c,var(--green));box-shadow:0 0 0 5px color-mix(in srgb,var(--c,var(--green)) 18%,transparent)}
+  .kb-h b{margin-left:auto;min-width:1.9rem;height:1.9rem;border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.06);color:var(--muted);letter-spacing:0}
+  .kb-card{margin-bottom:.75rem;padding:1.15rem 1.25rem;border-radius:14px;background:var(--card2);border:1px solid rgba(255,255,255,.04)}
+  .kb-t{font-family:var(--font-display);font-weight:600;color:#fff;font-size:clamp(1rem,1.45cqw,1.26rem);line-height:1.25}
+  .kb-d{margin-top:.4rem;color:var(--muted);font-size:clamp(.88rem,1.2cqw,1.05rem);line-height:1.4}
+  .kb-tag{display:inline-block;margin-top:.75rem;padding:.22rem .65rem;border-radius:99px;background:color-mix(in srgb,var(--c,var(--green)) 15%,transparent);color:var(--c,var(--green));font-family:var(--font-head);font-weight:800;font-size:clamp(.62rem,.82cqw,.74rem);letter-spacing:.12em;text-transform:uppercase}
+  /* featmatrix: сравнение вариантов галочками; у .fmx --cols (число вариантов) и --hi (номер выделенного с 1) */
+  .fmx{--cols:3;--hi:0;position:relative;display:grid;grid-template-columns:1.7fr repeat(var(--cols),1fr);max-width:none;margin-top:.8rem}
+  .fmx::before{content:"";position:absolute;top:-.8rem;bottom:-.8rem;left:calc((1.7 + var(--hi) - 1)/(1.7 + var(--cols))*100%);width:calc(100%/(1.7 + var(--cols)));border-radius:18px;background:var(--green-lo);border:1.5px solid rgba(74,222,128,.4)}
+  .fmx>*{position:relative;display:flex;align-items:center;justify-content:center;text-align:center;min-height:3.9rem;padding:.6rem 1rem;border-bottom:1px solid rgba(255,255,255,.07)}
+  .fm-h{flex-direction:column;border-bottom:none;font-family:var(--font-display);font-weight:700;color:#fff;font-size:clamp(1.05rem,1.6cqw,1.4rem);line-height:1.15}
+  .fm-h small{margin-top:.35rem;font-family:var(--font-head);font-weight:800;font-size:.55em;letter-spacing:.16em;text-transform:uppercase;color:var(--green)}
+  .fm-r{justify-content:flex-start;text-align:left;color:var(--fg);font-size:clamp(1.02rem,1.5cqw,1.3rem)}
+  .fm-c{color:#fff;font-family:var(--font-display);font-weight:600;font-size:clamp(1rem,1.45cqw,1.25rem)}
+  .fm-c.y::before,.fm-c.n::before,.fm-c.p::before{width:2.1rem;height:2.1rem;border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:1rem}
+  .fm-c.y::before{content:"✓";background:rgba(74,222,128,.16);color:var(--green)}
+  .fm-c.p::before{content:"½";background:rgba(251,191,36,.14);color:var(--amber);font-size:.9rem}
+  .fm-c.n::before{content:"—";color:var(--dim)}
+  /* swot: 4 колонки в ряд, крупная буква (--c) */
+  .swot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.1rem;max-width:none;margin-top:.4rem}
+  .sw{position:relative;overflow:hidden;border-radius:20px;padding:1.7rem 1.6rem 1.8rem;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 13%,var(--card)),var(--card) 55%);border-top:3px solid var(--c)}
+  .sw-l{font-family:var(--font-display);font-weight:800;font-size:clamp(4.4rem,9cqw,8.2rem);line-height:.9;color:var(--c)}
+  .sw-t{margin:.9rem 0 1.3rem;font-family:var(--font-display);font-weight:700;color:#fff;font-size:clamp(1.05rem,1.55cqw,1.36rem);line-height:1.2}
+  .sw ul{gap:.55rem;max-width:none}
+  .sw li{font-size:clamp(.95rem,1.35cqw,1.16rem);line-height:1.4;color:var(--fg);margin-bottom:.2rem;padding-left:1.2rem}
+  .sw li::before{background:var(--c);width:6px;height:6px}
+  /* stairs: ступени роста; у .stairs --n, у .sr-s --i с 0 и --c; .sr-s.top — вершина */
+  .stairs{--n:4;display:flex;align-items:flex-end;gap:1rem;height:min(58vh,560px);max-width:none;margin-top:.4rem}
+  .sr-s{flex:1;min-width:0;height:calc(34% + 66%*var(--i)/(var(--n) - 1));display:flex;flex-direction:column;padding:1.5rem 1.6rem;border-radius:18px 18px 6px 6px;background:linear-gradient(180deg,color-mix(in srgb,var(--c,var(--green)) 26%,var(--card)),var(--card) 80%);border-top:3px solid var(--c,var(--green))}
+  .sr-s.top{box-shadow:0 -10px 50px -10px color-mix(in srgb,var(--c,var(--green)) 45%,transparent)}
+  .sr-n{font-family:var(--font-display);font-weight:800;font-size:clamp(1.7rem,2.9cqw,2.6rem);line-height:1;color:var(--c,var(--green))}
+  .sr-t{margin-top:.7rem;font-family:var(--font-display);font-weight:700;color:#fff;font-size:clamp(1.02rem,1.55cqw,1.36rem);line-height:1.2}
+  .sr-d{margin-top:.45rem;color:var(--muted);font-size:clamp(.9rem,1.25cqw,1.1rem);line-height:1.4}
+  .slide.active .sr-s{animation:srin .7s cubic-bezier(.2,0,0,1) both}
+  .slide.active .sr-s:nth-child(2){animation-delay:.1s}.slide.active .sr-s:nth-child(3){animation-delay:.2s}.slide.active .sr-s:nth-child(4){animation-delay:.3s}.slide.active .sr-s:nth-child(5){animation-delay:.4s}
+  @keyframes srin{from{opacity:0;transform:translateY(40px)}}
+  /* persona: карточка героя (фото, имя, теги) + цели/боли + цитата */
+  .persona{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,2fr);gap:3.4cqw;align-items:center;max-width:none;margin-top:.4rem}
+  .ps-card{border-radius:22px;overflow:hidden;background:var(--card)}
+  .ps-card img{display:block;width:100%;aspect-ratio:1/1;max-height:38vh;object-fit:cover}
+  .ps-who{padding:1.3rem 1.5rem 1.5rem}
+  .ps-n{font-family:var(--font-display);font-weight:700;color:#fff;font-size:clamp(1.2rem,1.9cqw,1.65rem);line-height:1.15}
+  .ps-r{margin-top:.3rem;color:var(--muted);font-size:clamp(.92rem,1.3cqw,1.12rem)}
+  .ps-tags{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1rem}
+  .ps-tags span{padding:.3rem .8rem;border-radius:99px;background:rgba(255,255,255,.06);color:var(--fg);font-size:clamp(1rem,1.2cqw,1.1rem)}
+  .ps-body{display:grid;grid-template-columns:1fr 1fr;gap:2.2rem 3.4cqw}
+  .ps-b h4{color:var(--c,var(--green));margin-bottom:.9rem}
+  .ps-b ul{gap:.5rem;max-width:none}
+  .ps-b li{font-size:clamp(1rem,1.45cqw,1.25rem);line-height:1.4;margin-bottom:.2rem}
+  .ps-b li::before{background:var(--c,var(--green))}
+  .ps-q{grid-column:1/-1;padding:1.4rem 1.8rem;border-left:4px solid var(--amber);border-radius:0 16px 16px 0;background:var(--card);font-family:'Lora',Georgia,serif;font-style:italic;font-size:clamp(1.12rem,1.75cqw,1.5rem);line-height:1.45;color:#fff}
+  /* glossary: термины и определения в 2 колонки */
+  .gloss{display:grid;grid-template-columns:1fr 1fr;gap:0 5cqw;max-width:none;margin-top:.6rem}
+  .gl-i{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1fr);gap:2cqw;align-items:baseline;padding:1.55rem 0;border-top:1px solid var(--line)}
+  .gl-t{font-family:var(--font-display);font-weight:700;color:var(--c,var(--green));font-size:clamp(1.08rem,1.65cqw,1.45rem);line-height:1.2}
+  .gl-d{color:var(--fg);font-size:clamp(1rem,1.42cqw,1.22rem);line-height:1.45}
+  @media (max-aspect-ratio:1/1),(max-width:820px){
+    .bento{grid-template-columns:1fr 1fr;height:auto}.bn{min-height:9rem}
+    .swot,.kanban,.persona,.ps-body,.gloss{grid-template-columns:1fr}.sw{min-height:0}.kb-col{min-height:0}
+    .stairs{height:46vh}.journey{grid-template-columns:1fr}.jr-curve{display:none}
+  }
+  .deck.ratio-9-16 .bento{grid-template-columns:1fr 1fr;height:auto}.deck.ratio-9-16 .bn{min-height:9rem}
+  .deck.ratio-9-16 :is(.swot,.kanban,.persona,.ps-body,.gloss){grid-template-columns:1fr}
+  .deck.ratio-9-16 :is(.sw,.kb-col){min-height:0}.deck.ratio-9-16 .stairs{height:46vh}
+  .deck.ratio-9-16 .journey{grid-template-columns:1fr}.deck.ratio-9-16 .jr-curve{display:none}
   /* 9:16 vertical mode */
   .deck.ratio-9-16{position:relative;width:min(100vw,56.25vh);height:min(177.7vw,100vh);aspect-ratio:9/16;margin:0 auto}
   .deck.ratio-9-16 .slide{padding:9vh 8cqw}
@@ -727,7 +854,7 @@
     #auto-bar.running,#auto-bar.running.fast{animation:none!important}
   }
 </style>
-<!-- Переход «раскрытие из превью»: индекс открывает деск с ?from=x,y,w,h (доли экрана) — прячем первый кадр до старта анимации -->
+<!-- Переход «раскрытие из превью»: индекс открывает дек с ?from=x,y,w,h (доли экрана) — прячем первый кадр до старта анимации -->
 <script>if(/[?&]from=/.test(location.search))document.documentElement.classList.add('opening')</script>
 <style>html.opening body{opacity:0}</style>
 </head>
@@ -1645,7 +1772,7 @@
   <button id="presenter-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16.5V20"/></svg>Режим ведущего<kbd>Ctrl P</kbd></button>
   <button id="comment-btn" class="menu-item" title="Клик по месту на слайде — оставить правку; потом /slides-generator fix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h14v10H10l-4 4v-4H5z"/></svg>Комментарий<kbd>Ctrl K</kbd></button>
   <div class="menu-sep"></div>
-  <button id="rebuild-btn" class="menu-item" title="Пересобрать деск на актуальном шаблоне и настройках скилла"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4.5V8h3.5M4 13a8 8 0 0 0 14.6 4.5M20 19.5V16h-3.5"/></svg>Обновить интерфейс</button>
+  <button id="rebuild-btn" class="menu-item" title="Пересобрать дек на актуальном шаблоне и настройках скилла"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4.5V8h3.5M4 13a8 8 0 0 0 14.6 4.5M20 19.5V16h-3.5"/></svg>Обновить интерфейс</button>
   <button id="settings-btn" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Настройки</button>
   <div class="menu-status" id="menu-status"></div>
   <div class="menu-hint">← → слайды · Ctrl+N заметки · Ctrl+B/E начало/конец</div>
@@ -1746,7 +1873,7 @@
   document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX});
   document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50){dx<0?next():prev()}tx=null});
   document.getElementById('deck').addEventListener('click',e=>{if(VIEW||e.target.closest('button,a'))return;if(document.documentElement.classList.contains('sg-cm')){addComment(e);return;}if(e.clientX>window.innerWidth*.5)next();});
-  // #slide-N при открытии (скриншоты, ссылки) → прыжок и сразу убрать хеш, чтобы адрес и зум были одни на весь деск; после reload — слайд из sessionStorage
+  // #slide-N при открытии (скриншоты, ссылки) → прыжок и сразу убрать хеш, чтобы адрес и зум были одни на весь дек; после reload — слайд из sessionStorage
   const dropHash=()=>history.replaceState(null,'',location.pathname+location.search);
   const _h=location.hash.match(/^#slide-(\d+)$/);
   let _s=null;try{_s=VIEW?(location.search.match(/[?&]s=(\d+)/)||[])[1]??null:sessionStorage.getItem(SKEY)}catch(e){}
@@ -1764,7 +1891,7 @@
     else if(!VIEW&&pw&&!pw.closed)pw.postMessage({sg:'at',i},'*');
   }
   window.addEventListener('message',e=>{const d=e.data;if(!d||!d.sg)return;
-    if(!VIEW&&d.sg!=='at')pw=e.source;          // после перезагрузки деска связь восстанавливается от экрана ведущего
+    if(!VIEW&&d.sg!=='at')pw=e.source;          // после перезагрузки дека связь восстанавливается от экрана ведущего
     if((d.sg==='go'||d.sg==='at')&&+d.i!==i)go(+d.i);
     else if(d.sg==='hello'&&e.source)e.source.postMessage({sg:'at',i},'*');});
   if(VIEW==='presenter'){
@@ -1793,8 +1920,8 @@
   }
   document.getElementById('presenter-btn').addEventListener('click',openPresenter);
 
-  // === Комментарии к слайдам: правки «прямо на слайде» → <деск>.comments.json рядом с файлом (через сервер настроек);
-  // потом /slides-generator fix <деск> применяет их все разом.
+  // === Комментарии к слайдам: правки «прямо на слайде» → <дек>.comments.json рядом с файлом (через сервер настроек);
+  // потом /slides-generator fix <дек> применяет их все разом.
   let cmList=[];
   const cmPath=()=>decodeURIComponent(location.pathname);
   async function cmApi(body){
@@ -1837,7 +1964,7 @@
   addEventListener('resize',()=>{if(document.documentElement.classList.contains('sg-cm'))cmPins();});
   render();
 
-  // Раскрытие из превью индекса: деск стартует в прямоугольнике карточки и вырастает на весь экран (FLIP)
+  // Раскрытие из превью индекса: дек стартует в прямоугольнике карточки и вырастает на весь экран (FLIP)
   (function(){
     const m=location.search.match(/[?&]from=([\d.]+),([\d.]+),([\d.]+),([\d.]+)/);if(!m)return;
     const [x,y,w,h]=m.slice(1).map(Number),b=document.body,de=document.documentElement;

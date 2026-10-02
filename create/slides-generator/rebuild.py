@@ -112,12 +112,12 @@ def _strip_anim(t):
 
 
 def rebuild(deck_path, dry=False):
-    """dry=True — ничего не пишет, только {"outdated": bool}: отличается ли деск от пересборки."""
+    """dry=True — ничего не пишет, только {"outdated": bool}: отличается ли дек от пересборки."""
     deck = Path(deck_path).expanduser().resolve()
     src = deck.read_text(encoding="utf-8")
     a, b = src.find('<section class="slide'), src.rfind("</section>")
     if a < 0 or b < 0 or 'id="deck"' not in src:
-        raise ValueError("не похоже на деск slides-generator (нет слайдов или #deck)")
+        raise ValueError("не похоже на дек slides-generator (нет слайдов или #deck)")
     slides = src[a:b + len("</section>")]
     title = _between(src, "<title>", "</title>") or deck.stem
     decktag = _between(src, '<div class="corner-tag">', "</div>") or ""

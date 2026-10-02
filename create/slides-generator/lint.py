@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Автопроверка качества деска вместо разглядывания скриншотов.
+"""Автопроверка качества дека вместо разглядывания скриншотов.
 
-Рендерит деск в headless Chrome (копия во временной папке, оригинал не трогается),
+Рендерит дек в headless Chrome (копия во временной папке, оригинал не трогается),
 по очереди активирует каждый слайд и меряет: переполнение, обрезанный текст, мелкий шрифт,
 перегруженность, повтор мотива на соседних слайдах, плейсхолдеры, битые картинки,
 мелкий inline font-size. Если рядом лежит .md с тем же именем — запускает validate.py.
@@ -92,7 +92,7 @@ const pre=document.createElement('pre');pre.id='sg-lint';pre.textContent=JSON.st
 
 
 def render(deck, size):
-    """Копия деска + PROBE → headless Chrome --dump-dom → dict из <pre id="sg-lint">."""
+    """Копия дека + PROBE → headless Chrome --dump-dom → dict из <pre id="sg-lint">."""
     w, h = size
     with tempfile.TemporaryDirectory() as tmp:
         src = deck.read_text(encoding="utf-8")
@@ -102,7 +102,7 @@ def render(deck, size):
         page.write_text(src, encoding="utf-8")
         cmd = [CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", f"--user-data-dir={tmp}/prof",
                f"--window-size={w},{h}", "--virtual-time-budget=8000", "--dump-dom", page.as_uri()]
-        # Chrome печатает DOM, но на некоторых десках потом не завершается → читаем до </html> и убиваем сами
+        # Chrome печатает DOM, но на некоторых деках потом не завершается → читаем до </html> и убиваем сами
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, start_new_session=True)
         dom, deadline = b"", time.time() + 60
         try:
@@ -119,10 +119,10 @@ def render(deck, size):
                 pass
             p.wait()
         if b"</html>" not in dom[-64:]:
-            sys.exit("✗ Chrome не уложился в 60 с (анимации/скрипты деска?)")
+            sys.exit("✗ Chrome не уложился в 60 с (анимации/скрипты дека?)")
     m = re.search(r'<pre id="sg-lint">(.*?)</pre>', dom.decode("utf-8", "replace"), re.S)
     if not m:
-        sys.exit("✗ Chrome отработал, но замеров нет (скрипт деска упал или не успели шрифты)")
+        sys.exit("✗ Chrome отработал, но замеров нет (скрипт дека упал или не успели шрифты)")
     return json.loads(html.unescape(m.group(1)))
 
 
@@ -137,7 +137,7 @@ def run_validate(deck):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Lint HTML-деска slides-generator")
+    ap = argparse.ArgumentParser(description="Lint HTML-дека slides-generator")
     ap.add_argument("deck")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--size", default="1600x900")
@@ -164,7 +164,7 @@ def main():
         print(json.dumps(data, ensure_ascii=False, indent=1))
     else:
         name = deck.stem.replace(" — Slides Content", "")
-        print(f"Деск: {name} ({len(slides)} слайдов, {size[0]}x{size[1]})")
+        print(f"Дек: {name} ({len(slides)} слайдов, {size[0]}x{size[1]})")
         for n, s in enumerate(slides, 1):
             for kind, code, msg in s["issues"]:
                 mark = "✗" if kind == "E" else "!"

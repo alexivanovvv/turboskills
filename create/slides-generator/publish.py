@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Публикует деск «для слушателей»: копия деска с QR на Q&A-слайде + мета-теги + og.png + PDF → Netlify.
+"""Публикует дек «для слушателей»: копия дека с QR на Q&A-слайде + мета-теги + og.png + PDF → Netlify.
 
 Usage: python3 publish.py "/path/Deck — Slides Content.html" [--deploy] [--no-qr] [--base-url URL] [--site NAME]
   config.json → "publish": {"site": "<netlify site name|id>", "baseUrl": "https://<name>.netlify.app"}
   --base-url / --site переопределяют config. Без --deploy — только локальная сборка + dry run.
 Собирает published/{slug}/ (index.html, handout.pdf, og.png, favicon.png, apple-touch-icon.png)
-и published/index.html — список всех опубликованных десков. Источник деска не меняется.
+и published/index.html — список всех опубликованных деков. Источник дека не меняется.
 `netlify deploy --dir published` заменяет весь сайт, поэтому published/ хранит ВСЕ деcки.
 """
 import argparse, html, json, re, shutil, subprocess, sys
@@ -159,7 +159,7 @@ def main():
 
     print(f"\nГотово: {title}\n  Папка: {out}\n  URL:   {url or '— (baseUrl не задан)'}" + ("" if qr else "  [без QR]"))
     for f in sorted(out.iterdir()): print(f"    {f.name:<22}{f.stat().st_size / 1024:>9.0f} КБ")
-    print(f"  Список: {PUB / 'index.html'} ({n} деск(ов) в published/)")
+    print(f"  Список: {PUB / 'index.html'} ({n} дек(ов) в published/)")
     if not base or not site:
         name = f"slides-{slugify(SITE_NAME)}"
         print(f"\n⚠ Публикация не настроена. Один раз (с вашего разрешения):\n  {NETLIFY} sites:create --name {name}\n"

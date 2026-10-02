@@ -5,8 +5,8 @@ Usage: python3 settings.py [port] [--no-open]   (default 7361; --no-open — for
 
 POST /rebuild {"path": "/abs/Deck.html"} — rebuild a deck on the current template + config
 (rebuild.py); called from the deck's ⋯ menu → «Обновить интерфейс».
-GET/POST /comments — правки «на слайде» из ⋯ → Комментарий, хранятся в <деск>.comments.json рядом с деском.
-GET /decks — все дески в vault PROJECTS/ (вкладка «Дески»); GET /deck?path= — сам деск для превью;
+GET/POST /comments — правки «на слайде» из ⋯ → Комментарий, хранятся в <дек>.comments.json рядом с деком.
+GET /decks — все деки в vault PROJECTS/ (вкладка «Деки»); GET /deck?path= — сам дек для превью;
 POST /open | /export | /lint {"path"} — открыть в браузере, PDF (export.sh), проверка (lint.py).
 """
 import json
@@ -61,7 +61,7 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, KeyError, TypeError):
             return self._send(400, "bad json: need {path}")
         if path.suffix != ".html" or not path.is_file() or Path.home() not in path.parents:
-            return self._send(400, f"не найден деск: {path}")
+            return self._send(400, f"не найден дек: {path}")
         try:
             r = rebuilder.rebuild(path)
         except Exception as e:  # report to the deck's toast
@@ -69,10 +69,10 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, json.dumps(r, ensure_ascii=False), "application/json")
 
     def _deck(self, path):
-        """Путь к деску из запроса — только .html внутри домашней папки."""
+        """Путь к деку из запроса — только .html внутри домашней папки."""
         p = Path(path or "").expanduser().resolve()
         if p.suffix != ".html" or not p.is_file() or Path.home() not in p.parents:
-            raise ValueError(f"не найден деск: {p}")
+            raise ValueError(f"не найден дек: {p}")
         return p
 
     def _json(self, obj):
