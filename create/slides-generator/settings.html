@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>slides-generator — настройки</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Manrope:wght@500;600;700&family=Golos+Text:wght@400;500;600&display=swap');
+  :root{--bg:#080a0c;--panel:#0e1117;--card:#111318;--line:#1e232f;--fg:#e8eaf0;--muted:#a7adbe;--dim:#5b6276;--green:#4ade80;--amber:#fbbf24}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font:16px/1.5 'Golos Text',-apple-system,sans-serif;min-height:100vh}
+  header{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.4rem 2rem;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(8,10,12,.94);backdrop-filter:blur(8px);z-index:5}
+  h1{font:700 1.15rem 'Unbounded',sans-serif;letter-spacing:-.01em}
+  h1 span{color:var(--green)}
+  .actions{display:flex;gap:.6rem;align-items:center}
+  button{font:600 .9rem 'Manrope',sans-serif;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:.6rem 1rem;cursor:pointer}
+  button:hover{border-color:var(--dim)}
+  button.primary{background:var(--green);color:#06120a;border-color:var(--green)}
+  #status{font-size:.88rem;color:var(--muted);min-width:12ch;text-align:right}
+  #status.ok{color:var(--green)} #status.err{color:#f87171}
+  main{display:grid;grid-template-columns:minmax(360px,520px) 1fr;gap:2rem;padding:2rem;align-items:start}
+  @media(max-width:980px){main{grid-template-columns:1fr}}
+  section.group{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.3rem 1.4rem;margin-bottom:1.2rem}
+  section.group h2{font:700 .72rem 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem}
+  .row{display:grid;grid-template-columns:150px 1fr;gap:.8rem;align-items:center;margin-bottom:.8rem}
+  .row:last-child{margin-bottom:0}
+  label{color:var(--muted);font-size:.92rem}
+  .hint{grid-column:2;color:var(--dim);font-size:.8rem;margin-top:-.5rem}
+  input[type=text],select{width:100%;background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:.55rem .7rem;font:inherit;font-size:.95rem}
+  input[type=text]:focus,select:focus{outline:none;border-color:var(--green)}
+  .seg{display:flex;gap:.4rem;flex-wrap:wrap}
+  .seg label{border:1px solid var(--line);border-radius:8px;padding:.45rem .8rem;cursor:pointer;color:var(--fg);font-size:.9rem;background:var(--card)}
+  .seg input{display:none}
+  .seg label:has(input:checked){border-color:var(--green);color:var(--green)}
+  .colors{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
+  .color{display:flex;align-items:center;gap:.6rem;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:.4rem .6rem}
+  .color input[type=color]{width:30px;height:30px;border:none;background:none;padding:0;cursor:pointer}
+  .color span{font-size:.85rem;color:var(--muted);flex:1}
+  .color code{font-size:.78rem;color:var(--dim)}
+  .switch{display:flex;align-items:center;gap:.7rem;margin-bottom:.75rem;cursor:pointer;color:var(--fg);font-size:.95rem}
+  .switch:last-child{margin-bottom:0}
+  .switch input{appearance:none;width:38px;height:22px;border-radius:11px;background:var(--line);position:relative;cursor:pointer;flex:none;transition:background .2s}
+  .switch input::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--muted);transition:transform .2s}
+  .switch input:checked{background:var(--green)}
+  .switch input:checked::after{transform:translateX(16px);background:#06120a}
+  .switch small{color:var(--dim);display:block;font-size:.8rem}
+  input[type=range]{width:100%;accent-color:var(--green)}
+  .preview-wrap{position:sticky;top:6rem}
+  .preview-wrap h2{font:700 .72rem 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:.8rem}
+  #pv{--p-bg:#080a0c;container-type:inline-size;background:var(--p-bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;aspect-ratio:16/9;width:100%;position:relative;margin:0 auto}
+  #pv.v{aspect-ratio:9/16;max-width:380px}
+  #pv .tag{position:absolute;top:4cqw;left:5cqw;font:600 1.6cqw var(--pf-head);letter-spacing:.14em;text-transform:uppercase;color:var(--p-muted)}
+  #pv .brand{position:absolute;bottom:4cqw;left:5cqw;font:500 1.5cqw var(--pf-body);color:var(--p-muted)}
+  #pv .body{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:8cqw 5cqw 7cqw}
+  #pv.v .body,#pv.noart .body{grid-template-columns:1fr}
+  #pv.v .art,#pv.noart .art{display:none}
+  #pv.v .tag,#pv.v .brand{font-size:3.6cqw}
+  #pv .kicker{font:700 calc(1.5cqw*var(--p-scale)) var(--pf-head);letter-spacing:.18em;text-transform:uppercase;color:var(--p-amber);margin-bottom:1.4cqw}
+  #pv h3{font:700 calc(4.4cqw*var(--p-scale)) var(--pf-display);line-height:1.1;color:var(--p-fg);margin-bottom:2cqw;letter-spacing:-.01em}
+  #pv h3 em{font-style:normal;color:var(--p-green)}
+  #pv p{font:400 calc(1.75cqw*var(--p-scale))/1.5 var(--pf-body);color:var(--p-muted);margin-bottom:1.6cqw}
+  #pv .cards{display:grid;grid-template-columns:1fr 1fr;gap:1.2cqw;margin-top:1cqw}
+  #pv .c{background:var(--p-card);border-radius:.8cqw;padding:1.2cqw 1.4cqw}
+  #pv .c b{display:block;font:700 calc(1.5cqw*var(--p-scale)) var(--pf-head);margin-bottom:.3cqw}
+  #pv .c i{font:400 calc(1.3cqw*var(--p-scale)) var(--pf-body);color:var(--p-muted);font-style:normal}
+  #pv.v .kicker{font-size:calc(3.4cqw*var(--p-scale))}
+  #pv.v h3{font-size:calc(9cqw*var(--p-scale))}
+  #pv.v p{font-size:calc(4cqw*var(--p-scale))}
+  #pv.v .c b{font-size:calc(3.4cqw*var(--p-scale))}
+  #pv.v .c i{font-size:calc(3cqw*var(--p-scale))}
+  #pv .art svg{width:100%;height:auto;max-height:40cqw}
+  .pal{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+  .pal i{width:28px;height:28px;border-radius:6px;border:1px solid var(--line)}
+  .cmd{margin-top:1.2rem;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem}
+  .cmd h2{margin-bottom:.5rem}
+  .cmd code{font:500 .88rem ui-monospace,Menlo,monospace;color:var(--green);word-break:break-all}
+  .note{color:var(--dim);font-size:.82rem;margin-top:.6rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>slides-generator <span>· настройки</span></h1>
+  <div class="actions">
+    <span id="status"></span>
+    <button id="reset" title="Вернуть заводские значения (без сохранения)">Сбросить</button>
+    <button id="download" title="Скачать config.json, если страница открыта без сервера">Скачать JSON</button>
+    <button class="primary" id="save">Сохранить</button>
+  </div>
+</header>
+
+<main>
+  <form id="f" autocomplete="off">
+    <section class="group">
+      <h2>Формат</h2>
+      <div class="row"><label>Пропорции</label>
+        <div class="seg">
+          <label><input type="radio" name="ratio" value="16:9">16:9 · экран</label>
+          <label><input type="radio" name="ratio" value="9:16">9:16 · телефон</label>
+        </div>
+      </div>
+      <div class="row"><label for="type">Тип по умолчанию</label>
+        <select id="type" name="type">
+          <option value="webinar">Вебинар / онлайн-лекция</option>
+          <option value="pitch">Питч / продуктовая</option>
+          <option value="report">Отчёт / quarterly review</option>
+          <option value="workshop">Воркшоп / мастер-класс</option>
+          <option value="strategy">Стратегия / личный план</option>
+          <option value="course">Курс / серия занятий</option>
+        </select>
+      </div>
+      <div class="row"><label for="brand">Бренд / автор</label><input type="text" id="brand" name="brand" placeholder="берётся из MD"></div>
+      <div class="hint">Пусто — скилл возьмёт из MD-файла.</div>
+      <div class="row"><label for="decktag">Тег в углу</label><input type="text" id="decktag" name="decktag" placeholder="напр. AI Native · Сессия 2"></div>
+      <div class="hint">Пусто — скилл придумает по контексту.</div>
+    </section>
+
+    <section class="group">
+      <h2>Цвета</h2>
+      <div class="colors" id="colors"></div>
+      <p class="note">Зелёный и янтарь — акценты интерфейса и SVG-арта. Синий, фиолетовый, оранжевый, розовый — цикл цветов в карточках и разделителях блоков.</p>
+    </section>
+
+    <section class="group">
+      <h2>Шрифты</h2>
+      <div class="row"><label for="fdisplay">Крупные заголовки</label><select id="fdisplay" name="display"></select></div>
+      <div class="row"><label for="fhead">Подзаголовки</label><select id="fhead" name="head"></select></div>
+      <div class="row"><label for="fbody">Основной текст</label><select id="fbody" name="body"></select></div>
+      <div class="row"><label for="scale">Размер текста</label><input type="range" id="scale" name="textScale" min="0.85" max="1.25" step="0.05"></div>
+      <div class="hint" id="scaleHint"></div>
+    </section>
+
+    <section class="group">
+      <h2>Поведение</h2>
+      <label class="switch"><input type="checkbox" name="art"><span>SVG-арт на слайдах<small>Выключить — только текст. В 9:16 арт скрыт всегда.</small></span></label>
+      <label class="switch"><input type="checkbox" name="notes"><span>Спикерские заметки<small>data-notes на каждом слайде (клавиша N)</small></span></label>
+      <label class="switch"><input type="checkbox" name="updateIndex"><span>Обновлять slides-index.html<small>карточка сессии в индексе уровнем выше</small></span></label>
+      <label class="switch"><input type="checkbox" name="screenshotCheck"><span>Проверка скриншотами<small>headless-Chrome, просмотр всех слайдов перед сдачей</small></span></label>
+      <label class="switch"><input type="checkbox" name="openAfter"><span>Открывать результат в браузере</span></label>
+      <div class="row" style="margin-top:1rem"><label>Экспорт после сборки</label>
+        <div class="seg">
+          <label><input type="radio" name="export" value="none">нет</label>
+          <label><input type="radio" name="export" value="pdf">PDF</label>
+          <label><input type="radio" name="export" value="png">PNG</label>
+          <label><input type="radio" name="export" value="both">PDF + PNG</label>
+        </div>
+      </div>
+    </section>
+  </form>
+
+  <div class="preview-wrap">
+    <h2>Превью</h2>
+    <div id="pv">
+      <div class="tag" id="pvTag"></div>
+      <div class="body">
+        <div>
+          <div class="kicker">Блок 1 · Основа</div>
+          <h3>База знаний — это <em>второй мозг</em></h3>
+          <p>Пример текста слайда: так будет выглядеть основной абзац в выбранных шрифтах и размере.</p>
+          <div class="cards">
+            <div class="c"><b style="color:var(--p-green)">Захват</b><i>Всё в одно место</i></div>
+            <div class="c"><b style="color:var(--p-orange)">Связи</b><i>Ссылки между идеями</i></div>
+            <div class="c"><b style="color:var(--p-blue)">Поиск</b><i>Агент находит сам</i></div>
+            <div class="c"><b style="color:var(--p-pink)">Выход</b><i>Посты, слайды, курсы</i></div>
+          </div>
+        </div>
+        <div class="art">
+          <svg viewBox="0 0 420 560" fill="none">
+            <circle cx="210" cy="280" r="150" stroke="var(--p-green)" stroke-width="2" opacity=".5"/>
+            <circle cx="210" cy="280" r="105" stroke="var(--p-amber)" stroke-width="2" opacity=".7"/>
+            <circle cx="210" cy="280" r="60" fill="var(--p-green)" opacity=".18"/>
+            <circle cx="210" cy="130" r="14" fill="var(--p-amber)"/>
+            <circle cx="340" cy="355" r="10" fill="var(--p-green)"/>
+            <circle cx="80" cy="355" r="10" fill="var(--p-green)"/>
+            <path d="M210 130 L340 355 L80 355 Z" stroke="var(--p-amber)" stroke-width="1.5" opacity=".6"/>
+          </svg>
+        </div>
+      </div>
+      <div class="brand" id="pvBrand"></div>
+    </div>
+    <div class="pal" id="pal"></div>
+    <div class="cmd">
+      <h2 style="font:700 .72rem 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)">Как вызывать</h2>
+      <code id="cmd"></code>
+      <p class="note">Флаги в команде перекрывают эти настройки на один запуск.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+const DEFAULTS = {
+  ratio:"16:9", type:"webinar", brand:"", decktag:"",
+  colors:{bg:"#080a0c",fg:"#e8eaf0",muted:"#a7adbe",card:"#111318",green:"#4ade80",amber:"#fbbf24",blue:"#38bdf8",violet:"#c084fc",orange:"#fb923c",pink:"#f472b6"},
+  fonts:{display:"Unbounded",head:"Manrope",body:"Golos Text"},
+  textScale:1, art:true, notes:true, updateIndex:true, screenshotCheck:true, export:"none", openAfter:true
+};
+const COLOR_LABELS = {bg:"Фон",fg:"Текст",muted:"Серый текст",card:"Карточки",green:"Зелёный (акцент 1)",amber:"Янтарь (акцент 2)",blue:"Синий",violet:"Фиолетовый",orange:"Оранжевый",pink:"Розовый"};
+// Только шрифты Google Fonts с кириллицей
+const FONTS = {
+  display:["Unbounded","Manrope","Montserrat","Raleway","Playfair Display","Russo One","Oswald","Lora","Golos Text"],
+  head:["Manrope","Montserrat","Raleway","Golos Text","Inter","Oswald","Rubik","Unbounded"],
+  body:["Golos Text","Inter","Manrope","Rubik","Roboto","PT Sans","Lora","Montserrat"]
+};
+const TYPE_LABELS = {webinar:"вебинар",pitch:"питч",report:"отчёт",workshop:"воркшоп",strategy:"стратегия",course:"курс"};
+
+const f = document.getElementById('f');
+const F = f.elements;
+const pv = document.getElementById('pv');
+const status = document.getElementById('status');
+let cfg = structuredClone(DEFAULTS);
+const loaded = new Set();
+
+function merge(base, over){
+  const out = structuredClone(base);
+  for (const k in over||{}) {
+    if (over[k] && typeof over[k]==='object' && !Array.isArray(over[k])) out[k] = {...base[k], ...over[k]};
+    else if (k in base) out[k] = over[k];
+  }
+  return out;
+}
+
+function loadFont(name){
+  if (loaded.has(name)) return;
+  loaded.add(name);
+  const l = document.createElement('link');
+  l.rel='stylesheet';
+  l.href='https://fonts.googleapis.com/css2?family='+encodeURIComponent(name).replace(/%20/g,'+')+':wght@400;500;600;700&subset=cyrillic&display=swap';
+  document.head.appendChild(l);
+}
+
+function buildControls(){
+  const box = document.getElementById('colors');
+  box.innerHTML='';
+  for (const k in DEFAULTS.colors) {
+    const d = document.createElement('label');
+    d.className='color';
+    d.innerHTML = `<input type="color" data-color="${k}"><span>${COLOR_LABELS[k]}</span><code></code>`;
+    box.appendChild(d);
+  }
+  for (const [id,key] of [['fdisplay','display'],['fhead','head'],['fbody','body']]) {
+    document.getElementById(id).innerHTML = FONTS[key].map(n=>`<option value="${n}">${n}</option>`).join('');
+  }
+}
+
+function fill(){
+  f.querySelectorAll('input[name=ratio]').forEach(r=>r.checked = r.value===cfg.ratio);
+  f.querySelectorAll('input[name=export]').forEach(r=>r.checked = r.value===cfg.export);
+  F.type.value = cfg.type; F.brand.value = cfg.brand; F.decktag.value = cfg.decktag;
+  f.querySelectorAll('[data-color]').forEach(i=>i.value = cfg.colors[i.dataset.color]);
+  for (const [id,key] of [['fdisplay','display'],['fhead','head'],['fbody','body']]) {
+    const s = document.getElementById(id);
+    if (![...s.options].some(o=>o.value===cfg.fonts[key])) s.add(new Option(cfg.fonts[key], cfg.fonts[key]));
+    s.value = cfg.fonts[key];
+  }
+  F.textScale.value = cfg.textScale;
+  for (const k of ['art','notes','updateIndex','screenshotCheck','openAfter']) F[k].checked = !!cfg[k];
+  render();
+}
+
+function read(){
+  cfg.ratio = f.querySelector('input[name=ratio]:checked')?.value || DEFAULTS.ratio;
+  cfg.export = f.querySelector('input[name=export]:checked')?.value || 'none';
+  cfg.type = F.type.value; cfg.brand = F.brand.value.trim(); cfg.decktag = F.decktag.value.trim();
+  f.querySelectorAll('[data-color]').forEach(i=>cfg.colors[i.dataset.color] = i.value);
+  cfg.fonts = {display:F.fdisplay.value, head:F.fhead.value, body:F.fbody.value};
+  cfg.textScale = +F.textScale.value;
+  for (const k of ['art','notes','updateIndex','screenshotCheck','openAfter']) cfg[k] = F[k].checked;
+  render();
+  setStatus('есть несохранённые изменения','');
+}
+
+function render(){
+  const c = cfg.colors;
+  for (const k in c) pv.style.setProperty('--p-'+k, c[k]);
+  for (const k in cfg.fonts) { loadFont(cfg.fonts[k]); pv.style.setProperty('--pf-'+k, `'${cfg.fonts[k]}',-apple-system,sans-serif`); }
+  pv.style.setProperty('--p-scale', cfg.textScale);
+  pv.classList.toggle('v', cfg.ratio==='9:16');
+  pv.classList.toggle('noart', !cfg.art);
+  document.getElementById('pvTag').textContent = cfg.decktag || 'AI Native · Сессия 2';
+  document.getElementById('pvBrand').textContent = cfg.brand || 'Бренд из MD';
+  f.querySelectorAll('.color').forEach(l=>{ const i=l.querySelector('input'); l.querySelector('code').textContent=i.value; });
+  document.getElementById('scaleHint').textContent = Math.round(cfg.textScale*100)+'% от базового';
+  document.getElementById('pal').innerHTML = Object.keys(c).map(k=>`<i title="${COLOR_LABELS[k]}" style="background:${c[k]}"></i>`).join('');
+  document.getElementById('cmd').textContent = `/slides-generator путь/к/файлу.md   ← ${cfg.ratio}, ${TYPE_LABELS[cfg.type]}`;
+}
+
+function setStatus(t, cls){ status.textContent=t; status.className=cls; }
+
+const json = () => JSON.stringify(cfg, null, 2) + '\n';
+
+async function save(){
+  try {
+    const r = await fetch('/config', {method:'POST', headers:{'Content-Type':'application/json'}, body:json()});
+    if (!r.ok) throw new Error(await r.text());
+    setStatus('сохранено в config.json ✓','ok');
+  } catch(e) {
+    if (location.protocol==='file:') setStatus('без сервера: нажми «Скачать JSON»','err');
+    else setStatus('ошибка: '+e.message,'err');
+  }
+}
+
+function download(){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([json()], {type:'application/json'}));
+  a.download = 'config.json'; a.click();
+  setStatus('скачан — положи в папку скилла','ok');
+}
+
+f.addEventListener('input', read);
+f.addEventListener('change', read);
+document.getElementById('save').onclick = save;
+document.getElementById('download').onclick = download;
+document.getElementById('reset').onclick = ()=>{ cfg = structuredClone(DEFAULTS); fill(); setStatus('заводские значения — не сохранено',''); };
+document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='s'){e.preventDefault();save();} });
+
+buildControls();
+fetch('/config').then(r=>r.ok?r.json():Promise.reject()).then(j=>{cfg=merge(DEFAULTS,j);fill();setStatus('загружено из config.json','ok');})
+  .catch(()=>{ fill(); if(location.protocol==='file:') setStatus('открыто без сервера — показаны заводские значения',''); });
+</script>
+</body>
+</html>

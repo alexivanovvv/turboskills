@@ -1,0 +1,30 @@
+{
+  "ratio": "16:9",
+  "type": "webinar",
+  "brand": "",
+  "decktag": "",
+  "colors": {
+    "bg": "#080a0c",
+    "fg": "#e8eaf0",
+    "muted": "#a7adbe",
+    "card": "#111318",
+    "green": "#4ade80",
+    "amber": "#fbbf24",
+    "blue": "#38bdf8",
+    "violet": "#c084fc",
+    "orange": "#fb923c",
+    "pink": "#f472b6"
+  },
+  "fonts": {
+    "display": "Unbounded",
+    "head": "Manrope",
+    "body": "Golos Text"
+  },
+  "textScale": 1,
+  "art": true,
+  "notes": true,
+  "updateIndex": true,
+  "screenshotCheck": true,
+  "export": "none",
+  "openAfter": true
+}
