@@ -733,7 +733,9 @@ const DEFAULTS = {
   ui:{cornerTag:true, menu:"quiet", brand:true, progress:"both", size:"m", tone:"muted"},
   images:{embed:"inline", format:"webp", maxWidth:1800, place:"half", fit:"contain", matchBg:true, trim:true, round:true},
   layouts:Object.fromEntries(LAYOUTS.map(l=>[l.id,'on'])),
-  motifs:Object.fromEntries(ALL_ART.map(id=>[id,'on']))
+  motifs:Object.fromEntries(ALL_ART.map(id=>[id,'on'])),
+  decksDir:"",
+  publish:{site:"", baseUrl:"", siteName:"", locale:"ru_RU"}
 };
 const LT_STATES = [['prefer','Чаще','p','<path d="M12 3l2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.1-6.1L3.2 9.4l6.1-.8z"/>'],
   ['on','Можно','','<path d="M5 12.5l4.5 4.5L19 7.5"/>'],['off','Выкл','x','<circle cx="12" cy="12" r="8"/><path d="M6.5 17.5l11-11"/>']];

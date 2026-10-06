@@ -8,16 +8,29 @@ Usage: python3 publish.py "/path/Deck — Slides Content.html" [--deploy] [--no-
 и published/index.html — список всех опубликованных деков. Источник дека не меняется.
 `netlify deploy --dir published` заменяет весь сайт, поэтому published/ хранит ВСЕ деcки.
 """
-import argparse, html, json, re, shutil, subprocess, sys
+import argparse, html, json, os, re, shutil, subprocess, sys
 from datetime import date
 from pathlib import Path
 from urllib.parse import quote
 
 DIR = Path(__file__).resolve().parent
 PUB = DIR / "published"
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-NETLIFY = "/usr/local/bin/netlify"
-SITE_NAME, LOCALE = "Alexey Ivanov", "ru_RU"
+def find_chrome():
+    """Chrome/Chromium: $CHROME, стандартные пути macOS/Windows, затем PATH."""
+    cands = [os.environ.get("CHROME", ""),
+             "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+             "/Applications/Chromium.app/Contents/MacOS/Chromium",
+             os.path.expandvars(r"%ProgramFiles%\Google\Chrome\Application\chrome.exe"),
+             os.path.expandvars(r"%LocalAppData%\Google\Chrome\Application\chrome.exe")]
+    cands += [shutil.which(n) or "" for n in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome")]
+    return next((c for c in cands if c and os.path.isfile(c)), "")
+
+
+CHROME = find_chrome()
+NETLIFY = os.environ.get("NETLIFY") or shutil.which("netlify") or "netlify"
+try: _PUB_CFG = json.loads((DIR / "config.json").read_text(encoding="utf-8")).get("publish") or {}
+except (OSError, ValueError): _PUB_CFG = {}
+SITE_NAME, LOCALE = _PUB_CFG.get("siteName") or "Slides", _PUB_CFG.get("locale") or "ru_RU"
 TR = dict(zip("абвгдеёзийклмнопрстуфхыэ", "abvgdeeziyklmnoprstufhye")) | {
     "ж": "zh", "ц": "ts", "ч": "ch", "ш": "sh", "щ": "sch", "ъ": "", "ь": "", "ю": "yu", "я": "ya"}
 MARK = re.compile(r"\s*<!--sg-pub-->.*?<!--/sg-pub-->", re.S)
@@ -85,6 +98,8 @@ def icons(dst, bg):
         im.save(dst / name)
 
 def chrome(*args):
+    if not CHROME:
+        print("  ! Chrome/Chromium не найден (задайте $CHROME) — скриншоты пропущены", file=sys.stderr); return
     try: subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", *args],
                         timeout=60, capture_output=True)
     except subprocess.TimeoutExpired: print("  ! Chrome не уложился в 60 с:", args[-1], file=sys.stderr)
@@ -99,7 +114,7 @@ def build_index(base, theme):
     rows = "\n".join(f'<li><span class="d">{d}</span><a href="{s}/">{html.escape(t)}</a><a class="pdf" href="{s}/handout.pdf">PDF</a></li>'
                      for d, t, s in items)
     img = f"{base}/{items[0][2]}/og.png" if base and items else ""
-    tags = head_tags("Слайды — Alexey Ivanov", "Слайды и PDF с выступлений и сессий Алексея Иванова.",
+    tags = head_tags(f"Слайды — {SITE_NAME}", f"Слайды и PDF с выступлений и сессий — {SITE_NAME}.",
                      f"{base}/" if base else "", img, theme, f"{base}/" if base else "")
     doc = f"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">{tags}
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet"><style>

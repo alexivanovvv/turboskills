@@ -24,7 +24,18 @@ import time
 from pathlib import Path
 
 DIR = Path(__file__).resolve().parent
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+def find_chrome():
+    """Chrome/Chromium: $CHROME, стандартные пути macOS/Windows, затем PATH."""
+    cands = [os.environ.get("CHROME", ""),
+             "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+             "/Applications/Chromium.app/Contents/MacOS/Chromium",
+             os.path.expandvars(r"%ProgramFiles%\Google\Chrome\Application\chrome.exe"),
+             os.path.expandvars(r"%LocalAppData%\Google\Chrome\Application\chrome.exe")]
+    cands += [shutil.which(n) or "" for n in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome")]
+    return next((c for c in cands if c and os.path.isfile(c)), "")
+
+
+CHROME = find_chrome()
 
 # Внедряется перед </body>: глушит анимации, ждёт шрифты, меряет каждый слайд → <pre id="sg-lint">
 PROBE = r"""<script>(async()=>{
@@ -93,6 +104,8 @@ const pre=document.createElement('pre');pre.id='sg-lint';pre.textContent=JSON.st
 
 def render(deck, size):
     """Копия дека + PROBE → headless Chrome --dump-dom → dict из <pre id="sg-lint">."""
+    if not CHROME:
+        sys.exit("lint.py: Chrome/Chromium не найден — установите его или задайте $CHROME")
     w, h = size
     with tempfile.TemporaryDirectory() as tmp:
         src = deck.read_text(encoding="utf-8")

@@ -285,5 +285,12 @@
     "i-people": "on",
     "i-key": "on",
     "i-chart": "on"
+  },
+  "decksDir": "",
+  "publish": {
+    "site": "",
+    "baseUrl": "",
+    "siteName": "",
+    "locale": "ru_RU"
   }
 }

@@ -24,7 +24,7 @@ Skills for creating content and presentations.
 
 | Skill | What it does |
 |-------|-------------|
-| [`slides-generator`](create/slides-generator/) | Turn a Markdown file into a self-contained HTML slide deck — dark minimal style, animated SVG art, 50 geometric motifs, keyboard nav, speaker notes, autoplay |
+| [`slides-generator`](create/slides-generator/) | Turn a Markdown file into a self-contained HTML slide deck — dark minimal style, animated SVG art, 134 motifs + 25 icons, 6 themes, presenter view, keyboard nav, speaker notes, autoplay |
 
 ### story/
 

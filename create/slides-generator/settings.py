@@ -6,7 +6,7 @@ Usage: python3 settings.py [port] [--no-open]   (default 7361; --no-open — for
 POST /rebuild {"path": "/abs/Deck.html"} — rebuild a deck on the current template + config
 (rebuild.py); called from the deck's ⋯ menu → «Обновить интерфейс».
 GET/POST /comments — правки «на слайде» из ⋯ → Комментарий, хранятся в <дек>.comments.json рядом с деком.
-GET /decks — все деки в vault PROJECTS/ (вкладка «Деки»); GET /deck?path= — сам дек для превью;
+GET /decks — все деки в config.json "decksDir" (или в текущей папке) (вкладка «Деки»); GET /deck?path= — сам дек для превью;
 POST /open | /export | /lint {"path"} — открыть в браузере, PDF (export.sh), проверка (lint.py).
 """
 import json
@@ -25,7 +25,15 @@ import rebuild as rebuilder
 DIR = Path(__file__).resolve().parent
 CONFIG = DIR / "config.json"
 PAGE = DIR / "settings.html"
-VAULT = Path.home() / "Library/CloudStorage/Dropbox/_Obsidian/Alex Ivanov MAIN Vault"
+
+def decks_root():
+    """Где искать деки для вкладки «Деки»: config.json → "decksDir", иначе папка, из которой запущен сервер."""
+    try:
+        d = json.loads(CONFIG.read_text(encoding="utf-8")).get("decksDir") or ""
+    except (OSError, ValueError):
+        d = ""
+    return Path(os.path.expanduser(d)) if d else Path.cwd()
+
 DECK_SUFFIX = "Slides Content.html"
 ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
 PORT = int(ARGS[0]) if ARGS else 7361
@@ -102,7 +110,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def _decks(self):
         out = []
-        for root, dirs, files in os.walk(VAULT / "PROJECTS"):
+        base = decks_root()
+        for root, dirs, files in os.walk(base):
             dirs[:] = [d for d in dirs if not d.startswith(".") and d != "node_modules"]
             for f in files:
                 if not f.endswith(DECK_SUFFIX):
@@ -114,7 +123,7 @@ class Handler(BaseHTTPRequestHandler):
                     info = {"outdated": None, "slides": 0}
                 side = p.with_name(p.stem + ".comments.json")
                 out.append({"path": str(p), "title": f[: -len(DECK_SUFFIX)].rstrip(" —"),
-                            "folder": str(p.parent.relative_to(VAULT / "PROJECTS")), "mtime": p.stat().st_mtime,
+                            "folder": str(p.parent.relative_to(base)), "mtime": p.stat().st_mtime,
                             "archived": "_ARCHIVE" in p.parts, "comments": len(json.loads(side.read_text())) if side.exists() else 0,
                             "pdf": p.with_suffix(".pdf").exists(), "thumb": (p.parent / "thumb.webp").exists(), **info})
         out.sort(key=lambda d: (d["archived"], -d["mtime"]))

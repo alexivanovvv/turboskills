@@ -2,9 +2,9 @@
 
 A [Claude Code](https://claude.ai/code) skill that turns a Markdown file into a self-contained, single-file HTML slide deck.
 
-**Dark minimal style** · animated SVG art · 74 geometric motifs · keyboard navigation · speaker notes · autoplay
+**Dark minimal style** · a meaning-matched animated SVG illustration on every slide (134 motifs + 25 icons) · 6 color themes, 8 font pairs · 6 structure presets (webinar, pitch, report, workshop, strategy, course) · keyboard navigation · speaker notes & presenter view · autoplay
 
-![Slide example](https://i.imgur.com/placeholder.png)
+![Slide example](docs/screenshot.png)
 
 ---
 
@@ -15,23 +15,47 @@ A [Claude Code](https://claude.ai/code) skill that turns a Markdown file into a 
 - Outputs one `.html` file — no build step, no dependencies, open in any browser
 - Also saves a clean `.md` copy of the slides and updates a `slides-index.html` navigator
 
+> The agent instructions (`SKILL.md`) are written in Russian; Claude follows them fine and the decks can be in any language.
+
 ---
 
 ## Install
 
-Copy the skill folder into your Claude Code skills directory:
-
 ```bash
-cp -r slides-generator ~/.claude/skills/
+git clone --depth 1 https://github.com/alexivanovvv/turboskills /tmp/turboskills
+cp -r /tmp/turboskills/create/slides-generator ~/.claude/skills/
 ```
 
-Or clone just this folder:
+Then restart Claude Code (or open a new session) — `/slides-generator` appears in the command list.
 
-```bash
-git clone https://github.com/your-username/slides-generator ~/.claude/skills/slides-generator
+---
+
+## Requirements
+
+| What | Needed for | Required? |
+|------|-----------|-----------|
+| Claude Code | everything | yes |
+| Python 3.8+ (standard library only) | settings page, `lint.py`, `validate.py`, `rebuild.py` | recommended |
+| Google Chrome or Chromium | post-build screenshot check, `lint.py`, PDF/PNG export (`export.sh`), `publish.py` | optional — found automatically on macOS / Windows / Linux, or set `$CHROME` |
+| [Netlify CLI](https://docs.netlify.com/cli/get-started/) (logged in) + `pip install qrcode pillow` | `publish` — public deck page with QR code and handout PDF | optional |
+
+Without Chrome the deck is still generated — only the screenshot self-check and exports are skipped.
+
+---
+
+## Configuration
+
+`/slides-generator config` opens a local settings page (`http://127.0.0.1:7361/`) that edits `config.json`: theme, fonts, layouts, motifs, image handling, deck gallery.
+
+Two keys you may want to set by hand in `config.json`:
+
+```json
+"decksDir": "~/Documents/Presentations",
+"publish": { "site": "my-netlify-site", "baseUrl": "https://my-netlify-site.netlify.app", "siteName": "Your Name", "locale": "en_US" }
 ```
 
-No `npm install`, no Python packages. Works offline (fonts load from Google Fonts — include fallbacks for offline use).
+- `decksDir` — where the **Decks** tab looks for generated decks (default: the folder you launched `settings.py` from).
+- `publish` — only for `/slides-generator publish <deck.html> --deploy`.
 
 ---
 
@@ -88,6 +112,8 @@ The skill infers layout from content: text-heavy → left/right 50/50; grids/ste
 | `←` | Previous slide |
 | `Ctrl+N` | Toggle speaker notes |
 | `Ctrl+F` | Fullscreen |
+| `Ctrl+P` | Presenter view (current + next slide, notes, timer) |
+| `Ctrl+K` | Slide comments |
 | `Ctrl+B` / `Ctrl+E` | First / last slide |
 | `AUTOPLAY ›` button | Auto-advance every 20 s |
 | `FAST PLAY ››` button | Auto-advance every 7 s |
@@ -99,7 +125,7 @@ The skill infers layout from content: text-heavy → left/right 50/50; grids/ste
 `template.html` is the single source of truth. It contains:
 
 - CSS custom properties (`:root`) for colors, fonts, spacing
-- 74 `<symbol>` SVG motifs — add your own in the same `420×560` canvas style
+- 134 `<symbol>` SVG motifs + 25 icons — add your own in the same `420×560` canvas style
 - JS for navigation, autoplay, speaker notes, fullscreen
 
 **Color palette** — 6 accent variables, all configurable:
@@ -146,6 +172,12 @@ Full reference in `SKILL.md`. Quick overview:
 | `template.html` | CSS + JS + SVG library + `<!-- SLIDES_PLACEHOLDER -->` |
 | `SKILL.md` | Instructions for the Claude agent |
 | `VISUALIZATIONS.md` | SVG motif catalogue — which motif fits which meaning |
+| `config.json` | Default settings (edited via the settings page) |
+| `settings.py` / `settings.html` | Local settings page + deck gallery (`/slides-generator config`) |
+| `rebuild.py` | Re-apply the current template/config to an existing deck |
+| `lint.py` / `validate.py` | Overflow/tiny-text checks (headless Chrome) and HTML↔MD sync check |
+| `export.sh` | PDF / PNG export via headless Chrome |
+| `publish.py` | Public deck page with QR, handout PDF, OG tags; optional Netlify deploy |
 | `ROADMAP.md` | Ideas for future improvements |
 
 ---
