@@ -19,9 +19,22 @@ It works on **macOS** (no extra tools) and **Windows** (via the free [WizTree](h
 
 ## How it looks
 
-These charts come from a demo scan with made-up folders.
+These screenshots come from a demo scan with made-up folders.
 
 ### Dashboard: disk gauge, disk map and bar charts
+
+![Dashboard: disk gauge, treemap disk map, file types, folders, cleanable, largest files](assets/dashboard.png)
+
+### Cleanup plan
+
+![Cleanup plan: ranked actions with safety levels and cumulative space freed](assets/plan.png)
+
+### After cleanup: before → after
+
+![Result: disk before → after and what changed per folder](assets/compare.png)
+
+<details>
+<summary>Same charts as text (exactly what Claude Code prints)</summary>
 
 ```diff
  ── DISK ────────────────────────────────────────────────────────── volume / ──
@@ -93,8 +106,6 @@ These charts come from a demo scan with made-up folders.
   Pictures/P…library/Photos.sqlite ██████▌                   4.5 GB    8%
 ```
 
-### Cleanup plan
-
 ```diff
  ── CLEANUP PLAN ───────────────────────────────── 6 actions · up to 47.2 GB ──
    1 ✓ Xcode DerivedData              █████▏             6.2 GB  Σ    6.2 GB
@@ -111,8 +122,6 @@ These charts come from a demo scan with made-up folders.
 + + whole plan ███████▉░░░░░░░░░░░░░░░░░░░░░░░░░░░░  22%  free  359.4 GB
 ```
 
-### After cleanup: before → after
-
 ```diff
  ── RESULT: BEFORE → AFTER ─────────────────────────────────── freed 29.2 GB ──
   before  ████████████▉░░░░░░░░░░░░░░░░░░░░░░░░░░░  32%  free  312.2 GB
@@ -128,6 +137,8 @@ These charts come from a demo scan with made-up folders.
 + ▼ .cache/pip                   ▊              900.0 MB →    0.0 B  −900.0 MB
   ▼ freed   ▲ grew   before → after
 ```
+
+</details>
 
 ## Install
 
