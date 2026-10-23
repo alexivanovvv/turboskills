@@ -38,6 +38,34 @@ def main():
     subagent_sessions = 0
     total_user_msgs = 0
     total_asst_msgs = 0
+    seen_msgs = set()  # the log repeats one API message once per content block - count each message id once
+    tok_model = defaultdict(lambda: Counter())   # model -> requests/input/output/cache_read/cache_write/thinking
+    tok_day = defaultdict(lambda: Counter())     # YYYY-MM-DD -> same counters
+    tok_effort = defaultdict(lambda: Counter())  # effort level -> requests/output/new_input/cache_read
+    tok_effort_model = Counter()                 # "model|effort" -> requests
+    tok_side = Counter()                         # main vs subagent (sidechain) tokens
+    effort_cmds = Counter()                      # /effort <level> commands issued
+
+    def add_usage(d, msg, ts, sess, sub):
+        u = msg.get("usage"); mdl = msg.get("model")
+        if not isinstance(u, dict) or (ts is not None and ts < cutoff):
+            return
+        o = u.get("output_tokens", 0) or 0
+        i_ = u.get("input_tokens", 0) or 0
+        cr = u.get("cache_read_input_tokens", 0) or 0
+        cw = u.get("cache_creation_input_tokens", 0) or 0
+        th = (u.get("output_tokens_details") or {}).get("thinking_tokens", 0) or 0
+        eff = d.get("effort") or d.get("perTurnEffort") or "unknown"
+        dkey = ts.astimezone().strftime("%Y-%m-%d") if ts else "unknown"
+        for c in (tok_model[mdl or "unknown"], tok_day[dkey]):
+            c["requests"] += 1; c["input"] += i_; c["output"] += o
+            c["cache_read"] += cr; c["cache_write"] += cw; c["thinking"] += th
+        e = tok_effort[eff]
+        e["requests"] += 1; e["output"] += o; e["new_input"] += i_ + cw; e["cache_read"] += cr
+        tok_effort_model[f"{mdl or 'unknown'}|{eff}"] += 1
+        tok_side["subagent" if (sub or d.get("isSidechain")) else "main"] += o + i_ + cw
+        if sess is not None:
+            sess["tok_out"] += o; sess["tok_in"] += i_ + cw; sess["tok_cache_read"] += cr
 
     for proj in os.listdir(PROJECTS_DIR):
         pdir = os.path.join(PROJECTS_DIR, proj)
@@ -58,6 +86,7 @@ def main():
                 "skills": [],
                 "first_prompt": None,
                 "has_subagent": False,
+                "tok_out": 0, "tok_in": 0, "tok_cache_read": 0,
             }
             try:
                 with open(path, "r", errors="replace") as fh:
@@ -100,11 +129,21 @@ def main():
                                 m = re.search(r"<command-name>/?([\w-]+)</command-name>", text)
                                 if m:
                                     sess["skills"].append(m.group(1))
+                                    if m.group(1) == "effort":
+                                        a = re.search(r"<command-args>\s*([\w-]+)\s*</command-args>", text)
+                                        if a:
+                                            effort_cmds[a.group(1)] += 1
                         elif t == "assistant":
                             msg = d.get("message", {})
                             mdl = msg.get("model")
-                            if mdl:
+                            mid = msg.get("id")
+                            first = mid is None or mid not in seen_msgs
+                            if mid is not None:
+                                seen_msgs.add(mid)
+                            if mdl and first:
                                 models[mdl] += 1
+                            if first:
+                                add_usage(d, msg, ts, sess, False)
                             content = msg.get("content", [])
                             if isinstance(content, list):
                                 for c in content:
@@ -117,7 +156,7 @@ def main():
                                                 sess["skills"].append(sk)
                                         if name in ("Agent", "Task"):
                                             sess["has_subagent"] = True
-                            if not d.get("isSidechain"):
+                            if first and not d.get("isSidechain"):
                                 sess["asst_msgs"] += 1
             except Exception:
                 continue
@@ -129,6 +168,37 @@ def main():
                 continue  # empty session
 
             sessions.append(sess)
+
+    # subagent logs live in <project>/<session>/subagents/*.jsonl - tokens only, not sessions
+    for proj in os.listdir(PROJECTS_DIR):
+        pdir = os.path.join(PROJECTS_DIR, proj)
+        if not os.path.isdir(pdir):
+            continue
+        for sd in os.listdir(pdir):
+            subdir = os.path.join(pdir, sd, "subagents")
+            if not os.path.isdir(subdir):
+                continue
+            for fn in os.listdir(subdir):
+                if not fn.endswith(".jsonl"):
+                    continue
+                try:
+                    with open(os.path.join(subdir, fn), "r", errors="replace") as fh:
+                        for line in fh:
+                            try:
+                                d = json.loads(line)
+                            except Exception:
+                                continue
+                            if d.get("type") != "assistant":
+                                continue
+                            msg = d.get("message", {})
+                            mid = msg.get("id")
+                            if mid is not None:
+                                if mid in seen_msgs:
+                                    continue
+                                seen_msgs.add(mid)
+                            add_usage(d, msg, parse_ts(d.get("timestamp", "")) if d.get("timestamp") else None, None, True)
+                except Exception:
+                    continue
 
     # aggregate
     out_sessions = []
@@ -158,6 +228,9 @@ def main():
             "size_kb": round(s["size"] / 1024),
             "skills": s["skills"],
             "first_prompt": s["first_prompt"],
+            "tokens_out": s["tok_out"],
+            "tokens_new_in": s["tok_in"],
+            "tokens_cache_read": s["tok_cache_read"],
         })
 
     out_sessions.sort(key=lambda x: x["date"] or "", reverse=True)
@@ -167,6 +240,20 @@ def main():
         day_dt = datetime.strptime(k, "%Y-%m-%d")
         monday = (day_dt - timedelta(days=day_dt.weekday())).strftime("%Y-%m-%d")
         weeks[monday] += v
+
+    def rollup(c):
+        tot_in = c["input"] + c["cache_read"] + c["cache_write"]
+        return {**dict(c), "cache_hit_rate": round(c["cache_read"] / tot_in, 3) if tot_in else None}
+    all_tok = Counter()
+    for c in tok_model.values():
+        all_tok.update(c)
+    tok_weeks = defaultdict(lambda: Counter())
+    for k, c in tok_day.items():
+        if k == "unknown":
+            continue
+        day_dt = datetime.strptime(k, "%Y-%m-%d")
+        tok_weeks[(day_dt - timedelta(days=day_dt.weekday())).strftime("%Y-%m-%d")].update(c)
+    heavy = sorted(out_sessions, key=lambda x: x["tokens_out"] + x["tokens_new_in"], reverse=True)[:10]
 
     result = {
         "generated": datetime.now().astimezone().isoformat(),
@@ -183,6 +270,18 @@ def main():
         "activity_by_weekday": {d: weekdays.get(d, 0) for d in ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]},
         "activity_by_day": dict(sorted(days.items())),
         "activity_by_week": dict(sorted(weeks.items())),
+        "tokens": {
+            "note": "unique API messages only, main sessions + subagent logs; new_input = input + cache_write; cache_hit_rate = cache_read / all input",
+            "total": rollup(all_tok),
+            "by_model": {m: rollup(c) for m, c in sorted(tok_model.items(), key=lambda x: -x[1]["output"])},
+            "by_day": {k: {"requests": c["requests"], "output": c["output"], "new_input": c["input"] + c["cache_write"], "cache_read": c["cache_read"]} for k, c in sorted(tok_day.items())},
+            "by_week": {k: {"requests": c["requests"], "output": c["output"], "new_input": c["input"] + c["cache_write"], "cache_read": c["cache_read"]} for k, c in sorted(tok_weeks.items())},
+            "by_effort": {e: dict(c) for e, c in sorted(tok_effort.items(), key=lambda x: -x[1]["requests"])},
+            "model_x_effort_requests": dict(tok_effort_model.most_common()),
+            "effort_commands": dict(effort_cmds),
+            "main_vs_subagent_tokens": dict(tok_side),
+            "heaviest_sessions": [{k: h[k] for k in ("date", "duration_min", "tokens_out", "tokens_new_in", "tokens_cache_read", "first_prompt")} for h in heavy],
+        },
         "recent_sessions": out_sessions[:60],
     }
     print(json.dumps(result, ensure_ascii=False, indent=1))
