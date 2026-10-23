@@ -37,6 +37,16 @@ Write the report in the language you and the user speak.
    - **System health:** size of `~/.claude/projects`, ballast skills, very long sessions (e.g. over 3 hours - context bloat), abandoned sessions (<1 min, one message), model mix (all on the biggest model? cheap model unused?).
    - **New skill candidates:** 3-4 ideas, each backed by "you already did this by hand on <date>".
    - **Your habits vs best practices:** two columns - observed pattern (no judgement) and a practice that strengthens it. No generic advice.
+   - **Economy & efficiency** (`efficiency` + `tokens.requests_by_side_and_model`): a dedicated section with a table "goal / what to do / why (data)". Goals: save tokens and stretch plan limits, fewer mistakes, fewer interruptions, no dropped runs, better effort fit, smaller baseline context. Map signals to concrete fixes:
+     - avg `context_per_request` high, many `compactions`, `sessions_over_24h` -> one task per session, `/clear` after finishing, a short worklog to resume from;
+     - large share of subagent requests on the top model -> `CLAUDE_CODE_SUBAGENT_MODEL` env in settings.json, explicit `model: haiku` for search/sorting subagents, `claude -p --model ...` for scheduled jobs;
+     - `oversized_tool_results_by_tool` (Read, screenshots) -> `offset/limit`, `grep`, page text instead of screenshots, downscale images;
+     - `tool_errors_by_tool` / `tool_error_kinds` -> name the top error classes and the rule that prevents each (shell quirks in CLAUDE.md, API connectors instead of browser, a skill for repeated browser flows); note that `grep` with no match also exits 1;
+     - `interrupts`, `user_rejections`, `turn_duration_min.over_10min` -> plan mode for big tasks, permission allowlist for safe commands;
+     - `api_errors` / `rate_limit_errors` -> keep the machine awake during long runs, spread heavy work;
+     - `short_abandoned_sessions` + number of installed skills/plugins/MCP servers -> trim the baseline loaded into every session (`/context`);
+     - if the oldest log is ~30 days old, `cleanupPeriodDays` is at its default: say so and suggest raising it so history accumulates.
+     Every row cites the number it rests on. No dollar estimates unless prices are verified.
    - **Recommendations (5-8):** concrete "do X", not "consider X".
 
 4. **HTML report.** Start from `report-template.html` (same folder): one file, system font, thin lines, no shadows/gradients, one accent color via CSS variables, pure-CSS bar charts, Light / Auto / Dark switch in the top-right corner (Auto = `prefers-color-scheme`, manual choice saved in `localStorage`). Header must have two chips: generation date/time and data period (days, sessions). Sections: title -> big numbers -> activity bars -> tokens / models / effort -> top skills -> insights -> numbered recommendations.

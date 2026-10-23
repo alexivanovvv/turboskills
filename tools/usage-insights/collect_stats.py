@@ -44,7 +44,15 @@ def main():
     tok_effort = defaultdict(lambda: Counter())  # effort level -> requests/output/new_input/cache_read
     tok_effort_model = Counter()                 # "model|effort" -> requests
     tok_side = Counter()                         # main vs subagent (sidechain) tokens
+    side_model = Counter()                       # "main|model" / "subagent|model" -> requests
     effort_cmds = Counter()                      # /effort <level> commands issued
+    fr = Counter()                               # efficiency / friction signals
+    ctx_buckets = Counter()                      # context size per main-session request
+    tool_err_by = Counter()                      # failed tool calls by tool name
+    tool_err_kinds = Counter()                   # failed tool calls by first line of the error
+    big_results = Counter()                      # tool results > 20k chars by tool name
+    compact_pre = []                             # context size when compaction fired
+    turn_ms = []                                 # agent turn durations
 
     def add_usage(d, msg, ts, sess, sub):
         u = msg.get("usage"); mdl = msg.get("model")
@@ -63,8 +71,13 @@ def main():
         e = tok_effort[eff]
         e["requests"] += 1; e["output"] += o; e["new_input"] += i_ + cw; e["cache_read"] += cr
         tok_effort_model[f"{mdl or 'unknown'}|{eff}"] += 1
-        tok_side["subagent" if (sub or d.get("isSidechain")) else "main"] += o + i_ + cw
+        side = "subagent" if (sub or d.get("isSidechain")) else "main"
+        tok_side[side] += o + i_ + cw
+        side_model[f"{side}|{mdl or 'unknown'}"] += 1
         if sess is not None:
+            ctx = i_ + cr + cw
+            ctx_buckets["<50k" if ctx < 50e3 else "50-100k" if ctx < 100e3 else "100-150k" if ctx < 150e3 else "150k+"] += 1
+            fr["ctx_sum"] += ctx; fr["ctx_n"] += 1
             sess["tok_out"] += o; sess["tok_in"] += i_ + cw; sess["tok_cache_read"] += cr
 
     for proj in os.listdir(PROJECTS_DIR):
@@ -88,6 +101,7 @@ def main():
                 "has_subagent": False,
                 "tok_out": 0, "tok_in": 0, "tok_cache_read": 0,
             }
+            tool_names = {}
             try:
                 with open(path, "r", errors="replace") as fh:
                     for line in fh:
@@ -102,6 +116,47 @@ def main():
                             if sess["end"] is None or ts > sess["end"]:
                                 sess["end"] = ts
                         t = d.get("type")
+                        in_window = ts is None or ts >= cutoff
+                        if t == "system" and in_window:
+                            st = d.get("subtype")
+                            if st == "compact_boundary":
+                                cm = d.get("compactMetadata") or {}
+                                fr["compactions_" + str(cm.get("trigger", "unknown"))] += 1
+                                if cm.get("preTokens"):
+                                    compact_pre.append(cm["preTokens"])
+                                sess["compactions"] = sess.get("compactions", 0) + 1
+                            elif st == "api_error":
+                                fr["api_errors"] += 1
+                                msg_ = str((d.get("error") or {}).get("message", ""))
+                                if re.search(r"limit|429|rate", msg_, re.I):
+                                    fr["rate_limit_errors"] += 1
+                            elif st == "turn_duration" and d.get("durationMs"):
+                                turn_ms.append(d["durationMs"])
+                        if d.get("isApiErrorMessage") and in_window:
+                            fr["api_error_messages"] += 1
+                        if t == "user" and in_window and isinstance((d.get("message") or {}).get("content"), list):
+                            for c in d["message"]["content"]:
+                                if not isinstance(c, dict):
+                                    continue
+                                if c.get("type") == "text" and "Request interrupted" in (c.get("text") or ""):
+                                    fr["interrupts"] += 1
+                                if c.get("type") != "tool_result":
+                                    continue
+                                tn = tool_names.get(c.get("tool_use_id"), "unknown")
+                                body = c.get("content")
+                                body = body if isinstance(body, str) else json.dumps(body, ensure_ascii=False)
+                                if len(body) > 20000:
+                                    big_results[tn] += 1
+                                if c.get("is_error"):
+                                    fr["tool_errors"] += 1
+                                    tool_err_by[tn] += 1
+                                    if "doesn't want to proceed" in body or "rejected" in body[:200]:
+                                        fr["user_rejections"] += 1
+                                    if "Blocked:" in body[:200]:
+                                        fr["blocked_by_harness"] += 1
+                                    tool_err_kinds[re.sub(r"\s+", " ", body.strip().splitlines()[0] if body.strip() else "")[:70]] += 1
+                        if t == "user" and isinstance((d.get("message") or {}).get("content"), str) and "Request interrupted" in d["message"]["content"] and in_window:
+                            fr["interrupts"] += 1
                         if t == "user" and not d.get("isMeta") and not d.get("isSidechain"):
                             msg = d.get("message", {})
                             content = msg.get("content")
@@ -149,6 +204,7 @@ def main():
                                 for c in content:
                                     if isinstance(c, dict) and c.get("type") == "tool_use":
                                         name = c.get("name", "")
+                                        tool_names[c.get("id")] = name
                                         tool_calls[name] += 1
                                         if name == "Skill":
                                             sk = (c.get("input") or {}).get("skill")
@@ -231,6 +287,7 @@ def main():
             "tokens_out": s["tok_out"],
             "tokens_new_in": s["tok_in"],
             "tokens_cache_read": s["tok_cache_read"],
+            "compactions": s.get("compactions", 0),
         })
 
     out_sessions.sort(key=lambda x: x["date"] or "", reverse=True)
@@ -280,7 +337,28 @@ def main():
             "model_x_effort_requests": dict(tok_effort_model.most_common()),
             "effort_commands": dict(effort_cmds),
             "main_vs_subagent_tokens": dict(tok_side),
+            "requests_by_side_and_model": dict(side_model.most_common()),
             "heaviest_sessions": [{k: h[k] for k in ("date", "duration_min", "tokens_out", "tokens_new_in", "tokens_cache_read", "first_prompt")} for h in heavy],
+        },
+        "efficiency": {
+            "note": "friction signals inside the window: compactions, interrupts, tool errors, rejections, oversized tool output, context size",
+            "compactions": {k[12:]: v for k, v in fr.items() if k.startswith("compactions_")},
+            "compaction_avg_context": round(sum(compact_pre) / len(compact_pre)) if compact_pre else None,
+            "sessions_with_compaction": sum(1 for x in out_sessions if x["compactions"]),
+            "most_compacted_sessions": [{k: x[k] for k in ("date", "duration_min", "compactions", "first_prompt")} for x in sorted(out_sessions, key=lambda x: -x["compactions"])[:5] if x["compactions"]],
+            "interrupts": fr["interrupts"],
+            "api_errors": fr["api_errors"], "rate_limit_errors": fr["rate_limit_errors"],
+            "tool_errors": fr["tool_errors"], "user_rejections": fr["user_rejections"], "blocked_by_harness": fr["blocked_by_harness"],
+            "tool_errors_by_tool": dict(tool_err_by.most_common(12)),
+            "tool_error_kinds": dict(tool_err_kinds.most_common(15)),
+            "tool_error_rate": round(fr["tool_errors"] / max(1, sum(tool_calls.values())), 3),
+            "oversized_tool_results_by_tool": dict(big_results.most_common(10)),
+            "context_per_request": {"avg": round(fr["ctx_sum"] / fr["ctx_n"]) if fr["ctx_n"] else None, "buckets": dict(ctx_buckets)},
+            "turn_duration_min": {"median": round(sorted(turn_ms)[len(turn_ms) // 2] / 60000, 1) if turn_ms else None,
+                                  "p90": round(sorted(turn_ms)[int(len(turn_ms) * .9)] / 60000, 1) if turn_ms else None,
+                                  "over_10min": sum(1 for x in turn_ms if x > 600000)},
+            "sessions_over_24h": sum(1 for x in out_sessions if (x["duration_min"] or 0) > 1440),
+            "short_abandoned_sessions": sum(1 for x in out_sessions if (x["duration_min"] or 0) < 1 and x["user_msgs"] <= 1),
         },
         "recent_sessions": out_sessions[:60],
     }
