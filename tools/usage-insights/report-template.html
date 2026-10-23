@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Usage insights — {{DATE}}</title>
+  <style>
+    :root { --bg:#fff; --fg:#17202a; --muted:#66717d; --line:#dfe4e8; --accent:#267a5b; --soft:#edf6f1; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#151817; --fg:#edf2ef; --muted:#a3afa8; --line:#303936; --accent:#72c99e; --soft:#1d3027; } }
+    :root[data-theme="dark"] { --bg:#151817; --fg:#edf2ef; --muted:#a3afa8; --line:#303936; --accent:#72c99e; --soft:#1d3027; }
+    * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:920px; margin:0 auto; padding:64px 28px 90px; } h1 { margin:0 0 12px; font-size:34px; letter-spacing:-.03em; } h2 { margin:48px 0 18px; font-size:20px; } p { color:var(--muted); }
+    .chips { display:flex; gap:8px; flex-wrap:wrap; margin:18px 0 34px; } .chip { border:1px solid var(--line); border-radius:999px; padding:6px 11px; color:var(--muted); font-size:12px; }
+    .theme { position:absolute; top:24px; right:24px; } select { border:1px solid var(--line); background:var(--bg); color:var(--fg); padding:5px 8px; border-radius:6px; }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:12px; } .stat { border-top:2px solid var(--accent); padding-top:10px; } .num { font-size:30px; font-weight:650; } .label { color:var(--muted); font-size:13px; }
+    .bar { display:grid; grid-template-columns:220px 1fr 52px; gap:12px; align-items:center; margin:9px 0; } .track { height:8px; background:var(--soft); } .fill { height:100%; background:var(--accent); } .bar span:last-child { text-align:right; color:var(--muted); font-size:13px; }
+    table { width:100%; border-collapse:collapse; } th,td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); vertical-align:top; } th { color:var(--muted); font-size:12px; font-weight:500; }
+    .callout { border-left:3px solid var(--accent); background:var(--soft); padding:14px 16px; margin:16px 0; } ul,ol { padding-left:22px; } li { margin:8px 0; } code { background:var(--soft); padding:1px 5px; border-radius:4px; font-size:13px; }
+    @media(max-width:650px) { .stats { grid-template-columns:repeat(2,1fr); } .bar { grid-template-columns:130px 1fr 44px; gap:8px; font-size:13px; } }
+  </style>
+</head>
+<body>
+  <div class="theme"><select aria-label="Тема" onchange="document.documentElement.dataset.theme=this.value;localStorage.theme=this.value"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
+  <main>
+    <h1>How you work with Claude Code</h1>
+    <div class="chips"><span class="chip">Report generated: {{GENERATED}}</span><span class="chip">Data period: {{FROM}} – {{TO}} ({{DAYS}} days, {{SESSIONS}} sessions)</span></div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">{{N}}</div><div class="label">sessions</div></div>
+      <!-- repeat .stat for: your messages, agent messages, % sessions with subagents, % main model, median duration -->
+    </div>
+
+    <h2>Section title</h2>
+    <p>One short paragraph of interpretation.</p>
+    <!-- bar chart row (pure CSS, width = value / max * 100%) -->
+    <div class="bar"><span>Label</span><div class="track"><div class="fill" style="width:100%"></div></div><span>42</span></div>
+
+    <div class="callout"><strong>Takeaway:</strong> one sentence conclusion.</div>
+
+    <table><thead><tr><th>Metric</th><th>Value</th><th>What to do</th></tr></thead><tbody>
+      <tr><td>…</td><td>…</td><td>…</td></tr>
+    </tbody></table>
+
+    <h2>Recommendations</h2>
+    <ol><li><strong>Concrete action.</strong> Why, based on the data.</li></ol>
+  </main>
+  <script>const s=localStorage.theme||'auto';document.documentElement.dataset.theme=s;document.querySelector('select').value=s;</script>
+</body>
+</html>

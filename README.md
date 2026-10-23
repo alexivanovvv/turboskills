@@ -52,6 +52,7 @@ Everyday utilities for your computer.
 | Skill | What it does |
 |-------|-------------|
 | [`disk-space-analyzer`](tools/disk-space-analyzer/) | Find what's eating your disk and clean it safely — disk map (treemap) and bar charts right in the terminal, a ranked cleanup plan with safety levels, and a before → after result. macOS and Windows. Based on [WhiteMinds/disk-space-analyzer-skill](https://github.com/WhiteMinds/disk-space-analyzer-skill) (MIT). |
+| [`usage-insights`](tools/usage-insights/) | See how you really use Claude Code - reads your local session logs and builds a one-file HTML report: rhythm, task types, tools, skills you never use, scheduled automation, system health, new-skill candidates and concrete recommendations. Data stays on your machine. |
 
 ---
 
@@ -66,6 +67,7 @@ cp -r story/story-authentic-social ~/.claude/skills/
 cp -r marketing/marketing-ladder ~/.claude/skills/
 cp -r marketing/marketing-cialdini ~/.claude/skills/
 cp -r tools/disk-space-analyzer ~/.claude/skills/
+cp -r tools/usage-insights ~/.claude/skills/
 
 # Or clone the whole repo and symlink skills
 git clone https://github.com/alexivanovvv/turboskills ~/.claude/turboskills
@@ -76,6 +78,7 @@ ln -s ~/.claude/turboskills/story/story-authentic-social ~/.claude/skills/story-
 ln -s ~/.claude/turboskills/marketing/marketing-ladder ~/.claude/skills/marketing-ladder
 ln -s ~/.claude/turboskills/marketing/marketing-cialdini ~/.claude/skills/marketing-cialdini
 ln -s ~/.claude/turboskills/tools/disk-space-analyzer ~/.claude/skills/disk-space-analyzer
+ln -s ~/.claude/turboskills/tools/usage-insights ~/.claude/skills/usage-insights
 ```
 
 Then in Claude Code:
