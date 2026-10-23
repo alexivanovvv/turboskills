@@ -17,6 +17,26 @@
     table { width:100%; border-collapse:collapse; } th,td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); vertical-align:top; } th { color:var(--muted); font-size:12px; font-weight:500; }
     .callout { border-left:3px solid var(--accent); background:var(--soft); padding:14px 16px; margin:16px 0; } ul,ol { padding-left:22px; } li { margin:8px 0; } code { background:var(--soft); padding:1px 5px; border-radius:4px; font-size:13px; }
     @media(max-width:650px) { .stats { grid-template-columns:repeat(2,1fr); } .bar { grid-template-columns:130px 1fr 44px; gap:8px; font-size:13px; } }
+    :root { --c1:#13875a; --c2:#7b6be0; --gray:#b9c0c6; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --c1:#2f9a6c; --c2:#8576e2; --gray:#4a5350; } }
+    :root[data-theme="dark"] { --c1:#2f9a6c; --c2:#8576e2; --gray:#4a5350; }
+    .chart { margin:6px 0 22px; position:relative; }
+    .cols { display:flex; align-items:flex-end; gap:6px; height:170px; border-bottom:1px solid var(--line); padding-top:22px; }
+    .col { flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; position:relative; }
+    .col i { display:block; width:100%; max-width:56px; background:var(--c1); border-radius:4px 4px 0 0; min-height:2px; transition:opacity .15s; }
+    .col.partial i { background:repeating-linear-gradient(135deg,var(--c1) 0 5px,transparent 5px 8px); box-shadow:inset 0 0 0 1.5px var(--c1); }
+    .col b { font-size:12px; font-weight:600; margin-bottom:4px; white-space:nowrap; }
+    .cols:hover .col i { opacity:.45; } .cols .col:hover i { opacity:1; }
+    .xl { display:flex; gap:6px; margin-top:6px; } .xl span { flex:1; text-align:center; font-size:11px; color:var(--muted); white-space:nowrap; }
+    .legend { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--muted); margin:0 0 10px; } .legend i { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px; }
+    .hrow { display:grid; grid-template-columns:150px 1fr 70px; gap:12px; align-items:center; margin:8px 0; font-size:14px; }
+    .hrow .t { display:flex; gap:2px; height:14px; } .hrow .t i { display:block; height:100%; min-width:2px; } .hrow .t i:last-child { border-radius:0 4px 4px 0; }
+    .hrow .v { text-align:right; color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums; }
+    .partbar { display:flex; gap:2px; height:28px; border-radius:4px; overflow:hidden; } .partbar i { display:flex; align-items:center; height:100%; min-width:3px; overflow:hidden; } .partbar em { font-style:normal; font-size:12px; font-weight:600; color:#fff; padding-left:10px; white-space:nowrap; }
+    .note { font-size:12px; color:var(--muted); margin-top:8px; }
+    #tip { position:fixed; pointer-events:none; background:var(--fg); color:var(--bg); font-size:12px; padding:6px 9px; border-radius:6px; opacity:0; transition:opacity .1s; z-index:9; white-space:nowrap; }
+    .bar .track { height:10px; background:transparent; } .bar .fill { border-radius:0 4px 4px 0; background:var(--c1); }
+    @media(max-width:650px) { .hrow { grid-template-columns:110px 1fr 56px; font-size:13px; } .xl span { font-size:9px; } }
   </style>
 </head>
 <body>
@@ -32,6 +52,15 @@
 
     <h2>Section title</h2>
     <p>One short paragraph of interpretation.</p>
+    <!-- Interactive charts: a div with data-kind + JSON data-items, rendered by the script at the bottom (hover tooltips, light/dark).
+         cols  - vertical columns: [[label, value], ...]; data-unit, data-every="3" (label every Nth), data-partial="1" (hatch last = incomplete period), data-ramp="1" (ordinal magnitude, darker = bigger), data-note
+         stack - horizontal stacked bars, 2 series: data-series='["main","subagents"]', items [[label, [a, b]], ...]
+         part  - one 100% bar, ordinal steps of one hue: [[label, value, strength 0..1 (0 = gray, e.g. "unknown")], ...]
+         hbar  - horizontal bars: [[label, value], ...]; data-unit -->
+    <div class="chart" data-kind="cols" data-unit="sessions" data-partial="1" data-items='[["Sep 21",92],["Sep 28",116],["Oct 5",124],["Oct 12",178],["Oct 19",114]]'></div>
+    <div class="chart" data-kind="stack" data-series='["main session","subagents"]' data-items='[["Opus",[22202,7745]],["Sonnet",[3669,2406]],["Haiku",[0,1725]]]'></div>
+    <div class="chart" data-kind="part" data-items='[["low",13,0.4],["medium",32780,0.68],["high",4865,0.86],["xhigh",809,1],["unknown",1749,0]]'></div>
+    <div class="chart" data-kind="hbar" data-unit="errors" data-items='[["Bash",601],["Browser",189],["Read",19]]'></div>
     <!-- bar chart row (pure CSS, width = value / max * 100%) -->
     <div class="bar"><span>Label</span><div class="track"><div class="fill" style="width:100%"></div></div><span>42</span></div>
 
@@ -45,5 +74,48 @@
     <ol><li><strong>Concrete action.</strong> Why, based on the data.</li></ol>
   </main>
   <script>const s=localStorage.theme||'auto';document.documentElement.dataset.theme=s;document.querySelector('select').value=s;</script>
+<div id="tip"></div>
+<script>
+(() => {
+  const nf = n => n.toLocaleString('ru-RU'), tip = document.getElementById('tip');
+  document.addEventListener('mousemove', e => {
+    const t = e.target.closest('[data-tip]');
+    if (!t) { tip.style.opacity = 0; return; }
+    tip.textContent = t.dataset.tip; tip.style.opacity = 1;
+    tip.style.left = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8) + 'px';
+    tip.style.top = (e.clientY - 34) + 'px';
+  });
+  const legend = (names, cols) => '<div class="legend">' + names.map((n, i) => `<span><i style="background:${cols[i]}"></i>${n}</span>`).join('') + '</div>';
+  document.querySelectorAll('.chart').forEach(el => {
+    const it = JSON.parse(el.dataset.items), k = el.dataset.kind, unit = el.dataset.unit || '';
+    let h = '';
+    if (k === 'cols') {
+      const mx = Math.max(...it.map(x => x[1])), every = +el.dataset.every || 1, n = it.length;
+      h = '<div class="cols">' + it.map(([l, v], i) => {
+        const part = el.dataset.partial && i === n - 1, op = el.dataset.ramp ? (.45 + .55 * i / (n - 1)) : 1;
+        const lab = v === mx || n <= 8 ? `<b>${nf(v)}</b>` : '';
+        return `<div class="col${part ? ' partial' : ''}" data-tip="${l}: ${nf(v)} ${unit}${part ? ' (неделя неполная)' : ''}">${lab}<i style="height:calc((100% - 22px) * ${v / mx});opacity:${op}"></i></div>`;
+      }).join('') + '</div>';
+      h += '<div class="xl">' + it.map(([l], i) => `<span>${i % every === 0 ? l : ''}</span>`).join('') + '</div>';
+    } else if (k === 'stack') {
+      const ser = JSON.parse(el.dataset.series), cols = ['var(--c1)', 'var(--c2)'], mx = Math.max(...it.map(x => x[1][0] + x[1][1]));
+      h = legend(ser, cols) + it.map(([l, p]) => {
+        const tot = p[0] + p[1];
+        return `<div class="hrow"><span>${l}</span><div class="t">${p.map((v, i) => v ? `<i style="width:${v / mx * 100}%;background:${cols[i]}" data-tip="${l} · ${ser[i]}: ${nf(v)} (${Math.round(v / tot * 100)}%)"></i>` : '').join('')}</div><span class="v">${nf(tot)}</span></div>`;
+      }).join('');
+    } else if (k === 'part') {
+      const tot = it.reduce((a, x) => a + x[1], 0), col = o => o ? `color-mix(in srgb, var(--c1) ${o * 100}%, var(--bg))` : 'var(--gray)';
+      const pct = v => v / tot < .001 ? '<0,1%' : (v / tot * 100).toFixed(v / tot < .01 ? 1 : 0).replace('.', ',') + '%';
+      h = legend(it.map(([l, v]) => `${l} ${pct(v)}`), it.map(x => col(x[2]))) + '<div class="partbar">' +
+        it.map(([l, v, o]) => `<i style="width:${v / tot * 100}%;background:${col(o)}" data-tip="${l}: ${nf(v)} (${pct(v)})">${v / tot > .08 ? `<em>${l} ${pct(v)}</em>` : ''}</i>`).join('') + '</div>';
+    } else if (k === 'hbar') {
+      const mx = Math.max(...it.map(x => x[1]));
+      h = it.map(([l, v]) => `<div class="hrow"><span>${l}</span><div class="t"><i style="width:${v / mx * 100}%;background:var(--c1)" data-tip="${l}: ${nf(v)} ${unit}"></i></div><span class="v">${nf(v)}</span></div>`).join('');
+    }
+    if (el.dataset.note) h += `<div class="note">${el.dataset.note}</div>`;
+    el.innerHTML = h;
+  });
+})();
+</script>
 </body>
 </html>
