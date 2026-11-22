@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace-manifest.json",
+  "name": "ochelovech",
+  "owner": {"name": "Vladimir-Human", "url": "https://github.com/Vladimir-Human"},
+  "description": "ochelovech для Claude Code: править русский и английский ИИ-текст по-человечески.",
+  "plugins": [
+    {
+      "name": "ochelovech",
+      "source": "./",
+      "description": "Правит русский и английский ИИ-текст точечными правками, чтобы он читался как написанный человеком, и сверяет факты до и после.",
+      "version": "5.1.0",
+      "license": "MIT",
+      "keywords": ["humanizer", "russian", "english", "writing", "editing"]
+    }
+  ]
+}

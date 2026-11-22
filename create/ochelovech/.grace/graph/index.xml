@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph project="ochelovech" paths="relative to the repository root">
+  <modules>
+    <module id="M-SKILL" file="skills/ochelovech/SKILL.md" purpose="Agent instructions: modes, procedure, patterns, Russian norms, fact rules, output format" depends="M-REFS; M-CHECK-FACTS and M-CLEAN-PASTE optional" exports="the skill itself" />
+    <module id="M-REFS" file="skills/ochelovech/references/patterns.md, examples.md" purpose="Before/after examples and boundaries per pattern; whole texts by genre" depends="none" exports="read on demand by the agent" />
+    <module id="M-CHECK-FACTS" file="skills/ochelovech/scripts/check_facts.py" purpose="Offline fact comparison of original and edit, Russian and English (lexicons picked by the share of Cyrillic in the original or by --lang; report in Russian)" depends="Python stdlib" exports="detect_lang, extract, compare, render, stem_match; CLI used by M-SKILL and M-EVAL-REPORT" />
+    <module id="M-CLEAN-PASTE" file="skills/ochelovech/scripts/clean_paste.py" purpose="Remove chat paste artifacts, language-independent (assistant chatter is left to the agent); optional author typography (dash to hyphen, yo to e)" depends="Python stdlib" exports="clean, house; CLI used by M-SKILL" />
+    <module id="M-EDIT-BUDGET" file="skills/ochelovech/scripts/edit_budget.py" purpose="How far an edit drifted from the original (any language; apostrophe and hyphen words are one word): words kept, rewritten, deleted and added paragraphs" depends="Python stdlib" exports="measure, over_budget, render; CLI used by M-SKILL" />
+    <module id="M-APPLY-EDITS" file="skills/ochelovech/scripts/apply_edits.py" purpose="Apply point edits (quote, replacement, reason) leaving the rest byte-for-byte; refuse bad quotes and overlaps; quotes found tolerant to whitespace, yo, dashes, quotes and apostrophes; budget report and review page (Russian UI)" depends="Python stdlib; M-EDIT-BUDGET" exports="parse, locate, apply, review_html; CLI used by M-SKILL" />
+    <module id="M-CHECK-REPO" file="scripts/check_repo.py" purpose="Frontmatter, version agreement, referenced files, LF and invisible characters" depends="Python stdlib" exports="check; CLI used by CI" />
+    <module id="M-BUILD-ZIP" file="scripts/build_zip.py" purpose="Zip for Claude.ai with ochelovech/ at the root" depends="Python stdlib" exports="build; CLI used by CI and release" />
+    <module id="M-EVAL-LIB" file="eval/evallib.py" purpose="fal OpenRouter chat client, spend ledger with cap, IO helpers" depends="Python stdlib; FAL_KEY" exports="chat, ledger, read/write helpers" />
+    <module id="M-EVAL-CORPUS" file="eval/build_corpus.py" purpose="Generate AI texts from briefs (sets dev, test, holdout, holdout2), add saved chatbot answers and human/legal traps" depends="M-EVAL-LIB; v3.36.4 research/ archive" exports="eval/corpus/texts, index.json" />
+    <module id="M-EVAL-FETCH" file="eval/fetch_systems.py" purpose="Instruction files of compared skills at pinned commits; all of them or only the names given" depends="M-EVAL-LIB; gh; git" exports="eval/.cache/systems" />
+    <module id="M-EVAL-RUN" file="eval/run_systems.py" purpose="One executor model applies each skill to each text with a read_file tool" depends="M-EVAL-LIB, M-EVAL-FETCH, M-SKILL" exports="results/RUN/outputs, runs.jsonl" />
+    <module id="M-EVAL-JUDGE" file="eval/judge.py" purpose="Blind shuffled ranking by judges from other labs (model=N passes per judge), with fact/AI/language notes" depends="M-EVAL-LIB" exports="results/RUN/judgments.jsonl" />
+    <module id="M-EVAL-REPORT" file="eval/report.py" purpose="Positions and pairwise wins weighted per judge, fact flags by judge majority, thresholds (rule set 2); optional judge filter and output name" depends="M-EVAL-LIB, M-CHECK-FACTS" exports="results/RUN/summary.md, summary.json" />
+    <module id="M-EVAL-FIDELITY" file="eval/fidelity/check.py" purpose="Offline regression set from real over-rewrites: required phrases kept, forbidden additions, new numbers, invented first person (Russian and English), kept words and deleted paragraphs; Russian and English cases" depends="M-EDIT-BUDGET; eval/fidelity/cases.json" exports="check, self_test; CLI --export, --self-test, answers folder" />
+  </modules>
+  <flows>
+    <flow id="DF-SKILL" path="user text -> M-CLEAN-PASTE -> M-SKILL (anchors, edit list) -> M-APPLY-EDITS (+ M-EDIT-BUDGET) -> M-CHECK-FACTS -> optional meaning check by a fresh subagent -> edited text + 1-3 notes" />
+    <flow id="DF-EVAL" path="briefs -> M-EVAL-CORPUS -> texts; systems.json -> M-EVAL-FETCH -> M-EVAL-RUN -> outputs -> M-EVAL-JUDGE -> judgments -> M-EVAL-REPORT -> summary" />
+    <flow id="DF-FIDELITY" path="cases.json -> M-EVAL-FIDELITY --export -> skill run per source -> answers -> M-EVAL-FIDELITY -> passed / failed per case" />
+  </flows>
+</graph>

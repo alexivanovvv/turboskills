@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<verification project="ochelovech" method="unittest offline; eval with paid API calls on demand">
+  <entry id="V-M-CHECK-FACTS" module="M-CHECK-FACTS" file="skills/ochelovech/scripts/check_facts.py">
+    <test file="tests/test_scripts.py" title="CheckFactsTest" checks="identical text clean; swapped amounts between names; lost/added numbers; units and number words normalised; HH:00 equals hour; unit change; inverted negation; moved negation not flagged; lost name; name in another case kept; utm tail is not a lost link; lost link; dates incl. ranges; hedge loss is a check; modality/scope/condition/attribution words that got rarer and intensifiers that got more frequent are checks; polite Вы/Ваш is not a name; a word right after a block tag (&lt;p&gt;, &lt;li&gt;) is sentence-initial, not a name; a number repeated in the original (card numbers) is not a swap when it stands by a name it stood by there; a date does not span a line break; lost structural HTML tags are errors, lost emphasis tags are checks, autolinks are not tags; CLI exit codes 0/1/2" />
+    <test file="tests/test_scripts.py" title="CheckFactsEnglishTest" checks="identical English text clean with lang=en; language detection ru / en / ru+en, links, domains and handles ignored, no lang key for Russian; lost number with unit (30 days -&gt; 45 days); unit change (km -&gt; miles, $ -&gt; euro); 30,000 = 30k = 30 thousand, $3.5M = $3.5 million, twenty-five = 25, a dozen = 12, 5 pm = 17:00, percent = %; bare one/a and the verb may are not facts; may -&gt; will and should -&gt; must are checks; lost not / isn't is an inverted negation, never -&gt; don't is fine; changed date, 5 March 2026 = March 5th, 2026, Mar. = March; lost about is a check; lost name; sentence starts, contractions and Title Case headings are not names; --lang ru|en|auto and exit 2 on a bad value" />
+  </entry>
+  <entry id="V-M-CLEAN-PASTE" module="M-CLEAN-PASTE" file="skills/ochelovech/scripts/clean_paste.py">
+    <test file="tests/test_scripts.py" title="CleanPasteTest, HouseStyleTest" checks="contentReference; source tokens and cite; utm tail removed with link and punctuation kept; invisible chars; emoji ZWJ and NBSP kept; clean text untouched; house typography skips code, links, tags, HTML head, pre and code bodies" />
+    <test file="tests/test_scripts.py" title="EnglishHelpersTest" checks="English chat leftovers removed, chatter and wording kept, punctuation kept after a utm link with a glued invisible char; clean English text untouched; house typography on English: em dashes -&gt; spaced hyphen, en-dash range -&gt; hyphen, apostrophes kept" />
+  </entry>
+  <entry id="V-M-EDIT-BUDGET" module="M-EDIT-BUDGET" file="skills/ochelovech/scripts/edit_budget.py">
+    <test file="tests/test_scripts.py" title="EditBudgetTest" checks="identical and mechanical edits in budget; deleted and rewritten paragraphs caught; CLI exit codes 0/1/2" />
+    <test file="tests/test_scripts.py" title="EnglishHelpersTest" checks="don't and don’t are one and the same word; hyphenated words are one word" />
+  </entry>
+  <entry id="V-M-APPLY-EDITS" module="M-APPLY-EDITS" file="skills/ochelovech/scripts/apply_edits.py">
+    <test file="tests/test_scripts.py" title="ApplyEditsTest" checks="untouched text identical; reason required; missing, ambiguous and overlapping quotes write nothing; replace-all and skip; tolerant match; review page; CLI exit codes 0/1/2" />
+    <test file="tests/test_scripts.py" title="EnglishHelpersTest" checks="a quote with a straight apostrophe finds the typographic one, the rest stays byte-for-byte" />
+  </entry>
+  <entry id="V-M-CHECK-REPO" module="M-CHECK-REPO" file="scripts/check_repo.py">
+    <test file="tests/test_repo.py" title="RepoTest" checks="real tree clean; version mismatch, missing reference, CRLF and invisible chars caught" />
+  </entry>
+  <entry id="V-M-BUILD-ZIP" module="M-BUILD-ZIP" file="scripts/build_zip.py">
+    <test file="tests/test_repo.py" title="test_zip_layout" checks="ochelovech/SKILL.md at the root, ASCII names, no caches" />
+  </entry>
+  <entry id="V-M-SKILL" module="M-SKILL" file="skills/ochelovech/SKILL.md">
+    <test file="eval/results/final3/summary-shipped.md" title="blind comparison 4.1.1" checks="ranking against competitors, the one-line prompt and the previous version; fact errors by majority of three judges and check_facts; traps" />
+  </entry>
+  <entry id="V-M-EVAL" module="M-EVAL-REPORT" file="eval/report.py">
+    <test file="tests/test_eval.py" title="EvalReportTest" checks="one vote per judge: two passes of one judge do not outvote another judge; strict majority of 2 or 3 judges; one-judge runs keep the pass rule; equal-weight means; judge.parse repairs both Kimi K3 brace variants" />
+    <test file="eval/results/*/summary.json" title="reports of dev and final runs" checks="aggregation checked by hand against judgments.jsonl on dev1" />
+  </entry>
+  <entry id="V-M-EVAL-FIDELITY" module="M-EVAL-FIDELITY" file="eval/fidelity/check.py">
+    <test file="tests/test_fidelity.py" title="FidelityTest" checks="every recorded bad answer is caught and every good one passes; lost phrase, forbidden addition, new number and invented first person fire on their own; English first person (I've, I’m, my, we've) fires, i.e. and bare we do not, a first-person source may keep it; yo, dashes and quotes are tolerated; three English cases (clichés with invented numbers, invented experience, lost hedges and dates)" />
+  </entry>
+  <gaps>
+    <gap id="G-EVAL-UNIT">Only the vote rules of report.py have unit tests; the scripts that call paid APIs are checked by hand on dev runs.</gap>
+    <gap id="G-CONDITIONS">check_facts.py does not see lost conditions in words ("при включённой двухфакторной аутентификации"); the skill tells the agent to reread conditions.</gap>
+    <gap id="G-AGENTS">The comparison emulates a skill run through the API with a read_file tool; installed runs in Claude Code and DSH are checked by hand on a few texts.</gap>
+    <gap id="G-ENGLISH">English support of check_facts.py is lexicon-based and younger than the Russian one: no eval corpus run on English texts yet; English word forms are matched by a crude suffix stem (s/es/ed/ing); "Part I" counts as first person in the fidelity check; the review page of apply_edits.py has a Russian UI for any text.</gap>
+  </gaps>
+</verification>
