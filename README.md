@@ -26,7 +26,7 @@ Skills for creating content and presentations.
 |-------|-------------|
 | [`slides-generator`](create/slides-generator/) | Turn a Markdown file into a self-contained HTML slide deck — dark minimal style, animated SVG art, 134 motifs + 25 icons, 6 themes, presenter view, keyboard nav, speaker notes, autoplay |
 | [`sokrati`](create/sokrati/) | Shorten or tighten your text without losing your voice — cut to a target size ("-30%", "2x shorter") or just remove filler, using the "Write, cut" editing method. Personal settings (voice file, typography, where to open the result) go into a local `LOCAL.md` next to the skill, which is not committed. Keeps versions v0.1/v0.2… in the same file with a one-line changelog, applies typography rules. Russian by default. |
-| [`ochelovech`](create/ochelovech/) | Humanize AI-sounding Russian and English text with targeted point edits: removes bureaucratese, ChatGPT clichés, paste junk, extra dashes and bold, keeps the rest word for word, then checks numbers, names, dates and negations survived. Skill files live in `skills/ochelovech/`; tests and a blind comparison stand are included. Fork of [Vladimir-Human/humanizer-ru](https://github.com/Vladimir-Human/humanizer-ru) (MIT). |
+| [`ochelovech`](create/ochelovech/) | Humanize AI-sounding Russian and English text with targeted point edits: removes bureaucratese, ChatGPT clichés, paste junk, extra dashes and bold, keeps the rest word for word, then checks numbers, names, dates and negations survived. Tests and the comparison stand live in the frozen [ochelovech](https://github.com/alexivanovvv/ochelovech) repo. Fork of [Vladimir-Human/humanizer-ru](https://github.com/Vladimir-Human/humanizer-ru) (MIT). |
 
 ### story/
 

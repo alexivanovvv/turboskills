@@ -2,4 +2,3 @@ LOCAL.md
 __pycache__/
 *.pyc
 .DS_Store
-eval/.cache/
