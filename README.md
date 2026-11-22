@@ -18,15 +18,22 @@ Each skill contains:
 
 ## Skills
 
-### create/
+### texts/
 
-Skills for creating content and presentations.
+Skills for editing your texts: shorter, cleaner, more human - in your own voice.
 
 | Skill | What it does |
 |-------|-------------|
-| [`slides-generator`](create/slides-generator/) | Turn a Markdown file into a self-contained HTML slide deck — dark minimal style, animated SVG art, 134 motifs + 25 icons, 6 themes, presenter view, keyboard nav, speaker notes, autoplay |
-| [`sokrati`](create/sokrati/) | Shorten or tighten your text without losing your voice — cut to a target size ("-30%", "2x shorter") or just remove filler, using the "Write, cut" editing method. Personal settings (voice file, typography, where to open the result) go into a local `LOCAL.md` next to the skill, which is not committed. Keeps versions v0.1/v0.2… in the same file with a one-line changelog, applies typography rules. Russian by default. |
-| [`ochelovech`](create/ochelovech/) | Humanize AI-sounding Russian and English text with targeted point edits: removes bureaucratese, ChatGPT clichés, paste junk, extra dashes and bold, keeps the rest word for word, then checks numbers, names, dates and negations survived. Tests and the comparison stand live in the frozen [ochelovech](https://github.com/alexivanovvv/ochelovech) repo. Fork of [Vladimir-Human/humanizer-ru](https://github.com/Vladimir-Human/humanizer-ru) (MIT). |
+| [`sokrati`](texts/sokrati/) | Shorten or tighten your text without losing your voice — cut to a target size ("-30%", "2x shorter") or just remove filler, using the "Write, cut" editing method. Personal settings (voice file, typography, where to open the result) go into a local `LOCAL.md` next to the skill, which is not committed. Keeps versions v0.1/v0.2… in the same file with a one-line changelog, applies typography rules. Russian by default. |
+| [`ochelovech`](texts/ochelovech/) | Humanize AI-sounding Russian and English text with targeted point edits: removes bureaucratese, ChatGPT clichés, paste junk, extra dashes and bold, keeps the rest word for word, then checks numbers, names, dates and negations survived. Tests and the comparison stand live in the frozen [ochelovech](https://github.com/alexivanovvv/ochelovech) repo. Fork of [Vladimir-Human/humanizer-ru](https://github.com/Vladimir-Human/humanizer-ru) (MIT). |
+
+### slides/
+
+Skills for presentations.
+
+| Skill | What it does |
+|-------|-------------|
+| [`slides-generator`](slides/slides-generator/) | Turn a Markdown file into a self-contained HTML slide deck — dark minimal style, animated SVG art, 134 motifs + 25 icons, 6 themes, presenter view, keyboard nav, speaker notes, autoplay |
 
 ### story/
 
@@ -62,7 +69,7 @@ Everyday utilities for your computer.
 
 ```bash
 # Install a single skill
-cp -r create/slides-generator ~/.claude/skills/
+cp -r slides/slides-generator ~/.claude/skills/
 cp -r story/story-heros-journey ~/.claude/skills/
 cp -r story/story-preodolenie ~/.claude/skills/
 cp -r story/story-authentic-social ~/.claude/skills/
@@ -73,7 +80,7 @@ cp -r tools/usage-insights ~/.claude/skills/
 
 # Or clone the whole repo and symlink skills
 git clone https://github.com/alexivanovvv/turboskills ~/.claude/turboskills
-ln -s ~/.claude/turboskills/create/slides-generator ~/.claude/skills/slides-generator
+ln -s ~/.claude/turboskills/slides/slides-generator ~/.claude/skills/slides-generator
 ln -s ~/.claude/turboskills/story/story-heros-journey ~/.claude/skills/story-heros-journey
 ln -s ~/.claude/turboskills/story/story-preodolenie ~/.claude/skills/story-preodolenie
 ln -s ~/.claude/turboskills/story/story-authentic-social ~/.claude/skills/story-authentic-social

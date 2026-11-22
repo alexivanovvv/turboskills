@@ -23,7 +23,7 @@ A [Claude Code](https://claude.ai/code) skill that turns a Markdown file into a 
 
 ```bash
 git clone --depth 1 https://github.com/alexivanovvv/turboskills /tmp/turboskills
-cp -r /tmp/turboskills/create/slides-generator ~/.claude/skills/
+cp -r /tmp/turboskills/slides/slides-generator ~/.claude/skills/
 ```
 
 Then restart Claude Code (or open a new session) — `/slides-generator` appears in the command list.

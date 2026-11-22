@@ -5,7 +5,7 @@ license: MIT
 metadata:
   author: "Alexey Ivanov (форк Vladimir-Human/humanizer-ru)"
   version: "5.1.0"
-  homepage: "https://github.com/alexivanovvv/turboskills/tree/main/create/ochelovech"
+  homepage: "https://github.com/alexivanovvv/turboskills/tree/main/texts/ochelovech"
 ---
 
 # ochelovech

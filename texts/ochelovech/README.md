@@ -7,7 +7,7 @@ Fork of [Vladimir-Human/humanizer-ru](https://github.com/Vladimir-Human/humanize
 ## Install
 
 ```bash
-npx skills add https://github.com/alexivanovvv/turboskills/tree/main/create/ochelovech
+npx skills add https://github.com/alexivanovvv/turboskills/tree/main/texts/ochelovech
 ```
 
 Or copy this folder into `~/.claude/skills/`.
