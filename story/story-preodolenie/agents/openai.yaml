@@ -1,0 +1,4 @@
+interface:
+  display_name: "Overcoming Story"
+  short_description: "История преодоления из точки А в точку Б: препятствия, мотивация, ресурсы"
+  default_prompt: "Use $story-preodolenie to написать историю преодоления."

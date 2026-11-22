@@ -1,0 +1,4 @@
+interface:
+  display_name: "Disk Space Analyzer"
+  short_description: "Find what is eating your disk and clean it up safely"
+  default_prompt: "Use $disk-space-analyzer to find large files and free up disk space."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hero's Journey Story"
+  short_description: "Личная история трансформации по арке Пути героя в 6 шагов"
+  default_prompt: "Use $story-heros-journey to написать историю моей трансформации."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Usage Insights"
+  short_description: "HTML report on how you use Claude Code: sessions, skills, tools, recommendations"
+  default_prompt: "Use $usage-insights to analyze how I use Claude Code over the last 90 days."

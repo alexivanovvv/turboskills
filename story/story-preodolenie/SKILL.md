@@ -6,7 +6,8 @@ allowed-tools:
   - Read
   - Write
   - Edit
-tags: [storytelling, narrative, transformation, coaching, overcoming]
+metadata:
+  tags: "storytelling, narrative, transformation, coaching, overcoming"
 ---
 
 # Story: Сторителлинг — Преодоление

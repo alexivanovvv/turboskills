@@ -1,0 +1,4 @@
+interface:
+  display_name: "Authentic Social Story"
+  short_description: "Трушная личная история для соцсетей: хук за 2 секунды и путь к действию"
+  default_prompt: "Use $story-authentic-social to написать личную историю для поста."

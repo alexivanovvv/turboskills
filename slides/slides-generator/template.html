@@ -2035,7 +2035,7 @@
       const r=await fetch(SG+'/rebuild',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:decodeURIComponent(location.pathname)})});
       if(!r.ok)throw new Error(await r.text());
       location.reload();
-    }catch(err){say(err instanceof TypeError?'Сервер настроек не отвечает. Запусти: python3 ~/.claude/skills/slides-generator/settings.py':'Ошибка: '+err.message,1);}
+    }catch(err){say(err instanceof TypeError?'Сервер настроек не отвечает. Запусти: python3 <папка скилла>/settings.py':'Ошибка: '+err.message,1);}
   });
   document.getElementById('settings-btn').addEventListener('click',()=>window.open(SG+'/','_blank'));
   document.addEventListener('click',()=>{menuPanel.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');});
@@ -2111,7 +2111,7 @@
     menuPanel.classList.remove('open');
     on=document.documentElement.classList.toggle('sg-cm',on);
     document.querySelector('.cm-box')?.remove();
-    if(on){if(location.protocol!=='file:'){toggleComments(false);return;}cmApi().catch(()=>{toggleComments(false);menuPanel.classList.add('open');say('Сервер настроек не отвечает. Запусти: python3 ~/.claude/skills/slides-generator/settings.py',1);});}
+    if(on){if(location.protocol!=='file:'){toggleComments(false);return;}cmApi().catch(()=>{toggleComments(false);menuPanel.classList.add('open');say('Сервер настроек не отвечает. Запусти: python3 <папка скилла>/settings.py',1);});}
     else document.querySelectorAll('.cm-pin').forEach(p=>p.remove());
   }
   function addComment(e){

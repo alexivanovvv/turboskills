@@ -6,7 +6,8 @@ allowed-tools:
   - Read
   - Write
   - Edit
-tags: [storytelling, social-media, marketing, content, hooks, authentic]
+metadata:
+  tags: "storytelling, social-media, marketing, content, hooks, authentic"
 ---
 
 # Story: Трушная история для соцсетей и маркетинга

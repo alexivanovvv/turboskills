@@ -5,6 +5,8 @@ description: Analyze how you use Claude Code - sessions, skills, tools, models, 
 
 # Usage Insights
 
+> `<skill-dir>` is the folder containing this `SKILL.md` (usually `~/.claude/skills/usage-insights/`).
+
 Reads your local Claude Code session logs (`~/.claude/projects/*/*.jsonl`), installed skills and scheduled jobs, and turns them into a one-file HTML report: what you do, how you work, what to automate, what to clean up. Nothing leaves your machine.
 
 Write the report in the language you and the user speak.
@@ -13,7 +15,7 @@ Write the report in the language you and the user speak.
 
 1. **Collect stats** (about 10 seconds):
    ```bash
-   python3 ~/.claude/skills/usage-insights/collect_stats.py 90 > /tmp/usage_stats.json
+   python3 <skill-dir>/collect_stats.py 90 > /tmp/usage_stats.json
    ```
    Argument = window in days (default 90). The JSON has: session count, user/assistant messages, activity by day/week/hour/weekday, skill calls, top tools, models, language split, **token analytics** (`tokens`: by model, day, week, effort level, main vs subagents, heaviest sessions), share of sessions with subagents, and the most recent sessions (date, duration, size, skills, first 200 chars of the first prompt).
    Logs older than your retention setting are gone, so the real period may be shorter than the window - say so in the report.
@@ -53,7 +55,7 @@ Write the report in the language you and the user speak.
    - **Interactive charts.** The template ships a tiny renderer (no libraries): write `<div class="chart" data-kind="..." data-items='JSON'></div>` and the script draws it. Kinds: `cols` (vertical columns - hours, weekdays, weeks, context buckets; `data-every="3"` thins x-labels, `data-partial="1"` hatches the last, incomplete period, `data-ramp="1"` steps opacity for ordered buckets), `stack` (horizontal two-series bars, e.g. main session vs subagents per model; `data-series='["a","b"]'`), `part` (one 100% bar, e.g. effort levels; each item `[label, value, shade 0-1]`, shade 0 = gray for "no data"), `hbar` (ranked horizontal bars, e.g. tool errors). Optional `data-unit`, `data-note`. Every mark has a hover tooltip; the spec is commented in the template.
    - Keep the validated palette from the template (`--c1` / `--c2` / `--gray`, separate light and dark values). If you change colors, re-validate them (light and dark) for colorblind separation and contrast; ordered data (effort, context size) = one hue in steps, never a rainbow.
    - Render and look before handing over, e.g. headless Chrome: `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --window-size=1000,6000 --screenshot=/tmp/report.png file://<report>` - check label collisions, overflow, dark theme.
-   - Save to `~/.claude/skills/usage-insights/reports/YYYY-MM-DD-usage-report.html`, then open it (`open` on macOS, `xdg-open` on Linux, `start` on Windows).
+   - Save to `<skill-dir>/reports/YYYY-MM-DD-usage-report.html`, then open it (`open` on macOS, `xdg-open` on Linux, `start` on Windows).
 
 ## Rules
 

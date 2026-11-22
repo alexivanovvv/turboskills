@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ochelovech"
+  short_description: "Очеловечить русский и английский текст после нейросети точечными правками"
+  default_prompt: "Use $ochelovech to очеловечить этот текст."

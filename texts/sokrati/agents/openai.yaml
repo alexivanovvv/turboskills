@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sokrati"
+  short_description: "Сократить или причесать текст до нужного объёма, сохранив голос автора"
+  default_prompt: "Use $sokrati to сократить этот текст на 30%, сохранив мой голос."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Slides Generator"
+  short_description: "HTML-презентация из Markdown: тёмный минимал, анимированный SVG-арт на каждом слайде"
+  default_prompt: "Use $slides-generator to сделать HTML-презентацию из этого Markdown-файла."

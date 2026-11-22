@@ -6,7 +6,8 @@ allowed-tools:
   - Read
   - Write
   - Edit
-tags: [storytelling, heros-journey, transformation, narrative, coaching]
+metadata:
+  tags: "storytelling, heros-journey, transformation, narrative, coaching"
 ---
 
 # Story: Путь героя
