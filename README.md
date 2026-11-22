@@ -25,6 +25,7 @@ Skills for creating content and presentations.
 | Skill | What it does |
 |-------|-------------|
 | [`slides-generator`](create/slides-generator/) | Turn a Markdown file into a self-contained HTML slide deck — dark minimal style, animated SVG art, 134 motifs + 25 icons, 6 themes, presenter view, keyboard nav, speaker notes, autoplay |
+| [`sokrati`](create/sokrati/) | Shorten or tighten your text without losing your voice — cut to a target size ("-30%", "2x shorter") or just remove filler, using the "Write, cut" editing method. Keeps versions v0.1/v0.2… in the same file with a one-line changelog, applies typography rules. Russian by default. |
 
 ### story/
 
